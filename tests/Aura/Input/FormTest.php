@@ -44,7 +44,11 @@ class FormTest extends \PHPUnit_Framework_TestCase
             'name' => 'zim[gir][irk]',
             'type' => 'text',
             'label' => null,
-            'attribs' => [],
+            'attribs' => [
+                'id'   => null,
+                'type' => null,
+                'name' => null,
+            ],
             'options' => [],
             'value' => 'zim.gir.irk_value',
         ];

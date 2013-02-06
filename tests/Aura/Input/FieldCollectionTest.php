@@ -23,7 +23,12 @@ class FieldCollectionTest extends \PHPUnit_Framework_TestCase
         $expect = [
             'type' => 'date',
             'label' => null,
-            'attribs' => ['zim' => 'gir'],
+            'attribs' => [
+                'id' => null,
+                'type' => null,
+                'name' => null,
+                'zim' => 'gir',
+            ],
             'options' => ['irk' => 'doom'],
         ];
         $this->assertSame($expect, $actual);

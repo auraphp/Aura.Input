@@ -17,7 +17,12 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $expect = [
             'type' => 'text',
             'label' => 'DOOM',
-            'attribs' => ['foo' => 'bar'],
+            'attribs' => [
+                'id'   => null,
+                'type' => null,
+                'name' => null,
+                'foo'  => 'bar',
+            ],
             'options' => ['baz' => 'dib'],
         ];
         

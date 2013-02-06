@@ -130,8 +130,14 @@ class Field
      */
     public function asArray()
     {
-        $attribs = ['id' => null, 'type' => null, 'name' => null]
-                 + $this->attribs;
+        $attribs = array_merge(
+            [
+                'id'   => null,
+                'type' => null,
+                'name' => null,
+            ],
+            $this->attribs
+        );
         
         return [
             'type'    => $this->type,
