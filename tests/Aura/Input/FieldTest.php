@@ -9,12 +9,14 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         
         $field = $factory->newInstance('text')
                          ->attribs(['foo' => 'bar'])
-                         ->options(['baz' => 'dib']);
+                         ->options(['baz' => 'dib'])
+                         ->label('DOOM');
         
         $actual = $field->asArray();
         
         $expect = [
             'type' => 'text',
+            'label' => 'DOOM',
             'attribs' => ['foo' => 'bar'],
             'options' => ['baz' => 'dib'],
         ];

@@ -52,6 +52,15 @@ class Field
     
     /**
      * 
+     * The label to use for this field (typically for checkbox elements).
+     * 
+     * @var string
+     * 
+     */
+    protected $label;
+    
+    /**
+     * 
      * Constructor.
      * 
      * @param string $type The field type.
@@ -98,6 +107,21 @@ class Field
     
     /**
      * 
+     * Sets the label for this field, typically for a checkbox.
+     * 
+     * @param string
+     * 
+     * @return self
+     * 
+     */
+    public function label($label)
+    {
+        $this->label = $label;
+        return $this;
+    }
+    
+    /**
+     * 
      * Returns this field as a plain old PHP array.
      * 
      * @return array An array with keys `'type'`, `'attribs'`, and 
@@ -108,6 +132,7 @@ class Field
     {
         return [
             'type'    => $this->type,
+            'label'   => $this->label,
             'attribs' => $this->attribs,
             'options' => $this->options,
         ];

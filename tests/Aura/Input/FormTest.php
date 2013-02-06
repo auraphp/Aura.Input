@@ -43,6 +43,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $expect = [
             'name' => 'zim[gir][irk]',
             'type' => 'text',
+            'label' => null,
             'attribs' => [],
             'options' => [],
             'value' => 'zim.gir.irk_value',
