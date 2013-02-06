@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ page.title }}</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/css/bootstrap.css" rel="stylesheet">
+  <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="/css/auradocs.css" rel="stylesheet">
+  <!-- code highlight -->
+  <link rel="stylesheet" href="/css/highlight/googlecode.css">
+  <link rel="alternate stylesheet" href="/css/highlight/arta.css" title="arta">
+  <link rel="alternate stylesheet" href="/css/highlight/ascetic.css" title="ascetic">
+  <link rel="alternate stylesheet" href="/css/highlight/brown_paper.css" title="brown_paper">
+  <link rel="alternate stylesheet" href="/css/highlight/dark.css" title="dark">
+  <link rel="alternate stylesheet" href="/css/highlight/far.css" title="far">
+  <link rel="alternate stylesheet" href="/css/highlight/github.css" title="github">
+  <link rel="alternate stylesheet" href="/css/highlight/idea.css" title="idea">
+  <link rel="alternate stylesheet" href="/css/highlight/ir_black.css" title="ir_black">
+  <link rel="alternate stylesheet" href="/css/highlight/magula.css" title="magula">
+  <link rel="alternate stylesheet" href="/css/highlight/monokai.css" title="monokai">
+  <link rel="alternate stylesheet" href="/css/highlight/pojoaque.css" title="pojoaque">
+  <link rel="alternate stylesheet" href="/css/highlight/school_book.css" title="school_book">
+  <link rel="alternate stylesheet" href="/css/highlight/solarized_dark.css" title="solarized_dark">
+  <link rel="alternate stylesheet" href="/css/highlight/solarized_light.css" title="solarized_light">
+  <link rel="alternate stylesheet" href="/css/highlight/sunburst.css" title="sunburst" title="arta">
+  <link rel="alternate stylesheet" href="/css/highlight/tomorrow.css" title="tomorrow">
+  <link rel="alternate stylesheet" href="/css/highlight/tomorrow-night.css" title="tomorrow-night">
+  <link rel="alternate stylesheet" href="/css/highlight/tomorrow-night-blue.css" title="tomorrow-night-blue">
+  <link rel="alternate stylesheet" href="/css/highlight/tomorrow-night-bright.css" title="tomorrow-night-bright">
+  <link rel="alternate stylesheet" href="/css/highlight/tomorrow-night-eighties.css" title="tomorrow-night-eighties">
+  <link rel="alternate stylesheet" href="/css/highlight/vs.css" title="vs">
+  <link rel="alternate stylesheet" href="/css/highlight/zenburn.css" title="zenburn">
+  <!-- code highlight -->
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!-- Le fav and touch icons -->
+  <link rel="shortcut icon" href="/images/ico/favicon.ico">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="/images/ico/apple-touch-icon-57-precomposed.png">
+</head>
+<body data-spy="scroll" data-target="#sidebar" data-offset="45">
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="https://github.com/auraphp/{{ site.package }}">{{ site.package }}</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li class="active"><a href="http://auraphp.github.com">Home</a></li>
+            <li><a href="http://auraphp.github.com/blog">Blog</a></li>
+            <li><a href="https://github.com/auraphp/{{ site.package }}/graphs/contributors">Contributors</a></li>
+            <li>
+            <select name="switch" id="switch">
+              <option value="">Code Highlight</option>
+              <option value="arta">arta</option>
+              <option value="ascetic">ascetic</option>
+              <option value="brown_paper">brown_paper</option>
+              <option value="dark">dark</option>
+              <option value="far">far</option>
+              <option value="github">github</option>
+              <option value="idea">idea</option>
+              <option value="ir_black">ir_black</option>
+              <option value="magula">magula</option>
+              <option value="monokai">monokai</option>
+              <option value="pojoaque">pojoaque</option>
+              <option value="school_book">school_book</option>
+              <option value="solarized_dark">solarized_dark</option>
+              <option value="solarized_light">solarized_light</option>
+              <option value="sunburst">sunburst</option>
+              <option value="tomorrow">tomorrow</option>
+              <option value="tomorrow-night">tomorrow-night</option>
+              <option value="tomorrow-night-blue">tomorrow-night-blue</option>
+              <option value="tomorrow-night-bright">tomorrow-night-bright</option>
+              <option value="vs">vs</option>
+              <option value="zenburn">zenburn</option>
+          </select>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+  <!--
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <div id="banner">
+          <a href="http://auraphp.github.com/" id="logo" style="display: block; "></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span3">
+        <div id="sidebar">
+          <!-- Begin sidebar -->
+          <!-- End sidebar -->
+        </div>
+      </div>
+      <div class="span9">
+        {{ content }}
+      </div>
+    </div>
+  </div>
+  
+  <footer class="footer">
+    <div class="container">
+      <p class="pull-right"><a href="#">Back to top</a></p>
+      <p>Copyright © 2010 - {{ site.time | date: '%Y' }}, <a href="http://paul-m-jones.com">Paul M. Jones</a> and other contributors.</p>
+      <p>Logo Design by <a href="http://www.marcusk.co.uk/">Marcus Kielly</a>, Site designed with <a href="http://twitter.github.com/bootstrap">Bootstrap</a> by <a href="http://harikt.com">Hari K T</a>.</p>
+      <ul class="footer-links">
+        <li><a href="http://auraphp.github.com/blog">Blog</a></li>
+        <li class="muted">·</li>
+        <li><a href="https://github.com/auraphp/{{ site.package }}/issues?state=open">Issues</a></li>
+        <li class="muted">·</li>
+      </ul>
+    </div>
+  </footer>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <script src="/js/auradocs.js"></script>
+</body>
+</html>
