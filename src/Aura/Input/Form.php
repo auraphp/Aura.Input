@@ -85,8 +85,8 @@ class Form
      * 
      * @param string $name The name of the field to get.
      * 
-     * @return array An array with keys `'name'`, `'type'`, `'attribs'`,
-     * `'options'`, and `'value'`.
+     * @return array An array with keys `'name'`, `'type'`, `'label'`, 
+     * `'attribs'`, `'options'`, and `'value'`.
      * 
      */
     public function getField($name)

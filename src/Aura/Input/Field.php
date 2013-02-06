@@ -130,10 +130,13 @@ class Field
      */
     public function asArray()
     {
+        $attribs = ['id' => null, 'type' => null, 'name' => null]
+                 + $this->attribs;
+        
         return [
             'type'    => $this->type,
             'label'   => $this->label,
-            'attribs' => $this->attribs,
+            'attribs' => $attribs,
             'options' => $this->options,
         ];
     }
