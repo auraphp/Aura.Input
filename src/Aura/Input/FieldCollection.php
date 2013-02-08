@@ -10,6 +10,9 @@
  */
 namespace Aura\Input;
 
+use ArrayIterator;
+use IteratorAggregate;
+
 /**
  * 
  * A collection of fields.
@@ -17,7 +20,7 @@ namespace Aura\Input;
  * @package Aura.Input
  * 
  */
-class FieldCollection
+class FieldCollection implements IteratorAggregate
 {
     /**
      * 
@@ -91,5 +94,10 @@ class FieldCollection
     public function getNames()
     {
         return array_keys($this->fields);
+    }
+    
+    public function getIterator()
+    {
+        return new ArrayIterator($this->fields);
     }
 }
