@@ -165,9 +165,9 @@ class Form
         $end = strpos($name, ']');
         $sub = substr($name, $pos + 1, $end - $pos - 1)
              . substr($name, $end + 1);
-    
+        $value = isset($data[$key]) ? $data[$key] : null;
         // recursively descend into the data
-        return $this->getValue($sub, $data[$key]);
+        return $this->getValue($sub, $value);
     }
     
     /**
