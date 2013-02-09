@@ -183,7 +183,7 @@ class Form
      */
     public function getValues()
     {
-        $data = [];
+        $data = array_fill_keys($this->fields->getNames(), '');
         foreach ($this->values as $name => $value) {
             $this->setValue($name, $value, $data);
         }
