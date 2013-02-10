@@ -40,8 +40,8 @@ class Field
     
     /**
      * 
-     * Options for the field as key-value pairs (typically for select and
-     * radio elements). The key is the option value and the value is the
+     * Options for the field as key-value pairs (typically for checkbox, select,
+     * and radio elements). The key is the option value and the value is the
      * option label.  Nested options may be honored as the key being an
      * optgroup label and the array value as the options under that optgroup.
      * 
@@ -52,12 +52,22 @@ class Field
     
     /**
      * 
-     * The label to use for this field (typically for checkbox elements).
+     * The label to use on this field.
      * 
      * @var string
      * 
      */
     protected $label;
+    
+    /**
+     * 
+     * Attributes for the label on this field.
+     * 
+     * @var array
+     * 
+     */
+    protected $label_attribs = [];
+    
     
     /**
      * 
@@ -122,6 +132,22 @@ class Field
     
     /**
      * 
+     * Sets the HTML attributes for the label on this field.
+     * 
+     * @param array $attribs HTML attributes for the label as key-value pairs;
+     * the key is the attribute name and the value is the attribute value.
+     * 
+     * @return self
+     * 
+     */
+    public function labelAttribs(array $label_attribs)
+    {
+        $this->label_attribs = $label_attribs;
+        return $this;
+    }
+    
+    /**
+     * 
      * Returns this field as a plain old PHP array.
      * 
      * @return array An array with keys `'type'`, `'attribs'`, and 
@@ -140,10 +166,11 @@ class Field
         );
         
         return [
-            'type'    => $this->type,
-            'label'   => $this->label,
-            'attribs' => $attribs,
-            'options' => $this->options,
+            'type'          => $this->type,
+            'attribs'       => $attribs,
+            'options'       => $this->options,
+            'label'         => $this->label,
+            'label_attribs' => $this->label_attribs,
         ];
     }
 }

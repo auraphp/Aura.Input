@@ -3,26 +3,31 @@ namespace Aura\Input;
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
-    protected $form;
-    
-    protected function setUp()
+    public function newForm()
     {
-        $this->form = new Form(new FieldCollection(new FieldFactory));
-        $this->form->setField('foo');
-        $this->form->setField('bar[baz]');
-        $this->form->setField('bar[dib]');
-        $this->form->setField('zim[gir][irk]');
+        return new Form(
+            new FieldCollection(new FieldFactory),
+            new Filter
+        );
     }
     
     public function testGetFields()
     {
-        $actual = $this->form->getFields();
+        $form = $this->newForm();
+        $actual = $form->getFields();
         $expect = 'Aura\Input\FieldCollection';
         $this->assertInstanceOf($expect, $actual);
     }
     
     public function testSetAndGetValues()
     {
+        $form = $this->newForm();
+        
+        $form->setField('foo');
+        $form->setField('bar[baz]');
+        $form->setField('bar[dib]');
+        $form->setField('zim[gir][irk]');
+        
         $data = [
             'foo' => 'foo_value',
             'bar' => [
@@ -37,19 +42,20 @@ class FormTest extends \PHPUnit_Framework_TestCase
             'doom' => 'doom_value', // should not show up
         ];
         
-        $this->form->setValues($data);
+        $form->setValues($data);
         
-        $actual = $this->form->getField('zim[gir][irk]');
+        $actual = $form->getField('zim[gir][irk]');
         $expect = [
             'name' => 'zim[gir][irk]',
             'type' => 'text',
-            'label' => null,
             'attribs' => [
                 'id'   => null,
                 'type' => null,
                 'name' => null,
             ],
             'options' => [],
+            'label' => null,
+            'label_attribs' => [],
             'value' => 'zim.gir.irk_value',
         ];
         
@@ -58,7 +64,35 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $expect = $data;
         unset($expect['doom']);
         
-        $actual = $this->form->getValues();
+        $actual = $form->getValues();
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testFilter()
+    {
+        $form = $this->newForm();
+        
+        $form->setField('foo', 'text');
+        $form->setField('bar', 'text');
+        
+        $filter = $form->getFilter();
+        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+            return ctype_alpha($value);
+        });
+        
+        $values = ['foo' => 'foo_value', 'bar' => 'bar_value'];
+        
+        $form->setValues($values);
+        
+        $passed = $form->filter();
+        $this->assertFalse($passed);
+        
+        $actual = $form->getMessages();
+        $expect = [
+            'foo' => [
+                'Foo should be alpha',
+            ],
+        ];
         $this->assertSame($expect, $actual);
     }
 }

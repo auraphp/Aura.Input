@@ -10,13 +10,13 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $field = $factory->newInstance('text')
                          ->attribs(['foo' => 'bar'])
                          ->options(['baz' => 'dib'])
-                         ->label('DOOM');
+                         ->label('doom')
+                         ->labelAttribs(['zim' => 'gir']);
         
         $actual = $field->asArray();
         
         $expect = [
             'type' => 'text',
-            'label' => 'DOOM',
             'attribs' => [
                 'id'   => null,
                 'type' => null,
@@ -24,6 +24,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
                 'foo'  => 'bar',
             ],
             'options' => ['baz' => 'dib'],
+            'label' => 'doom',
+            'label_attribs' => ['zim' => 'gir'],
         ];
         
         $this->assertSame($expect, $actual);

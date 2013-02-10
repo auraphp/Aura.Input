@@ -22,7 +22,6 @@ class FieldCollectionTest extends \PHPUnit_Framework_TestCase
         $actual = $fields->get('field2')->asArray();
         $expect = [
             'type' => 'date',
-            'label' => null,
             'attribs' => [
                 'id' => null,
                 'type' => null,
@@ -30,7 +29,10 @@ class FieldCollectionTest extends \PHPUnit_Framework_TestCase
                 'zim' => 'gir',
             ],
             'options' => ['irk' => 'doom'],
+            'label' => null,
+            'label_attribs' => [],
         ];
+        
         $this->assertSame($expect, $actual);
     }
 }

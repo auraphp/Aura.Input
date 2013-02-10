@@ -30,6 +30,15 @@ class Form
     
     /**
      * 
+     * Filter for the values.
+     * 
+     * @var FilterInterface
+     * 
+     */
+    protected $filter;
+    
+    /**
+     * 
      * Values of the fields.
      * 
      * @var array
@@ -43,12 +52,17 @@ class Form
      * 
      * @param FieldCollection $fields A field collection object.
      * 
+     * @param FilterInterface $filter A filter interface.
+     * 
      * @see init()
      * 
      */
-    public function __construct(FieldCollection $fields)
-    {
+    public function __construct(
+        FieldCollection $fields,
+        FilterInterface $filter
+    ) {
         $this->fields = $fields;
+        $this->filter = $filter;
         $this->init();
     }
     
@@ -229,5 +243,20 @@ class Form
     
         // recursively descend into the data
         $this->setValue($sub, $value, $data[$key]);
+    }
+    
+    public function getFilter()
+    {
+        return $this->filter;
+    }
+    
+    public function filter()
+    {
+        return $this->filter->values($this->values);
+    }
+    
+    public function getMessages($field = null)
+    {
+        return $this->filter->getMessages($field);
     }
 }
