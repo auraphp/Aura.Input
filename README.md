@@ -50,6 +50,28 @@ $field = $form->setField('fieldname', 'type');
 The `setField` returns an object of `Aura\Input\Field`. We can set the 
 attributes, options to the field via `attribs` and `options` method.
 
+Alternatively you can set the fields inside a class which extends the 
+`Aura\Input\Form` like the below example.
+
+```php
+<?php
+namespace Vendor\Package;
+
+use Aura\Input\Form
+
+class ContactForm extends Form
+{
+    public function init()
+    {
+        $field = $this->setField('field-name', type');
+        // set attributes, options
+        // $field->attribs(array(....))
+        // $field->options(array(....))
+
+        // More fields here
+    }
+}
+```
 
 Getting Field
 =============
