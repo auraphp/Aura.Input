@@ -20,7 +20,7 @@ is to include the `instance.php` script:
 
 ```php
 <?php
-$filter = require "/path/to/Aura.Input/scripts/instance.php";
+$form = require "/path/to/Aura.Input/scripts/instance.php";
 ```
 
 Alternatively, we can add the `Aura.Input` package to an autoloader, and
@@ -54,7 +54,8 @@ attributes, options to the field via `attribs` and `options` method.
 Getting Field
 =============
 
-We can get the whole attributes, value, option of a field via 
+We can get the whole attributes, value, option of a field via `getField`
+method.
 
 ```php
 <?php
@@ -63,7 +64,7 @@ $form->getField('fieldname');
 
 Setting Values
 ==============
-You can set the values to `Form` via `setValues()`.
+You can set the values to the fields of a `Form` object via `setValues()`.
 
 ```php
 <?php
@@ -184,4 +185,23 @@ if (! $form->filter()) {
     $messages = $form->getMessages();
 }
 ```
+
+Rendering : via Aura.View
+=========================
+
+As `Aura.Input` doesn't have a rendering functionality we can make use 
+of [Aura.View][] or similar ones. The `Aura.View` has built in capability
+of rendering the field attributes and values.
+
+```php
+<?php
+// We assume you have passed the form object to the view
+$field = $form->getField('fieldname');
+// from the template
+$this->field($field);
+```
+
+For more information visit [Aura.View][]
+
+[Aura.View]: https://github.com/auraphp/Aura.View
 [Aura.Filter]: https://github.com/auraphp/Aura.Filter
