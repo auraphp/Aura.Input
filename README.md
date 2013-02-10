@@ -50,8 +50,8 @@ $field = $form->setField('fieldname', 'type');
 The `setField` returns an object of `Aura\Input\Field`. We can set the 
 attributes, options to the field via `attribs` and `options` method.
 
-Alternatively you can set the fields inside a class which extends the 
-`Aura\Input\Form` like the below example.
+Alternatively you can set the fields inside the `init` method of the 
+class which extends the `Aura\Input\Form`.
 
 ```php
 <?php
@@ -63,7 +63,7 @@ class ContactForm extends Form
 {
     public function init()
     {
-        $field = $this->setField('field-name', type');
+        $field = $this->setField('field-name', 'type');
         // set attributes, options
         // $field->attribs(array(....))
         // $field->options(array(....))
@@ -179,7 +179,7 @@ The `init()` method adds the fields to the input. The `setField` returns
 and `options` method.
 
 Wehn we create an object of `ContactForm` we should set the `Aura\Filter\RuleCollection`
-object. You can also use a dependency injection container like `Aura.Di` 
+object. You can also use a dependency injection container like `[Aura.Di][]` 
 to automate this.
 
 ```php
@@ -193,6 +193,7 @@ $form->setFilter($filter);
 
 Please visit `[Aura.Filter][]` for more information on manual instantiation
 and filtering and validating.
+/Aura.View
 
 Validate, Filter and Getting Error Message
 ==========================================
@@ -212,7 +213,7 @@ Rendering : via Aura.View
 =========================
 
 As `Aura.Input` doesn't have a rendering functionality we can make use 
-of [Aura.View][] or similar ones. The `Aura.View` has built in capability
+of `[Aura.View][]` or similar ones. The `[Aura.View][]` has built in capability
 of rendering the field attributes and values.
 
 ```php
@@ -225,5 +226,6 @@ $this->field($field);
 
 For more information visit [Aura.View][]
 
-[Aura.View]: https://github.com/auraphp/Aura.View
+[Aura.Di]: https://github.com/auraphp/Aura.Di
 [Aura.Filter]: https://github.com/auraphp/Aura.Filter
+[Aura.View]: https://github.com/auraphp/Aura.View
