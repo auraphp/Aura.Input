@@ -14,3 +14,4 @@ $di->params['Aura\Input\FieldCollection']['field_factory'] = $di->lazyNew('Aura\
  * Aura\Input\Form
  */
 $di->params['Aura\Input\Form']['fields'] = $di->lazyNew('Aura\Input\FieldCollection');
+$di->params['Aura\Input\Form']['filter'] = $di->lazyNew('Aura\Input\Filter');
