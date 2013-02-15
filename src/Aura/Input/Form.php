@@ -39,6 +39,16 @@ class Form
     
     /**
      * 
+     * Object for retaining information about options available to the form
+     * inputs.
+     * 
+     * @var Options
+     * 
+     */
+    protected $options;
+    
+    /**
+     * 
      * Values of the fields.
      * 
      * @var array
@@ -52,6 +62,8 @@ class Form
      * 
      * @param FieldCollection $fields A field collection object.
      * 
+     * @param Options $options An object of options for field values.
+     * 
      * @param FilterInterface $filter A filter interface.
      * 
      * @see init()
@@ -59,10 +71,12 @@ class Form
      */
     public function __construct(
         FieldCollection $fields,
+        Options         $options,
         FilterInterface $filter
     ) {
-        $this->fields = $fields;
-        $this->filter = $filter;
+        $this->fields  = $fields;
+        $this->options = $options;
+        $this->filter  = $filter;
         $this->init();
     }
     

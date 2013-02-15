@@ -7,6 +7,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     {
         return new Form(
             new FieldCollection(new FieldFactory),
+            new Options,
             new Filter
         );
     }
