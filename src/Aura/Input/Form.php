@@ -87,7 +87,7 @@ class Form
      * @return void
      * 
      */
-    protected function init()
+    public function init()
     {
     }
     
