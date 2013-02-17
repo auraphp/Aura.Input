@@ -19,7 +19,7 @@ class FieldCollectionTest extends \PHPUnit_Framework_TestCase
         $expect = ['field1', 'field2'];
         $this->assertSame($expect, $actual);
         
-        $actual = $fields->get('field2')->asArray();
+        $actual = $fields->get('field2')->toArray();
         $expect = [
             'type' => 'date',
             'attribs' => [

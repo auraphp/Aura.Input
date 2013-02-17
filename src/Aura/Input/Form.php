@@ -124,7 +124,7 @@ class Form
                : null;
                
         return ['name' => $name]
-             + $this->fields->get($name)->asArray()
+             + $this->fields->get($name)->toArray()
              + ['value' => $value];
     }
     
@@ -195,7 +195,11 @@ class Form
              . substr($name, $end + 1);
     
         // recursively descend into the data
-        return $this->getValue($sub, $data[$key]);
+        if (isset($data[$key])) {
+            return $this->getValue($sub, $data[$key]);
+        } else {
+            return null;
+        }
     }
     
     /**

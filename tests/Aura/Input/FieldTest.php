@@ -13,7 +13,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
                          ->label('doom')
                          ->labelAttribs(['zim' => 'gir']);
         
-        $actual = $field->asArray();
+        $actual = $field->toArray();
         
         $expect = [
             'type' => 'text',

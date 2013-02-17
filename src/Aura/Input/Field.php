@@ -154,7 +154,7 @@ class Field
      * `'options'`.
      * 
      */
-    public function asArray()
+    public function toArray()
     {
         $attribs = array_merge(
             [

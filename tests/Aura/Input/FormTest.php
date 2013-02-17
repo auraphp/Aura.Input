@@ -74,8 +74,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = $this->newForm();
         
         $form->setField('foo');
-        $form->setField('bar[baz]');
-        $form->setField('bar[dib]');
+        $form->setField('bar[baz]'); // should not show up
+        $form->setField('bar[dib]'); // should not show up
         
         $data = [
             'foo' => 'foo_value',
@@ -86,8 +86,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         $expect = [
             'foo' => 'foo_value',
-            'bar[baz]' => null,
-            'bar[dib]' => null,
         ];
 
         $actual = $form->getValues();
