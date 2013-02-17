@@ -28,11 +28,13 @@ instantiate manually:
 
 ```php
 <?php
+use Aura\Input\Filter;
 use Aura\Input\Form;
 use Aura\Input\FieldCollection;
 use Aura\Input\FieldFactory;
+use Aura\Input\Options;
 
-$form = new Form(new FieldCollection(new FieldFactory));
+$form = new Form(new FieldCollection(new FieldFactory), new Options, new Filter);
 ```
 
 Setting Field
@@ -77,7 +79,7 @@ Getting Field
 =============
 
 We can get the whole attributes, value, option of a field via `getField`
-method.
+method. Note that this is an array and not the Field object.
 
 ```php
 <?php
@@ -95,67 +97,51 @@ $data = ['key' => 'value', ];
 $form->setValues($data);
 ```
 
-The `Aura.Input` does not include filtering or output functionality.
-
-To make use of filtering and validation you can make use of `[Aura.Filter][]` 
-or similar ones.
+The `Aura.Input` has a base filter class which you can pass closure as the rules.
+But you are not limited, you can always use [Aura.Filter][] or some other 
+validating and filtering packages. Also the Aura.Input does not have 
+rendering functionality.
 
 Making use of Aura.Filter
 =========================
 
-To show how we can make use of [Aura.Filter][] in `Aura.Input`, let us take 
-the below class from `Aura.Framework`
+To make use of [Aura.Filter][] in `Aura.Input`, we need to extend the 
+`Aura\Filter\RuleCollection` object and implement the `Aura\Input\FilterInterface`
 
 ```php
 <?php
-namespace Aura\Framework\Input;
+namespace Vendor\Package;
 
 use Aura\Filter\RuleCollection;
-use Aura\Input\Form as InputForm;
+use Aura\Input\FilterInterface;
 
-class Form extends InputForm
+class Filter extends RuleCollection implements FilterInterface
 {
-    protected $filter;
-    
-    public function setFilter(RuleCollection $filter)
-    {
-        $this->filter = $filter;
-        $this->initFilter();
-    }
-    
-    protected function initFilter()
-    {
-    }
-    
-    public function getFilter()
-    {
-        return $this->filter;
-    }
-    
-    public function filter()
-    {
-        return $this->filter->values($this->values);
-    }
-    
-    public function getMessages($field = null)
-    {
-        return $this->filter->getMessages($field);
-    }
 }
 ```
 
-Now let us create a `ContactForm` 
+Now we can create the object of the `Vendor\Package\Filter` which accepts 
+the same parameters as of `Aura\Filter\RuleCollection`.
+
+Let us create a `ContactForm` and validate it.
 
 ```php
 <?php
-namespace Vendor\Package\Input;
+namespace Vendor\Package;
 
 use Aura\Framework\Input\Form as InputForm;
 
 class ContactForm extends InputForm
 {
-    public function initFilter()
+    public function init()
     {
+        $name    = $this->setField('name');
+        $email   = $this->setField('email');
+        $url     = $this->setField('url');
+        $message = $this->setField('message', 'textarea');
+        
+        // Get the filter and set rules
+        
         $filter = $this->getFilter();
         $filter->addSoftRule('name', $filter::IS, 'string');
         $filter->addSoftRule('email', $filter::IS, 'email');
@@ -163,44 +149,55 @@ class ContactForm extends InputForm
         $filter->addSoftRule('message', $filter::FIX, 'string');
         $filter->addSoftRule('message', $filter::FIX, 'strlenMin', 6);
     }
-    
-    public function init()
-    {
-        $this->setField('name');
-        $this->setField('email');
-        $this->setField('url');
-        $this->setField('message', 'textarea');
-    }
 }
 ```
 
 The `init()` method adds the fields to the input. The `setField` returns 
 `Aura\Input\Field` object. You can add the attributes and options via `attribs`
-and `options` method.
-
-Wehn we create an object of `ContactForm` we should set the `Aura\Filter\RuleCollection`
-object. You can also use a dependency injection container like `[Aura.Di][]` 
-to automate this.
+and `options` method on `Aura\Input\Field` object.
 
 ```php
 <?php
 //create a filter object
-$filter = 'path/to/Aura.Filter/scripts/instance.php';
+$filter = new Vendor\Package\Filter(
+    new RuleLocator(array_merge(
+        require 'path/to/Aura.Filter/scripts/registry.php',
+        ['any' => function () {
+            $rule = new \Aura\Filter\Rule\Any;
+            $rule->setRuleLocator(new \Aura\Filter\RuleLocator(
+                require 'path/to/Aura.Filter/scripts/registry.php'
+            ));
+            return $rule;
+        }]
+    )),
+    new Translator(require dirname(__DIR__) . '/intl/en_US.php')
+);
 
-$form = new Vendor\Package\Input\ContactForm()
-$form->setFilter($filter);
+$form = new Vendor\Package\ContactForm(
+    new FieldCollection(new FieldFactory),
+    new Options(),
+    $filter
+);
 ```
 
-Please visit `[Aura.Filter][]` for more information on manual instantiation
-and filtering and validating.
-/Aura.View
+Please visit [Aura.Filter][] for more information on manual instantiation, 
+validating and filtering.
+
+Setting Values
+==============
+
+You can use `setValues` on the form object.
+
+```php
+$form->setValues($data);
+```
 
 Validate, Filter and Getting Error Message
 ==========================================
 In the above example we can filter and validate the fields and get the
 error messages via `getMessages` method. It accepts null and field name.
 If you pass the fieldname it will be giving the error message of the 
-field only
+field only.
 
 ```php
 <?php
@@ -213,7 +210,7 @@ Rendering : via Aura.View
 =========================
 
 As `Aura.Input` doesn't have a rendering functionality we can make use 
-of `[Aura.View][]` or similar ones. The `[Aura.View][]` has built in capability
+of [Aura.View][] or similar ones. The [Aura.View][] has built in capability
 of rendering the field attributes and values.
 
 ```php
@@ -221,7 +218,7 @@ of rendering the field attributes and values.
 // We assume you have passed the form object to the view
 $field = $form->getField('fieldname');
 // from the template
-$this->field($field);
+echo $this->field($field);
 ```
 
 For more information visit [Aura.View][]
