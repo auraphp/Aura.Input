@@ -170,7 +170,7 @@ $filter = new Vendor\Package\Filter(
             return $rule;
         }]
     )),
-    new Translator(require dirname(__DIR__) . '/intl/en_US.php')
+    new Translator(require 'path/to/Aura.Filter/scripts/intl/en_US.php')
 );
 
 $form = new Vendor\Package\ContactForm(
