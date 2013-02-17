@@ -69,6 +69,31 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
+    public function testSetAndGetValuesNotSet()
+    {
+        $form = $this->newForm();
+        
+        $form->setField('foo');
+        $form->setField('bar[baz]');
+        $form->setField('bar[dib]');
+        
+        $data = [
+            'foo' => 'foo_value',
+            'doom' => 'doom_value', // should not show up
+        ];
+        
+        $form->setValues($data);
+
+        $expect = [
+            'foo' => 'foo_value',
+            'bar[baz]' => null,
+            'bar[dib]' => null,
+        ];
+
+        $actual = $form->getValues();
+        $this->assertSame($expect, $actual);
+    }
+    
     public function testFilter()
     {
         $form = $this->newForm();
