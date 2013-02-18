@@ -97,10 +97,52 @@ $data = ['key' => 'value', ];
 $form->setValues($data);
 ```
 
-The `Aura.Input` has a base filter class which you can pass closure as the rules.
-But you are not limited, you can always use [Aura.Filter][] or some other 
-validating and filtering packages. Also the Aura.Input does not have 
-rendering functionality.
+Filter implementation
+=====================
+
+The `Aura.Input` has `Aura\Input\Filter` as the base filter class. This 
+has a `setRule` method which accepts the `field` name as first parameter, 
+`message` which needs to be returned when the condition fails, and 
+finally a [closure][]. But you are not limited, you can always use 
+[Aura.Filter][] or some other validating and filtering packages.
+
+[closure]: http://php.net/manual/en/class.closure.php
+
+Basic example
+-------------
+
+```php
+$filter = new Aura\Input\Filter();
+        
+// validate
+$filter->setRule('foo', 'Foo should be alpha only', function ($value) {
+    return ctype_alpha($value);
+});
+
+$filter->setRule('foo', 'Foo should be more than 7 characters', function ($value) {
+    $length = strlen($value);
+    return ($length > 7);
+});
+
+// sanitize
+$filter->setRule('bar', 'Remove non-alpha from bar', function (&$value) {
+    $value = preg_replace('/[^a-z]/i', '!', $value);
+    return true;
+});
+
+$values = [
+    'foo' => 'foo_va',
+    'bar' => 'bar_value',
+];
+
+// do the values pass all filters?
+$passed = $this->filter->values($values);
+
+// 'foo' is invalid
+
+// get all messages
+$actual = $this->filter->getMessages();
+```
 
 Making use of Aura.Filter
 =========================
