@@ -14,6 +14,11 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             return ctype_alpha($value);
         });
         
+        $this->filter->setRule('foo', 'Foo should be more than 7 characters', function ($value) {
+            $length = strlen($value);
+            return ($length > 7);
+        });
+        
         // sanitize
         $this->filter->setRule('bar', 'Remove non-alpha from bar', function (&$value) {
             $value = preg_replace('/[^a-z]/i', '!', $value);
@@ -65,5 +70,36 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $data['foo'] = 'foovalue';
         $passed = $this->filter->values($data);
         $this->assertTrue($passed);
+        
+        $data['foo'] = 'fooval';
+        $passed = $this->filter->values($data);
+        $this->assertFalse($passed);
+        $expect = [
+            'Foo should be more than 7 characters',
+        ];
+        $this->assertSame($expect, $this->filter->getMessages('foo'));
+        
+        // Get more errors
+        $values = [
+            'foo' => 'foo_va',
+            'bar' => 'bar_value',
+        ];
+        
+        // do the values pass all filters?
+        $passed = $this->filter->values($values);
+        
+        // 'foo' is invalid
+        $this->assertFalse($passed);
+        
+        // get all messages
+        $actual = $this->filter->getMessages();
+        $expect = [
+            'foo' => [
+                'Foo should be alpha only',
+                'Foo should be more than 7 characters'
+            ]
+        ];
+        $this->assertSame($expect, $actual);
+        
     }
 }
