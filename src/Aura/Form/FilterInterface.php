@@ -3,18 +3,18 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Input
+ * @package Aura.Form
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Input;
+namespace Aura\Form;
 
 /**
  * 
  * A filter interface
  * 
- * @package Aura.Input
+ * @package Aura.Form
  * 
  */
 interface FilterInterface

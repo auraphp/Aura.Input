@@ -3,18 +3,18 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Input
+ * @package Aura.Form
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Input;
+namespace Aura\Form;
 
 /**
  * 
  * A filter
  * 
- * @package Aura.Input
+ * @package Aura.Form
  * 
  */
 class Filter implements FilterInterface
@@ -41,7 +41,7 @@ class Filter implements FilterInterface
     
     /**
      * 
-     * Filter and Validate the data
+     * Apply filters to the input object.
      * 
      * @param mixed $values The value
      * 
@@ -55,11 +55,12 @@ class Filter implements FilterInterface
         
         // go through each of the rules
         foreach ($this->rules as $field => $rule) {
+            
             // get the closure and message
             list($message, $closure) = $rule;
             
             // apply the closure to the data and get back the result
-            $passed = $closure($values[$field]);
+            $passed = $closure($values->$field);
             
             // if the rule did not pass, retain a message for the field.
             // note that it is in an array, so that other implementations

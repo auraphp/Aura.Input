@@ -1,4 +1,4 @@
-Aura.Input
+Aura.Form
 ==========
 
 This package contains tools to describe the fields and values in an HTML form.
@@ -20,27 +20,27 @@ is to include the `instance.php` script:
 
 ```php
 <?php
-$form = require "/path/to/Aura.Input/scripts/instance.php";
+$form = require "/path/to/Aura.Form/scripts/instance.php";
 ```
 
-Alternatively, we can add the `Aura.Input` package to an autoloader, and
+Alternatively, we can add the `Aura.Form` package to an autoloader, and
 instantiate manually:
 
 ```php
 <?php
-use Aura\Input\Filter;
-use Aura\Input\Form;
-use Aura\Input\FieldCollection;
-use Aura\Input\FieldFactory;
-use Aura\Input\Options;
+use Aura\Form\Filter;
+use Aura\Form\Form;
+use Aura\Form\FieldCollection;
+use Aura\Form\FieldBuilder;
+use Aura\Form\Options;
 
-$form = new Form(new FieldCollection(new FieldFactory), new Options, new Filter);
+$form = new Form(new FieldCollection(new FieldBuilder), new Options, new Filter);
 ```
 
 Setting Field
 =============
 
-The `setField` method of the `Aura\Input\Form` create a `Aura\Input\Field`
+The `setField` method of the `Aura\Form\Form` create a `Aura\Form\Field`
 object. By default the second paramter is text. You can also pass the different
 input types like `checkbox`, 'radio', `textarea` etc.
 
@@ -49,17 +49,17 @@ input types like `checkbox`, 'radio', `textarea` etc.
 $field = $form->setField('fieldname', 'type');
 ```
 
-The `setField` returns an object of `Aura\Input\Field`. We can set the 
+The `setField` returns an object of `Aura\Form\Field`. We can set the 
 attributes, options to the field via `attribs` and `options` method.
 
 Alternatively you can set the fields inside the `init` method of the 
-class which extends the `Aura\Input\Form`.
+class which extends the `Aura\Form\Form`.
 
 ```php
 <?php
 namespace Vendor\Package;
 
-use Aura\Input\Form
+use Aura\Form\Form
 
 class ContactForm extends Form
 {
@@ -97,23 +97,23 @@ $data = ['key' => 'value', ];
 $form->setValues($data);
 ```
 
-The `Aura.Input` has a base filter class which you can pass closure as the rules.
+The `Aura.Form` has a base filter class which you can pass closure as the rules.
 But you are not limited, you can always use [Aura.Filter][] or some other 
-validating and filtering packages. Also the Aura.Input does not have 
+validating and filtering packages. Also the Aura.Form does not have 
 rendering functionality.
 
 Making use of Aura.Filter
 =========================
 
-To make use of [Aura.Filter][] in `Aura.Input`, we need to extend the 
-`Aura\Filter\RuleCollection` object and implement the `Aura\Input\FilterInterface`
+To make use of [Aura.Filter][] in `Aura.Form`, we need to extend the 
+`Aura\Filter\RuleCollection` object and implement the `Aura\Form\FilterInterface`
 
 ```php
 <?php
 namespace Vendor\Package;
 
 use Aura\Filter\RuleCollection;
-use Aura\Input\FilterInterface;
+use Aura\Form\FilterInterface;
 
 class Filter extends RuleCollection implements FilterInterface
 {
@@ -153,8 +153,8 @@ class ContactForm extends InputForm
 ```
 
 The `init()` method adds the fields to the input. The `setField` returns 
-`Aura\Input\Field` object. You can add the attributes and options via `attribs`
-and `options` method on `Aura\Input\Field` object.
+`Aura\Form\Field` object. You can add the attributes and options via `attribs`
+and `options` method on `Aura\Form\Field` object.
 
 ```php
 <?php
@@ -174,7 +174,7 @@ $filter = new Vendor\Package\Filter(
 );
 
 $form = new Vendor\Package\ContactForm(
-    new FieldCollection(new FieldFactory),
+    new FieldCollection(new FieldBuilder),
     new Options(),
     $filter
 );
@@ -209,7 +209,7 @@ if (! $form->filter()) {
 Rendering : via Aura.View
 =========================
 
-As `Aura.Input` doesn't have a rendering functionality we can make use 
+As `Aura.Form` doesn't have a rendering functionality we can make use 
 of [Aura.View][] or similar ones. The [Aura.View][] has built in capability
 of rendering the field attributes and values.
 

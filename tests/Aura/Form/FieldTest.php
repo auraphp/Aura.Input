@@ -1,22 +1,21 @@
 <?php
-namespace Aura\Input;
+namespace Aura\Form;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testAll()
     {
-        $factory = new FieldFactory;
+        $field = new Field('text');
+        $field->setName('field_name', 'prefix')
+              ->setAttribs(['foo' => 'bar'])
+              ->setOptions(['baz' => 'dib'])
+              ->setValue('doom');
         
-        $field = $factory->newInstance('text')
-                         ->attribs(['foo' => 'bar'])
-                         ->options(['baz' => 'dib'])
-                         ->label('doom')
-                         ->labelAttribs(['zim' => 'gir']);
-        
-        $actual = $field->toArray();
+        $actual = $field->export();
         
         $expect = [
             'type' => 'text',
+            'name' => 'prefix[field_name]',
             'attribs' => [
                 'id'   => null,
                 'type' => null,
@@ -24,10 +23,12 @@ class FieldTest extends \PHPUnit_Framework_TestCase
                 'foo'  => 'bar',
             ],
             'options' => ['baz' => 'dib'],
-            'label' => 'doom',
-            'label_attribs' => ['zim' => 'gir'],
+            'value' => 'doom',
         ];
         
         $this->assertSame($expect, $actual);
+        
+        $field->load('irk');
+        $this->assertSame('irk', $field->read());
     }
 }

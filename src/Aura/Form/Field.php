@@ -3,21 +3,21 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Input
+ * @package Aura.Form
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Input;
+namespace Aura\Form;
 
 /**
  * 
- * A field object.
+ * A single field in a fieldset.
  * 
- * @package Aura.Input
+ * @package Aura.Form
  * 
  */
-class Field
+class Field extends AbstractInput
 {
     /**
      * 
@@ -52,22 +52,13 @@ class Field
     
     /**
      * 
-     * The label to use on this field.
+     * The value for the field.  This may or may not be the same as the
+     * 'value' attribue.
      * 
-     * @var string
-     * 
-     */
-    protected $label;
-    
-    /**
-     * 
-     * Attributes for the label on this field.
-     * 
-     * @var array
+     * @var mixed
      * 
      */
-    protected $label_attribs = [];
-    
+    protected $value;
     
     /**
      * 
@@ -81,6 +72,45 @@ class Field
         $this->type = $type;
     }
     
+    public function load($value)
+    {
+        $this->setValue($value);
+    }
+    
+    public function read()
+    {
+        return $this->value;
+    }
+    
+    /**
+     * 
+     * Returns this field as a plain old PHP array.
+     * 
+     * @return array An array with keys `'type'`, `'name'`, `'attribs'`, 
+     * `'options'`, and `'value'`.
+     * 
+     */
+    public function export()
+    {
+        $attribs = array_merge(
+            [
+                // force a particular order on some attributes
+                'id'   => null,
+                'type' => null,
+                'name' => null,
+            ],
+            $this->attribs
+        );
+        
+        return [
+            'type'          => $this->type,
+            'name'          => $this->name,
+            'attribs'       => $attribs,
+            'options'       => $this->options,
+            'value'         => $this->value,
+        ];
+    }
+    
     /**
      * 
      * Sets the HTML attributes on this field.
@@ -91,7 +121,7 @@ class Field
      * @return self
      * 
      */
-    public function attribs(array $attribs)
+    public function setAttribs(array $attribs)
     {
         $this->attribs = $attribs;
         return $this;
@@ -109,68 +139,14 @@ class Field
      * @return self
      * 
      */
-    public function options(array $options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
         return $this;
     }
     
-    /**
-     * 
-     * Sets the label for this field, typically for a checkbox.
-     * 
-     * @param string
-     * 
-     * @return self
-     * 
-     */
-    public function label($label)
+    public function setValue($value)
     {
-        $this->label = $label;
-        return $this;
-    }
-    
-    /**
-     * 
-     * Sets the HTML attributes for the label on this field.
-     * 
-     * @param array $attribs HTML attributes for the label as key-value pairs;
-     * the key is the attribute name and the value is the attribute value.
-     * 
-     * @return self
-     * 
-     */
-    public function labelAttribs(array $label_attribs)
-    {
-        $this->label_attribs = $label_attribs;
-        return $this;
-    }
-    
-    /**
-     * 
-     * Returns this field as a plain old PHP array.
-     * 
-     * @return array An array with keys `'type'`, `'attribs'`, and 
-     * `'options'`.
-     * 
-     */
-    public function toArray()
-    {
-        $attribs = array_merge(
-            [
-                'id'   => null,
-                'type' => null,
-                'name' => null,
-            ],
-            $this->attribs
-        );
-        
-        return [
-            'type'          => $this->type,
-            'attribs'       => $attribs,
-            'options'       => $this->options,
-            'label'         => $this->label,
-            'label_attribs' => $this->label_attribs,
-        ];
+        $this->value = $value;
     }
 }
