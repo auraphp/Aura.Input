@@ -8,9 +8,39 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         return new Fieldset(
             new Builder,
             new Filter,
-            new CsrfIgnore,
+            new MockCsrf,
             new Options
         );
+    }
+    
+    public function testGetters()
+    {
+      $fieldset = $this->newFieldset();
+      $this->assertInstanceOf('Aura\Form\BuilderInterface', $fieldset->getBuilder());
+      $this->assertInstanceOf('Aura\Form\FilterInterface', $fieldset->getFilter());
+      $this->assertInstanceOf('Aura\Form\CsrfInterface', $fieldset->getCsrf());
+      $this->assertInstanceOf('Aura\Form\Options', $fieldset->getOptions());
+      $this->assertInstanceOf('ArrayObject', $fieldset->getInputs());
+    }
+    
+    public function test__getAndSet()
+    {
+        $fieldset = $this->newFieldset();
+        $fieldset->setField('field1');
+        
+        $fieldset->field1 = 'foo';
+        $this->assertSame('foo', $fieldset->field1);
+    }
+    
+    public function testGetInput()
+    {
+        $fieldset = $this->newFieldset();
+        $fieldset->setField('field1');
+        $fieldset->setField('field2');
+        $fieldset->setField('field3');
+        
+        $actual = $fieldset->getInput('field2')->export();
+        $this->assertSame('field2', $actual['name']);
     }
     
     public function testSetField()
@@ -45,92 +75,77 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
     public function testLoadAndRead()
     {
         $fieldset = $this->newFieldset();
+        $fieldset->setField('foo');
+        $fieldset->setField('bar');
+        
+        $result = $fieldset->load([
+            'foo' => 'foo_value',
+            'bar' => 'bar_value',
+            'baz' => 'no value',
+            '__csrf_token' => 'goodvalue',
+        ]);
+        
+        $this->assertTrue($result);
+        
+        $actual = $fieldset->read();
+        $this->assertSame('foo_value', $actual->foo);
+        $this->assertSame('bar_value', $actual->bar);
+    }
+    
+    public function testLoadCsrf()
+    {
+        $fieldset = $this->newFieldset();
+        $csrf = $fieldset->getCsrf();
+        $csrf->setField($fieldset);
         
         $fieldset->setField('foo');
         $fieldset->setField('bar');
-        $fieldset->setField('baz');
         
-        $data = [
+        // before loading
+        $this->assertSame('goodvalue', $fieldset->__csrf_token);
+        
+        // load it
+        $result = $fieldset->load([
             'foo' => 'foo_value',
-            'bar' => 'bar.value',
-            'baz' => 'baz.value',
-            'doom' => 'doom'
-        ];
+            'bar' => 'bar_value',
+            'baz' => 'no value',
+            '__csrf_token' => 'badvalue', // does not match the correct value
+        ]);
         
-        $fieldset->load($data);
+        // should fail to load
+        $this->assertFalse($result);
         
-        $actual = $fieldset->get('zim[gir][irk]');
-        $expect = [
-            'name' => 'zim[gir][irk]',
-            'type' => 'text',
-            'attribs' => [
-                'id'   => null,
-                'type' => null,
-                'name' => null,
-            ],
-            'options' => [],
-            'label' => null,
-            'label_attribs' => [],
-            'value' => 'zim.gir.irk_value',
-        ];
-        
-        $this->assertSame($expect, $actual);
-        
-        $expect = $data;
-        unset($expect['doom']);
-        
-        $actual = $fieldset->read();
-        $this->assertSame($expect, $actual);
+        // the values are still at their defaults
+        $this->assertNull($fieldset->foo);
+        $this->assertNull($fieldset->bar);
+        $this->assertSame('goodvalue', $fieldset->__csrf_token);
     }
     
-    public function testSetAndGetValuesNotSet()
-    {
-        $fieldset = $this->newFieldset();
-        
-        $fieldset->setField('foo');
-        $fieldset->setField('bar[baz]'); // should not show up
-        $fieldset->setField('bar[dib]'); // should not show up
-        
-        $data = [
-            'foo' => 'foo_value',
-            'doom' => 'doom_value', // should not show up
-        ];
-        
-        $fieldset->load($data);
-
-        $expect = [
-            'foo' => 'foo_value',
-        ];
-
-        $actual = $fieldset->read();
-        $this->assertSame($expect, $actual);
-    }
-    
-    public function testFilter()
-    {
-        $fieldset = $this->newFieldset();
-        
-        $fieldset->setField('foo', 'text');
-        $fieldset->setField('bar', 'text');
-        
-        $filter = $fieldset->getFilter();
-        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
-            return ctype_alpha($value);
-        });
-        
-        $values = ['foo' => 'foo_value', 'bar' => 'bar_value'];
-        
-        $fieldset->load($values);
-        
-        $passed = $fieldset->filter();
-        $this->assertFalse($passed);
-        
-        $actual = $fieldset->getMessages();
-        $expect = [
-            'foo' => [
-                'Foo should be alpha',
-            ],
-        ];
-        $this->assertSame($expect, $actual);
-    }
+    // public function testFilter()
+    // {
+    //     $fieldset = $this->newFieldset();
+    //     
+    //     $fieldset->setField('foo', 'text');
+    //     $fieldset->setField('bar', 'text');
+    //     
+    //     $filter = $fieldset->getFilter();
+    //     $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+    //         return ctype_alpha($value);
+    //     });
+    //     
+    //     $values = ['foo' => 'foo_value', 'bar' => 'bar_value'];
+    //     
+    //     $fieldset->load($values);
+    //     
+    //     $passed = $fieldset->filter();
+    //     $this->assertFalse($passed);
+    //     
+    //     $actual = $fieldset->getMessages();
+    //     $expect = [
+    //         'foo' => [
+    //             'Foo should be alpha',
+    //         ],
+    //     ];
+    //     $this->assertSame($expect, $actual);
+    // }
 }
