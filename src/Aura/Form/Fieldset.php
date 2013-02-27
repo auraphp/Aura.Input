@@ -17,9 +17,6 @@ use ArrayObject;
  * A fieldset of inputs, where the inputs themselves may be values, other
  * fieldsets, or other collections.
  * 
- * NOTE: This should be renamed Form or prefereably Fieldset. This input
- * object may not represent the entire fieldset.
- * 
  * @package Aura.Form
  * 
  */
@@ -33,8 +30,6 @@ class Fieldset extends AbstractInput
      * 
      */
     protected $builder;
-    
-    protected $csrf;
     
     /**
      * 
@@ -78,15 +73,12 @@ class Fieldset extends AbstractInput
     public function __construct(
         BuilderInterface $builder,
         FilterInterface  $filter,
-        CsrfInterface    $csrf,
         Options          $options
     ) {
         $this->builder  = $builder;
         $this->filter   = $filter;
-        $this->csrf     = $csrf;
         $this->options  = $options;
         $this->inputs   = new ArrayObject([]);
-        $this->csrf->setField($this);
     }
     
     /**
@@ -134,11 +126,6 @@ class Fieldset extends AbstractInput
         return $this->inputs[$name];
     }
     
-    public function getCsrf()
-    {
-        return $this->csrf;
-    }
-    
     public function getBuilder()
     {
         return $this->builder;
@@ -161,9 +148,6 @@ class Fieldset extends AbstractInput
     public function load($data)
     {
         $data = (array) $data;
-        if (! $this->csrf->isValid($data)) {
-            return false;
-        }
         foreach ($this->inputs as $key => $input) {
             if (array_key_exists($key, $data)) {
                 $input->load($data[$key]);

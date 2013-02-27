@@ -10,8 +10,8 @@
  */
 namespace Aura\Form;
 
+use ArrayObject;
 use IteratorAggregate;
-use ArrayIterator;
 
 /**
  * 
@@ -35,10 +35,10 @@ class Collection extends AbstractInput implements IteratorAggregate
      * 
      * Fieldsets in the collection.
      * 
-     * @var array
+     * @var ArrayObject
      * 
      */
-    protected $fieldsets = [];
+    protected $fieldsets;
 
     /**
      * 
@@ -48,15 +48,16 @@ class Collection extends AbstractInput implements IteratorAggregate
     public function __construct(callable $factory)
     {
         $this->factory = $factory;
+        $this->fieldsets = new ArrayObject([]);
     }
 
     public function load($data)
     {
-        foreach ((array) $data as $key => $val) {
-            if (! array_key_exists($key, $this->fieldsets)) {
+        foreach ((array) $data as $key => $values) {
+            if (! $this->fieldsets->offsetExists($key)) {
                 $this->fieldsets[$key] = $this->newFieldset($key);
             }
-            $this->fieldsets[$key]->load($data);
+            $this->fieldsets[$key]->load($values);
         }
     }
     
@@ -67,7 +68,7 @@ class Collection extends AbstractInput implements IteratorAggregate
     
     public function export()
     {
-        return $this->fieldsets;
+        return $this->fieldsets->getArrayCopy();
     }
     
     public function filter()
@@ -81,16 +82,29 @@ class Collection extends AbstractInput implements IteratorAggregate
         return $passed;
     }
     
+    public function getMessages($key = null)
+    {
+        if ($key) {
+            return $this->fieldsets[$key]->getMessages();
+        }
+        
+        $messages = [];
+        foreach ($this->fieldsets as $key => $fieldset) {
+            $messages[$key] = $fieldset->getMessages();
+        }
+        return $messages;
+    }
+    
     /**
      * 
-     * IteratorAggregate: returns an external iterator for this struct.
+     * IteratorAggregate: returns an external iterator for this collection.
      * 
      * @return ArrayIterator
      * 
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->fieldsets);
+        return $this->fieldsets->getIterator();
     }
 
     protected function newFieldset($name)
@@ -98,6 +112,7 @@ class Collection extends AbstractInput implements IteratorAggregate
         $factory = $this->factory;
         $fieldset = $factory();
         $fieldset->setName($name, $this->name);
+        $fieldset->prep();
         return $fieldset;
     }
 }

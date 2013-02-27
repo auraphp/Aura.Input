@@ -3,12 +3,13 @@ namespace Aura\Form;
 
 class FieldsetTest extends \PHPUnit_Framework_TestCase
 {
-    public function newFieldset()
+    public function newFieldset($class = 'Fieldset')
     {
-        return new Fieldset(
+        $class = "Aura\\Form\\$class";
+        
+        return new $class(
             new Builder,
             new Filter,
-            new MockCsrf,
             new Options
         );
     }
@@ -18,7 +19,6 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
       $fieldset = $this->newFieldset();
       $this->assertInstanceOf('Aura\Form\BuilderInterface', $fieldset->getBuilder());
       $this->assertInstanceOf('Aura\Form\FilterInterface', $fieldset->getFilter());
-      $this->assertInstanceOf('Aura\Form\CsrfInterface', $fieldset->getCsrf());
       $this->assertInstanceOf('Aura\Form\Options', $fieldset->getOptions());
       $this->assertInstanceOf('ArrayObject', $fieldset->getInputs());
     }
@@ -82,7 +82,6 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
             'foo' => 'foo_value',
             'bar' => 'bar_value',
             'baz' => 'no value',
-            '__csrf_token' => 'goodvalue',
         ]);
         
         $this->assertTrue($result);
@@ -92,60 +91,94 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar_value', $actual->bar);
     }
     
-    public function testLoadCsrf()
+    public function testExport()
     {
-        $fieldset = $this->newFieldset();
-        $csrf = $fieldset->getCsrf();
-        $csrf->setField($fieldset);
-        
-        $fieldset->setField('foo');
-        $fieldset->setField('bar');
-        
-        // before loading
-        $this->assertSame('goodvalue', $fieldset->__csrf_token);
-        
-        // load it
-        $result = $fieldset->load([
-            'foo' => 'foo_value',
-            'bar' => 'bar_value',
-            'baz' => 'no value',
-            '__csrf_token' => 'badvalue', // does not match the correct value
-        ]);
-        
-        // should fail to load
-        $this->assertFalse($result);
-        
-        // the values are still at their defaults
-        $this->assertNull($fieldset->foo);
-        $this->assertNull($fieldset->bar);
-        $this->assertSame('goodvalue', $fieldset->__csrf_token);
+        $fieldset = $this->newFieldset('MockFieldset');
+        $fieldset->prep();
+        $fieldset->load(['mock_field' => 'mock_value']);
+        $actual = $fieldset->export();
+        $this->assertInstanceOf('Aura\Form\Field', $actual['mock_field']);
+    }
+    public function testPrep()
+    {
+        $fieldset = $this->newFieldset('MockFieldset');
+        $fieldset->prep();
+        $fieldset->mock_field = 'foo';
+        $this->assertSame('foo', $fieldset->mock_field);
     }
     
-    // public function testFilter()
-    // {
-    //     $fieldset = $this->newFieldset();
-    //     
-    //     $fieldset->setField('foo', 'text');
-    //     $fieldset->setField('bar', 'text');
-    //     
-    //     $filter = $fieldset->getFilter();
-    //     $filter->setRule('foo', 'Foo should be alpha', function ($value) {
-    //         return ctype_alpha($value);
-    //     });
-    //     
-    //     $values = ['foo' => 'foo_value', 'bar' => 'bar_value'];
-    //     
-    //     $fieldset->load($values);
-    //     
-    //     $passed = $fieldset->filter();
-    //     $this->assertFalse($passed);
-    //     
-    //     $actual = $fieldset->getMessages();
-    //     $expect = [
-    //         'foo' => [
-    //             'Foo should be alpha',
-    //         ],
-    //     ];
-    //     $this->assertSame($expect, $actual);
-    // }
+    public function testFilter()
+    {
+        $fieldset = $this->newFieldset();
+        
+        $fieldset->setField('foo', 'text');
+        $fieldset->setField('bar', 'text');
+        
+        $filter = $fieldset->getFilter();
+        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+            return ctype_alpha($value);
+        });
+        
+        $values = ['foo' => 'foo_value', 'bar' => 'bar_value'];
+        
+        $fieldset->load($values);
+        
+        $passed = $fieldset->filter();
+        $this->assertFalse($passed);
+        
+        $actual = $fieldset->getMessages();
+        $expect = [
+            'foo' => [
+                'Foo should be alpha',
+            ],
+        ];
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testSetFieldset()
+    {
+        $map['mock_fieldset'] = function () {
+            return new MockFieldset(
+                new Builder,
+                new Filter,
+                new Options
+            );
+        };
+        
+        $fieldset = new Fieldset(
+            new Builder($map),
+            new Filter,
+            new Options
+        );
+        
+        $fieldset->setFieldset('mock_fieldset');
+        
+        $input = $fieldset->getInput('mock_fieldset');
+        $this->assertInstanceOf('Aura\Form\MockFieldset', $input);
+        
+        $field = $input->getInput('mock_field')->export();
+        $this->assertSame('mock_fieldset[mock_field]', $field['name']);
+    }
+    
+    public function testSetCollection()
+    {
+        $map['mock_fieldset'] = function () {
+            return new MockFieldset(
+                new Builder,
+                new Filter,
+                new Options
+            );
+        };
+        
+        $fieldset = new Fieldset(
+            new Builder($map),
+            new Filter,
+            new Options
+        );
+        
+        $fieldset->setCollection('mock_fieldset');
+        
+        $input = $fieldset->getInput('mock_fieldset');
+        $this->assertInstanceOf('Aura\Form\Collection', $input);
+    }
 }
