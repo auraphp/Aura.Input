@@ -3,23 +3,23 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Form;
+namespace Aura\Input;
 
 /**
  * 
  * A factory to create fields, fieldsets, and fieldset collections.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  */
 interface BuilderInterface
 {
-    public function newField($type, $name, $prefix);
-    public function newFieldset($type, $name, $prefix);
-    public function newCollection($type, $name, $prefix);
+    public function newField($type, $name);
+    public function newFieldset($type, $name);
+    public function newCollection($type, $name);
 }

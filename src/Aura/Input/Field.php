@@ -3,18 +3,18 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Form;
+namespace Aura\Input;
 
 /**
  * 
  * A single field in a fieldset.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  */
 class Field extends AbstractInput
@@ -75,6 +75,7 @@ class Field extends AbstractInput
     public function load($value)
     {
         $this->setValue($value);
+        return true;
     }
     
     public function read()
@@ -104,7 +105,7 @@ class Field extends AbstractInput
         
         return [
             'type'          => $this->type,
-            'name'          => $this->name,
+            'name'          => $this->getFullName(),
             'attribs'       => $attribs,
             'options'       => $this->options,
             'value'         => $this->value,

@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 use Aura\Framework\Test\WiringAssertionsTrait;
 
@@ -14,8 +14,8 @@ class WiringTest extends \PHPUnit_Framework_TestCase
     
     public function testInstances()
     {
-        $this->assertNewInstance('Aura\Form\Field');
-        $this->assertNewInstance('Aura\Form\Fieldset');
-        $this->assertNewInstance('Aura\Form\Collection');
+        $this->assertNewInstance('Aura\Input\Field');
+        $this->assertNewInstance('Aura\Input\Fieldset');
+        $this->assertNewInstance('Aura\Input\Collection');
     }
 }

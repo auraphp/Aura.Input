@@ -3,7 +3,7 @@
     "type": "aura-package",
     "description": "The Aura Input package provides tools to decribe HTML forms and fields.",
     "keywords": [ "input", "html", "form", "field" ],
-    "homepage": "http://auraphp.github.com/Aura.Form",
+    "homepage": "http://auraphp.github.com/Aura.Input",
     "license": "BSD-2-Clause",
     "authors": [
         {

@@ -2,4 +2,4 @@
 /**
  * Loader
  */
-$loader->add('Aura\Form\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tests');
+$loader->add('Aura\Input\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tests');

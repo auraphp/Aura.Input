@@ -2,17 +2,17 @@
 /**
  * Loader
  */
-$loader->add('Aura\Form\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+$loader->add('Aura\Input\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
 
 /**
- * Aura\Form\FieldCollection
+ * Aura\Input\FieldCollection
  */
-$di->params['Aura\Form\FieldCollection']['field_factory'] = $di->lazyNew('Aura\Form\FieldBuilder');
+$di->params['Aura\Input\FieldCollection']['field_factory'] = $di->lazyNew('Aura\Input\FieldBuilder');
 
 
 /**
- * Aura\Form\Form
+ * Aura\Input\Form
  */
-$di->params['Aura\Form\Form']['fields'] = $di->lazyNew('Aura\Form\FieldCollection');
-$di->params['Aura\Form\Form']['options'] = $di->lazyNew('Aura\Form\Options');
-$di->params['Aura\Form\Form']['filter'] = $di->lazyNew('Aura\Form\Filter');
+$di->params['Aura\Input\Form']['fields'] = $di->lazyNew('Aura\Input\FieldCollection');
+$di->params['Aura\Input\Form']['options'] = $di->lazyNew('Aura\Input\Options');
+$di->params['Aura\Input\Form']['filter'] = $di->lazyNew('Aura\Input\Filter');

@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 class MockCsrf extends CsrfIgnore
 {

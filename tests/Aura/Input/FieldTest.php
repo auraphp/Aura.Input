@@ -1,12 +1,13 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testAll()
     {
         $field = new Field('text');
-        $field->setName('field_name', 'prefix')
+        $field->setName('field_name')
+              ->setArrayName('prefix')
               ->setAttribs(['foo' => 'bar'])
               ->setOptions(['baz' => 'dib'])
               ->setValue('doom');

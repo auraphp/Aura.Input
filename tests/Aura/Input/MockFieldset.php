@@ -1,12 +1,12 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 class MockFieldset extends Fieldset
 {
-    public function prep()
+    public function init()
     {
         // call parent for coverage
-        parent::prep();
+        parent::init();
         
         // now actually do something
         $this->setField('mock_field');

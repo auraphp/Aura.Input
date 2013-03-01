@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 class FilterTest extends \PHPUnit_Framework_TestCase
 {

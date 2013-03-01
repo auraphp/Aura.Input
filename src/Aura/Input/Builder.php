@@ -3,31 +3,31 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Form;
+namespace Aura\Input;
 
 /**
  * 
  * A factory to create Field, Fieldset, and fieldset Collection objects.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  */
 class Builder implements BuilderInterface
 {
-    protected $collection_class = 'Aura\Form\Collection';
+    protected $collection_class = 'Aura\Input\Collection';
     
-    protected $field_class = 'Aura\Form\Field';
+    protected $field_class = 'Aura\Input\Field';
     
     protected $map;
     
     /**
      * 
-     * A map of Fieldset types to *closures that create objects* (as
+     * A map of Fieldset types to *callables that create objects* (as
      * vs class names).
      * 
      * @var array
@@ -50,11 +50,11 @@ class Builder implements BuilderInterface
      * @return Field
      * 
      */
-    public function newField($type, $name, $prefix)
+    public function newField($type, $name)
     {
         $class = $this->field_class;
         $field = new $class($type);
-        $field->setName($name, $prefix);
+        $field->setName($name);
         return $field;
     }
     
@@ -69,12 +69,11 @@ class Builder implements BuilderInterface
      * @return Fieldset
      * 
      */
-    public function newFieldset($type, $name, $prefix)
+    public function newFieldset($type, $name)
     {
         $factory = $this->map[$type];
         $fieldset = $factory();
-        $fieldset->setName($name, $prefix);
-        $fieldset->prep();
+        $fieldset->setName($name);
         return $fieldset;
     }
     
@@ -89,11 +88,11 @@ class Builder implements BuilderInterface
      * @return Collection
      * 
      */
-    public function newCollection($type, $name, $prefix)
+    public function newCollection($type, $name)
     {
         $class = $this->collection_class;
         $collection = new $class($this->map[$type]);
-        $collection->setName($name, $prefix);
+        $collection->setName($name);
         return $collection;
     }
 }

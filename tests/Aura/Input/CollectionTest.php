@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {

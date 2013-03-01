@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 interface InputInterface
 {
@@ -16,7 +16,11 @@ interface InputInterface
      * @return void
      * 
      */
-    public function setName($name, $prefix = null);
+    public function setName($name);
+    
+    public function setArrayName($array_name);
+    
+    public function getFullName();
     
     /**
      * 
@@ -24,7 +28,8 @@ interface InputInterface
      * 
      * @param mixed $data The data to set into the input object.
      * 
-     * @return void
+     * @return bool True if the load succeeded, false if not. (Typically
+     * used only in Form loading to indicate a CSRF violation.)
      * 
      */
     public function load($data);

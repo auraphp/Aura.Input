@@ -3,12 +3,12 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Form;
+namespace Aura\Input;
 
 use ArrayObject;
 use IteratorAggregate;
@@ -17,7 +17,7 @@ use IteratorAggregate;
  * 
  * Represents a collection of fieldsets.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  */
 class Collection extends AbstractInput implements IteratorAggregate
@@ -59,6 +59,7 @@ class Collection extends AbstractInput implements IteratorAggregate
             }
             $this->fieldsets[$key]->load($values);
         }
+        return true;
     }
     
     public function read()
@@ -68,6 +69,9 @@ class Collection extends AbstractInput implements IteratorAggregate
     
     public function export()
     {
+        foreach ($this->fieldsets as $fieldset) {
+            $fieldset->setArrayName($this->name);
+        }
         return $this->fieldsets->getArrayCopy();
     }
     
@@ -111,8 +115,7 @@ class Collection extends AbstractInput implements IteratorAggregate
     {
         $factory = $this->factory;
         $fieldset = $factory();
-        $fieldset->setName($name, $this->name);
-        $fieldset->prep();
+        $fieldset->setName($name);
         return $fieldset;
     }
 }

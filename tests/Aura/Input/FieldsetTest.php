@@ -1,11 +1,11 @@
 <?php
-namespace Aura\Form;
+namespace Aura\Input;
 
 class FieldsetTest extends \PHPUnit_Framework_TestCase
 {
     public function newFieldset($class = 'Fieldset')
     {
-        $class = "Aura\\Form\\$class";
+        $class = "Aura\\Input\\$class";
         
         return new $class(
             new Builder,
@@ -17,9 +17,9 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
     public function testGetters()
     {
       $fieldset = $this->newFieldset();
-      $this->assertInstanceOf('Aura\Form\BuilderInterface', $fieldset->getBuilder());
-      $this->assertInstanceOf('Aura\Form\FilterInterface', $fieldset->getFilter());
-      $this->assertInstanceOf('Aura\Form\Options', $fieldset->getOptions());
+      $this->assertInstanceOf('Aura\Input\BuilderInterface', $fieldset->getBuilder());
+      $this->assertInstanceOf('Aura\Input\FilterInterface', $fieldset->getFilter());
+      $this->assertInstanceOf('Aura\Input\Options', $fieldset->getOptions());
       $this->assertInstanceOf('ArrayObject', $fieldset->getInputs());
     }
     
@@ -94,17 +94,9 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
     public function testExport()
     {
         $fieldset = $this->newFieldset('MockFieldset');
-        $fieldset->prep();
         $fieldset->load(['mock_field' => 'mock_value']);
         $actual = $fieldset->export();
-        $this->assertInstanceOf('Aura\Form\Field', $actual['mock_field']);
-    }
-    public function testPrep()
-    {
-        $fieldset = $this->newFieldset('MockFieldset');
-        $fieldset->prep();
-        $fieldset->mock_field = 'foo';
-        $this->assertSame('foo', $fieldset->mock_field);
+        $this->assertInstanceOf('Aura\Input\Field', $actual['mock_field']);
     }
     
     public function testFilter()
@@ -154,7 +146,7 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $fieldset->setFieldset('mock_fieldset');
         
         $input = $fieldset->getInput('mock_fieldset');
-        $this->assertInstanceOf('Aura\Form\MockFieldset', $input);
+        $this->assertInstanceOf('Aura\Input\MockFieldset', $input);
         
         $field = $input->getInput('mock_field')->export();
         $this->assertSame('mock_fieldset[mock_field]', $field['name']);
@@ -179,6 +171,6 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $fieldset->setCollection('mock_fieldset');
         
         $input = $fieldset->getInput('mock_fieldset');
-        $this->assertInstanceOf('Aura\Form\Collection', $input);
+        $this->assertInstanceOf('Aura\Input\Collection', $input);
     }
 }

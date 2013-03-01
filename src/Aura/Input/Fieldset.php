@@ -3,12 +3,12 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Form;
+namespace Aura\Input;
 
 use ArrayObject;
 
@@ -17,7 +17,7 @@ use ArrayObject;
  * A fieldset of inputs, where the inputs themselves may be values, other
  * fieldsets, or other collections.
  * 
- * @package Aura.Form
+ * @package Aura.Input
  * 
  */
 class Fieldset extends AbstractInput
@@ -79,6 +79,7 @@ class Fieldset extends AbstractInput
         $this->filter   = $filter;
         $this->options  = $options;
         $this->inputs   = new ArrayObject([]);
+        $this->init();
     }
     
     /**
@@ -123,7 +124,9 @@ class Fieldset extends AbstractInput
     
     public function getInput($name)
     {
-        return $this->inputs[$name];
+        $input = $this->inputs[$name];
+        $input->setArrayName($this->name);
+        return $input;
     }
     
     public function getBuilder()
@@ -181,17 +184,20 @@ class Fieldset extends AbstractInput
      */
     public function export()
     {
+        foreach ($this->inputs as $name => $input) {
+            $input->setArrayName($this->name);
+        }
         return $this->inputs->getArrayCopy();
     }
     
     /**
      * 
-     * Prepares the inputs and filter.
+     * Initializes the inputs and filter.
      * 
      * @return void
      * 
      */
-    public function prep()
+    public function init()
     {
     }
     
@@ -267,7 +273,7 @@ class Fieldset extends AbstractInput
      */
     public function get($name)
     {
-        return $this->inputs[$name]->export();
+        return $this->getInput($name)->export();
     }
     
     /**
