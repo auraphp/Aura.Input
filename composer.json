@@ -8,7 +8,7 @@
     "authors": [
         {
             "name": "Aura Contributors",
-            "homepage": "https://github.com/auraphp/Aura.Filter/contributors"
+            "homepage": "https://github.com/auraphp/Aura.Input/contributors"
         }
     ],
     "require": {
