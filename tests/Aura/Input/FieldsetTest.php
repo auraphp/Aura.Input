@@ -20,7 +20,7 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
       $this->assertInstanceOf('Aura\Input\BuilderInterface', $fieldset->getBuilder());
       $this->assertInstanceOf('Aura\Input\FilterInterface', $fieldset->getFilter());
       $this->assertInstanceOf('Aura\Input\Options', $fieldset->getOptions());
-      $this->assertTrue(is_array($fieldset->getInputs()));
+      $this->assertInstanceOf('ArrayObject', $fieldset->getInputs());
     }
     
     public function test__getAndSet()

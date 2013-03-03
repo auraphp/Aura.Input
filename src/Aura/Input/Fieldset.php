@@ -33,7 +33,7 @@ class Fieldset extends AbstractInput
     
     /**
      * 
-     * Filter for the values.
+     * A filter for the fieldset values.
      * 
      * @var FilterInterface
      * 
@@ -42,12 +42,12 @@ class Fieldset extends AbstractInput
     
     /**
      * 
-     * Inputs in the form.
+     * Inputs in the fieldset.
      * 
-     * @var array
+     * @var ArrayObject
      * 
      */
-    protected $inputs = [];
+    protected $inputs;
     
     /**
      * 
@@ -78,6 +78,7 @@ class Fieldset extends AbstractInput
         $this->builder  = $builder;
         $this->filter   = $filter;
         $this->options  = $options;
+        $this->inputs   = new ArrayObject([]);
         $this->init();
     }
     
@@ -130,7 +131,7 @@ class Fieldset extends AbstractInput
     
     public function getInputNames()
     {
-        return array_keys($this->inputs);
+        return array_keys($this->inputs->getArrayCopy());
     }
     
     public function getBuilder()
