@@ -11,4 +11,3 @@ require_once __DIR__ . '/src/Aura/Input/FilterInterface.php';
 require_once __DIR__ . '/src/Aura/Input/Filter.php';
 require_once __DIR__ . '/src/Aura/Input/Options.php';
 require_once __DIR__ . '/src/Aura/Input/CsrfInterface.php';
-require_once __DIR__ . '/src/Aura/Input/CsrfIgnore.php';

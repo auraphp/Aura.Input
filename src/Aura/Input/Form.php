@@ -11,6 +11,11 @@ class Form extends Fieldset
         $this->csrf->setField($this);
     }
     
+    public function getCsrf()
+    {
+        return $this->csrf;
+    }
+    
     public function load($data)
     {
         if ($this->csrf && ! $this->csrf->isValid($data)) {
