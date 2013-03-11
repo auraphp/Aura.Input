@@ -39,13 +39,13 @@ class Builder implements BuilderInterface
     
     /**
      * 
-     * A map of Fieldset types to *callables that create objects* (as
+     * A map of fieldset types to *callables that create objects* (as
      * vs class names).
      * 
      * @var array
      * 
      */
-    protected $map;
+    protected $fieldset_map;
     
     /**
      * 
@@ -55,9 +55,9 @@ class Builder implements BuilderInterface
      * objects* (as vs class names).
      * 
      */
-    public function __construct(array $map = [])
+    public function __construct(array $fieldset_map = [])
     {
-        $this->map = $map;
+        $this->fieldset_map = $fieldset_map;
     }
     
     /**
@@ -92,7 +92,7 @@ class Builder implements BuilderInterface
      */
     public function newFieldset($type, $name)
     {
-        $factory = $this->map[$type];
+        $factory = $this->fieldset_map[$type];
         $fieldset = $factory();
         $fieldset->setName($name);
         return $fieldset;
@@ -112,7 +112,7 @@ class Builder implements BuilderInterface
     public function newCollection($type, $name)
     {
         $class = $this->collection_class;
-        $collection = new $class($this->map[$type]);
+        $collection = new $class($this->fieldset_map[$type]);
         $collection->setName($name);
         return $collection;
     }
