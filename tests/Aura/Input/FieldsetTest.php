@@ -3,47 +3,60 @@ namespace Aura\Input;
 
 class FieldsetTest extends \PHPUnit_Framework_TestCase
 {
-    public function newFieldset($class = 'Fieldset')
+    public function newFieldset()
     {
-        $class = "Aura\\Input\\$class";
-        
-        return new $class(
+        return new Fieldset(
             new Builder,
-            new Filter,
-            new Options
+            new Filter
         );
     }
     
     public function testGetters()
     {
-      $fieldset = $this->newFieldset();
-      $this->assertInstanceOf('Aura\Input\BuilderInterface', $fieldset->getBuilder());
-      $this->assertInstanceOf('Aura\Input\FilterInterface', $fieldset->getFilter());
-      $this->assertInstanceOf('Aura\Input\Options', $fieldset->getOptions());
-      $this->assertInstanceOf('ArrayObject', $fieldset->getInputs());
+        $fieldset = $this->newFieldset();
+        $this->assertInstanceOf('Aura\Input\Builder', $fieldset->getBuilder());
+        $this->assertNull($fieldset->getOptions());
     }
     
-    public function test__getAndSet()
+    public function test__setAndGet()
     {
         $fieldset = $this->newFieldset();
-        $fieldset->setField('field1');
-        
-        $fieldset->field1 = 'foo';
-        $this->assertSame('foo', $fieldset->field1);
+        $fieldset->setField('foo');
+        $fieldset->setField('bar');
+        $fieldset->setField('baz');
+        $fieldset->foo = 'foo_value';
+        $this->assertSame('foo_value', $fieldset->foo);
     }
     
-    public function testGetInput()
+    public function test__set_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $fieldset->setField('field1');
-        $fieldset->setField('field2');
-        $fieldset->setField('field3');
-        
-        $actual = $fieldset->getInput('field2')->export();
-        $this->assertSame('field2', $actual['name']);
+        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
+        $fieldset->foo = 'no such input';
     }
     
-    public function testSetField()
+    public function test__get_noSuchInput()
+    {
+        $fieldset = $this->newFieldset();
+        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
+        $foo = $fieldset->foo;
+    }
+    
+    public function testGet_fieldset()
+    {
+        $fieldset = $this->newFieldset();
+        $actual = $fieldset->get();
+        $this->assertSame($fieldset, $actual);
+    }
+    
+    public function testGet_noSuchInput()
+    {
+        $fieldset = $this->newFieldset();
+        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
+        $fieldset->get('foo');
+    }
+    
+    public function testSetFieldAndGet()
     {
         $fieldset = $this->newFieldset();
         
@@ -70,51 +83,32 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         ];
         
         $this->assertSame($expect, $actual);
+        
+        // get the names
+        $actual = $fieldset->getInputNames();
+        $expect = ['field1', 'field2'];
+        $this->assertSame($expect, $actual);
     }
     
-    public function testLoadAndRead()
+    public function testFilterAll()
     {
+        // new fieldset
         $fieldset = $this->newFieldset();
+        
+        // add fields
         $fieldset->setField('foo');
         $fieldset->setField('bar');
         
-        $result = $fieldset->load([
-            'foo' => 'foo_value',
-            'bar' => 'bar_value',
-            'baz' => 'no value',
-        ]);
-        
-        $this->assertTrue($result);
-        
-        $actual = $fieldset->read();
-        $this->assertSame('foo_value', $actual->foo);
-        $this->assertSame('bar_value', $actual->bar);
-    }
-    
-    public function testExport()
-    {
-        $fieldset = $this->newFieldset('MockFieldset');
-        $fieldset->load(['mock_field' => 'mock_value']);
-        $actual = $fieldset->export();
-        $this->assertInstanceOf('Aura\Input\Field', $actual['mock_field']);
-    }
-    
-    public function testFilter()
-    {
-        $fieldset = $this->newFieldset();
-        
-        $fieldset->setField('foo', 'text');
-        $fieldset->setField('bar', 'text');
-        
+        // get the filter and add a rule
         $filter = $fieldset->getFilter();
         $filter->setRule('foo', 'Foo should be alpha', function ($value) {
             return ctype_alpha($value);
         });
         
-        $values = ['foo' => 'foo_value', 'bar' => 'bar_value'];
+        // set values on the fieldset
+        $fieldset->fill(['foo' => 'foo_value', 'bar' => 'bar_value']);
         
-        $fieldset->load($values);
-        
+        // apply the filter
         $passed = $fieldset->filter();
         $this->assertFalse($passed);
         
@@ -129,48 +123,53 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
     
     public function testSetFieldset()
     {
-        $map['mock_fieldset'] = function () {
+        // a map so the outer fieldset can create the inner fieldset
+        $map['mock'] = function () {
             return new MockFieldset(
                 new Builder,
-                new Filter,
-                new Options
+                new Filter
             );
         };
         
+        // the outer fieldset
         $fieldset = new Fieldset(
             new Builder($map),
-            new Filter,
-            new Options
+            new Filter
         );
         
-        $fieldset->setFieldset('mock_fieldset');
+        // create an inner fieldset named 'mock'
+        $fieldset->setFieldset('mock');
         
-        $input = $fieldset->getInput('mock_fieldset');
+        // get the inner fieldset input
+        $input = $fieldset->mock;
         $this->assertInstanceOf('Aura\Input\MockFieldset', $input);
         
-        $field = $input->getInput('mock_field')->export();
-        $this->assertSame('mock_fieldset[mock_field]', $field['name']);
+        // get the 'foo' field of the inner fieldset
+        $field = $input->get('foo');
+        $this->assertSame('mock[foo]', $field['name']);
     }
     
     public function testSetCollection()
     {
-        $map['mock_fieldset'] = function () {
+        // a map so the outer fieldset can create the inner collection
+        $map['mock'] = function () {
             return new MockFieldset(
                 new Builder,
-                new Filter,
-                new Options
+                new Filter
             );
         };
         
+        // create the outer fieldset
         $fieldset = new Fieldset(
             new Builder($map),
-            new Filter,
-            new Options
+            new Filter
         );
         
-        $fieldset->setCollection('mock_fieldset');
+        // create an inner collection called 'mock'
+        $fieldset->setCollection('mock');
         
-        $input = $fieldset->getInput('mock_fieldset');
+        // get the inner collection input
+        $input = $fieldset->mock;
         $this->assertInstanceOf('Aura\Input\Collection', $input);
     }
 }

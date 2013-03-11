@@ -1,30 +1,94 @@
 <?php
 namespace Aura\Input;
 
-abstract class AbstractInput implements InputInterface
+abstract class AbstractInput
 {
+    /**
+     * 
+     * The name for the input.
+     * 
+     * @var string
+     * 
+     */
     protected $name;
     
-    protected $array_name;
+    /**
+     * 
+     * The prefix for the name, typically composed of the parent input names.
+     * 
+     * @var string
+     * 
+     */
+    protected $name_prefix;
     
+    /**
+     * 
+     * Sets the name for the input.
+     * 
+     * @param string $name The input name.
+     * 
+     * @return self
+     * 
+     */
     public function setName($name)
     {
         $this->name = $name;
         return $this;
     }
     
-    public function setArrayName($array_name)
+    /**
+     * 
+     * Sets the name prefix for the input, typically composed of the parent
+     * input names.
+     * 
+     * @param string $name_prefix The name prefix.
+     * 
+     * @return self
+     * 
+     */
+    public function setNamePrefix($name_prefix)
     {
-        $this->array_name = $array_name;
+        $this->name_prefix = $name_prefix;
         return $this;
     }
     
+    /**
+     * 
+     * Returns the full name for this input, incuding the prefix (if any).
+     * 
+     * @return string
+     * 
+     */
     public function getFullName()
     {
         $name = $this->name;
-        if ($this->array_name) {
-            $name = $this->array_name . "[{$name}]";
+        if ($this->name_prefix) {
+            $name = $this->name_prefix . "[{$name}]";
         }
         return $name;
+    }
+    
+    /**
+     * 
+     * Support for this input when addressed via Fieldset::__get().
+     * 
+     * @return self
+     * 
+     */
+    public function read()
+    {
+        return $this;
+    }
+    
+    /**
+     * 
+     * Returns this input for the presentation layer.
+     * 
+     * @return self
+     * 
+     */
+    public function get()
+    {
+        return $this;
     }
 }

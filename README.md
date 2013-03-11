@@ -1,9 +1,8 @@
 Aura.Input
 ==========
 
-This package contains tools to describe the fields and values in an HTML form.
-Note that this package does not include filtering or output functionality
-(although same can be added by end-users).
+This package contains tools to describe and filter the fields and values in an
+HTML form. Note that this package does not include output functionality.
 
 This package is compliant with [PSR-0][], [PSR-1][], and [PSR-2][]. If you
 notice compliance oversights, please send a patch via pull request.
@@ -15,8 +14,8 @@ notice compliance oversights, please send a patch via pull request.
 Getting Started
 ===============
 
-The easiest way to instantiate a new input (i.e., a new `Form`) 
-is to include the `instance.php` script:
+The easiest way to instantiate a new `Form` is to include the `instance.php`
+script:
 
 ```php
 <?php
@@ -28,32 +27,72 @@ instantiate manually:
 
 ```php
 <?php
-use Aura\Input\Filter;
 use Aura\Input\Form;
-use Aura\Input\FieldCollection;
-use Aura\Input\FieldBuilder;
+use Aura\Input\Builder;
+use Aura\Input\Filter;
 use Aura\Input\Options;
 
-$form = new Form(new FieldCollection(new FieldBuilder), new Options, new Filter);
+$form = new Form(new Builder, new Filter, new Options);
 ```
 
-Setting Field
-=============
+Setting Fields On The Form
+==========================
 
-The `setField` method of the `Aura\Input\Form` create a `Aura\Input\Field`
-object. By default the second paramter is text. You can also pass the different
-input types like `checkbox`, 'radio', `textarea` etc.
+Use the `setField()` method to create a `Field` object in the form. The first
+parameter is the field name; the second parameter is an HTML5 field type. If
+no type is specified, it defaults to 'text'.
 
 ```php
 <?php
-$field = $form->setField('fieldname', 'type');
+$form->setField('first_name')
+$form->setField('last_name');
+$form->setField('birthday', 'date');
+$form->setField('phone_number', 'tel');
 ```
 
-The `setField` returns an object of `Aura\Input\Field`. We can set the 
-attributes, options to the field via `attribs` and `options` method.
+For a series of radio buttons, choose type 'radios' (note the plural) 
+
+For a `<select>` field, choose type 'select' and provide an array of options:
+
+```php
+<?php
+$form->setField('state', 'select')
+     ->setOptions([
+        'AL' => 'Alabama',
+        'AZ' => 'Arizona',
+        'TN' => 'Tennessee',
+     ]);
+```
+
+Set HTML attributes for a field by using the setAttribs() method after
+setting a field:
+
+```php
+<?php
+$form->setField('zip_code')
+     ->setAttribs([
+        'size' => 10,
+        'maxlength' => 10,
+     ]);
+```
+
+$form->setField('last_name', 'text');
+$form->setField('birthday', 'date');
+$form->setField('phone_number', 'tel');
+```
+
+$form->setField('phone_type', 'select')
+     ->setOptions([
+        'mobile' => 'Mobile',
+        'home'   => 'Home',
+        'work'   => 'Work',
+     ]);
+
+The `setField()` method returns a `Field` object. We can set the 
+attributes, options to the field via `setAttribs()` and `setOptions()` methods.
 
 Alternatively you can set the fields inside the `init` method of the 
-class which extends the `Aura\Input\Form`.
+class which extends the `Form`.
 
 ```php
 <?php
@@ -65,18 +104,22 @@ class ContactForm extends Form
 {
     public function init()
     {
-        $field = $this->setField('field-name', 'type');
-        // set attributes, options
-        // $field->attribs(array(....))
-        // $field->options(array(....))
-
-        // More fields here
+        $this->setField('first_name', 'text')
+        $this->setField('last_name', 'text');
+        $this->setField('birthday', 'date');
+        $this->setField('phone_type', 'select')
+             ->setOptions([
+                'mobile' => 'Mobile',
+                'home'   => 'Home',
+                'work'   => 'Work',
+             ]);
+        $this->setField('phone_number', 'tel');
     }
 }
 ```
 
-Getting Field
-=============
+Getting An Input
+================
 
 We can get the whole attributes, value, option of a field via `getField`
 method. Note that this is an array and not the Field object.
@@ -174,8 +217,7 @@ $filter = new Vendor\Package\Filter(
 );
 
 $form = new Vendor\Package\ContactForm(
-    new FieldCollection(new FieldBuilder),
-    new Options(),
+    new FieldCollection(new FieldBuilder)
     $filter
 );
 ```

@@ -10,8 +10,6 @@
  */
 namespace Aura\Input;
 
-use ArrayObject;
-
 /**
  * 
  * A fieldset of inputs, where the inputs themselves may be values, other
@@ -44,17 +42,17 @@ class Fieldset extends AbstractInput
      * 
      * Inputs in the fieldset.
      * 
-     * @var ArrayObject
+     * @var array
      * 
      */
-    protected $inputs;
+    protected $inputs = [];
     
     /**
      * 
      * Object for retaining information about options available to the form
      * inputs.
      * 
-     * @var Options
+     * @var mixed
      * 
      */
     protected $options;
@@ -67,18 +65,18 @@ class Fieldset extends AbstractInput
      * 
      * @param FilterInterface $filter A filter object for this fieldset.
      * 
-     * @param Options $options An object the hold options for inputs.
+     * @param object $options An arbitrary options object for use when setting
+     * up inputs and filters.
      * 
      */
     public function __construct(
         BuilderInterface $builder,
         FilterInterface  $filter,
-        Options          $options
+        $options = null
     ) {
         $this->builder  = $builder;
         $this->filter   = $filter;
         $this->options  = $options;
-        $this->inputs   = new ArrayObject([]);
         $this->init();
     }
     
@@ -93,7 +91,7 @@ class Fieldset extends AbstractInput
      */
     public function __get($key)
     {
-        return $this->inputs[$key]->read();
+        return $this->getInput($key)->read();
     }
     
     /**
@@ -109,7 +107,7 @@ class Fieldset extends AbstractInput
      */
     public function __set($key, $val)
     {
-        $this->inputs[$key]->load($val);
+        $this->getInput($key)->fill($val);
     }
     
     public function getFilter()
@@ -117,21 +115,20 @@ class Fieldset extends AbstractInput
         return $this->filter;
     }
     
-    public function getInputs()
-    {
-        return $this->inputs;
-    }
-    
     public function getInput($name)
     {
+        if (! isset($this->inputs[$name])) {
+            throw new Exception\NoSuchInput($name);
+        }
+        
         $input = $this->inputs[$name];
-        $input->setArrayName($this->name);
+        $input->setNamePrefix($this->getFullName());
         return $input;
     }
-    
+
     public function getInputNames()
     {
-        return array_keys($this->inputs->getArrayCopy());
+        return array_keys($this->inputs);
     }
     
     public function getBuilder()
@@ -146,53 +143,20 @@ class Fieldset extends AbstractInput
     
     /**
      * 
-     * Loads this fieldset with input values.
+     * Fills this fieldset with input values.
      * 
      * @param array $data The values for this fieldset.
      * 
      * @return void
      * 
      */
-    public function load($data)
+    public function fill(array $data)
     {
-        $data = (array) $data;
         foreach ($this->inputs as $key => $input) {
             if (array_key_exists($key, $data)) {
-                $input->load($data[$key]);
+                $input->fill($data[$key]);
             }
         }
-        return true;
-    }
-    
-    /**
-     * 
-     * Reads this fieldset for Fieldset::__get().
-     * 
-     * @return self
-     * 
-     * @see Fieldset::__get().
-     * 
-     */
-    public function read()
-    {
-        return $this;
-    }
-    
-    /**
-     * 
-     * Exports this fieldset for Fieldset::get().
-     * 
-     * @return array The array of input objects.
-     * 
-     * @see Fieldset::get().
-     * 
-     */
-    public function export()
-    {
-        foreach ($this->inputs as $name => $input) {
-            $input->setArrayName($this->name);
-        }
-        return $this->inputs;
     }
     
     /**
@@ -222,7 +186,7 @@ class Fieldset extends AbstractInput
         if (! $type) {
             $type = 'text';
         }
-        $this->inputs[$name] = $this->builder->newField($type, $name, $this->name);
+        $this->inputs[$name] = $this->builder->newField($type, $name);
         return $this->inputs[$name];
     }
     
@@ -242,7 +206,7 @@ class Fieldset extends AbstractInput
         if (! $type) {
             $type = $name;
         }
-        $this->inputs[$name] = $this->builder->newFieldset($type, $name, $this->name);
+        $this->inputs[$name] = $this->builder->newFieldset($type, $name);
         return $this->inputs[$name];
     }
     
@@ -263,22 +227,32 @@ class Fieldset extends AbstractInput
         if (! $type) {
             $type = $name;
         }
-        $this->inputs[$name] = $this->builder->newCollection($type, $name, $this->name);
+        $this->inputs[$name] = $this->builder->newCollection($type, $name);
         return $this->inputs[$name];
     }
     
     /**
      * 
-     * Returns an input in a format suitable for a view, generally an array.
+     * Returns an input in a format suitable for a view.
      * 
      * @param string $name The input name.
      * 
      * @return mixed
      * 
      */
-    public function get($name)
+    public function get($name = null)
     {
-        return $this->getInput($name)->export();
+        if (! $name) {
+            return $this;
+        }
+        
+        if (! isset($this->inputs[$name])) {
+            throw new Exception\NoSuchInput($name);
+        }
+        
+        $input = $this->inputs[$name];
+        $input->setNamePrefix($this->name);
+        return $input->get();
     }
     
     /**

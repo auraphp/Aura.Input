@@ -7,12 +7,12 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     {
         $field = new Field('text');
         $field->setName('field_name')
-              ->setArrayName('prefix')
+              ->setNamePrefix('prefix')
               ->setAttribs(['foo' => 'bar'])
               ->setOptions(['baz' => 'dib'])
               ->setValue('doom');
         
-        $actual = $field->export();
+        $actual = $field->get();
         
         $expect = [
             'type' => 'text',
@@ -29,7 +29,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         
         $this->assertSame($expect, $actual);
         
-        $field->load('irk');
+        $field->fill('irk');
         $this->assertSame('irk', $field->read());
     }
 }

@@ -40,8 +40,8 @@ class Field extends AbstractInput
     
     /**
      * 
-     * Options for the field as key-value pairs (typically for checkbox, select,
-     * and radio elements). The key is the option value and the value is the
+     * Options for the field as key-value pairs (typically for select and
+     * radio elements). The key is the option value and the value is the
      * option label.  Nested options may be honored as the key being an
      * optgroup label and the array value as the options under that optgroup.
      * 
@@ -72,12 +72,27 @@ class Field extends AbstractInput
         $this->type = $type;
     }
     
-    public function load($value)
+    /**
+     * 
+     * Fills this field with a value.
+     * 
+     * @param mixed $value The value for the field.
+     * 
+     * @return void
+     * 
+     */
+    public function fill($value)
     {
-        $this->setValue($value);
-        return true;
+        $this->value = $value;
     }
     
+    /**
+     * 
+     * Reads the value from this field.
+     * 
+     * @return mixed
+     * 
+     */
     public function read()
     {
         return $this->value;
@@ -85,13 +100,13 @@ class Field extends AbstractInput
     
     /**
      * 
-     * Returns this field as a plain old PHP array.
+     * Returns this field as a plain old PHP array for use in a view.
      * 
      * @return array An array with keys `'type'`, `'name'`, `'attribs'`, 
      * `'options'`, and `'value'`.
      * 
      */
-    public function export()
+    public function get()
     {
         $attribs = array_merge(
             [
@@ -146,8 +161,18 @@ class Field extends AbstractInput
         return $this;
     }
     
+    /**
+     * 
+     * Sets the value on this field.
+     * 
+     * @param mixed $value The value for the field.
+     * 
+     * @return self
+     * 
+     */
     public function setValue($value)
     {
         $this->value = $value;
+        return $this;
     }
 }

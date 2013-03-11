@@ -8,50 +8,27 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         return new Collection(function () {
             return new MockFieldset(
                 new Builder,
-                new Filter,
-                new Options
+                new Filter
             );
         });
     }
     
-    public function testLoadAndRead()
+    public function testFillAndRead()
     {
         $collection = $this->newCollection();
         
         $data = [
-            ['mock_field' => 'foo'],
-            ['mock_field' => 'bar'],
-            ['mock_field' => 'baz'],
-            ['mock_field' => 'dib'],
+            ['foo' => 'foo1'],
+            ['foo' => 'foo2'],
+            ['foo' => 'foo3'],
+            ['foo' => 'foo4'],
         ];
         
-        $collection->load($data);
+        $collection->fill($data);
         
-        $fieldsets = $collection->read();
-        foreach ($fieldsets as $i => $fieldset) {
-            $expect = $data[$i]['mock_field'];
-            $actual = $fieldset->mock_field;
-            $this->assertSame($expect, $actual);
-        }
-    }
-    
-    public function testLoadAndExport()
-    {
-        $collection = $this->newCollection();
-        
-        $data = [
-            ['mock_field' => 'foo'],
-            ['mock_field' => 'bar'],
-            ['mock_field' => 'baz'],
-            ['mock_field' => 'dib'],
-        ];
-        
-        $collection->load($data);
-        
-        $fieldsets = $collection->export();
-        foreach ($fieldsets as $i => $fieldset) {
-            $expect = $data[$i]['mock_field'];
-            $actual = $fieldset->mock_field;
+        foreach ($collection->get() as $i => $fieldset) {
+            $expect = $data[$i]['foo'];
+            $actual = $fieldset->foo;
             $this->assertSame($expect, $actual);
         }
     }
@@ -61,13 +38,13 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $collection = $this->newCollection();
         
         $data = [
-            ['mock_field' => 'foo'],
-            ['mock_field' => 'bar123'],
-            ['mock_field' => 'baz'],
-            ['mock_field' => 'dib123'],
+            ['foo' => 'foo'],
+            ['foo' => 'bar123'],
+            ['foo' => 'baz'],
+            ['foo' => 'dib123'],
         ];
         
-        $collection->load($data);
+        $collection->fill($data);
         $actual = $collection->filter();
         $this->assertFalse($actual);
         
@@ -75,13 +52,13 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $expect = [
             0 => [],
             1 => [
-                'mock_field' => [
+                'foo' => [
                     'Use alpha only!',
                 ],
             ],
             2 => [],
             3 => [
-                'mock_field' => [
+                'foo' => [
                     'Use alpha only!',
                 ],
             ],
@@ -91,7 +68,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         
         $actual = $collection->getMessages(1);
         $expect = [
-            'mock_field' => [
+            'foo' => [
                 'Use alpha only!',
             ],
         ];

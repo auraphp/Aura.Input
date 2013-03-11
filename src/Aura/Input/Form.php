@@ -16,11 +16,20 @@ class Form extends Fieldset
         return $this->csrf;
     }
     
-    public function load($data)
+    /**
+     * 
+     * Fills this form with input values.
+     * 
+     * @param array $data The values for this fieldset.
+     * 
+     * @return void
+     * 
+     */
+    public function fill(array $data)
     {
         if ($this->csrf && ! $this->csrf->isValid($data)) {
-            return false;
+            throw new Exception\CsrfViolation;
         }
-        return parent::load($data);
+        parent::fill($data);
     }
 }

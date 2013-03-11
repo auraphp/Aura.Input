@@ -9,10 +9,12 @@ class MockFieldset extends Fieldset
         parent::init();
         
         // now actually do something
-        $this->setField('mock_field');
+        $this->setField('foo');
+        $this->setField('bar');
+        $this->setField('baz');
         
         // add a filter
-        $this->filter->setRule('mock_field', 'Use alpha only!', function ($value) {
+        $this->filter->setRule('foo', 'Use alpha only!', function ($value) {
             return ctype_alpha($value);
         });
     }

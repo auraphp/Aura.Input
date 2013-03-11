@@ -19,11 +19,23 @@ namespace Aura\Input;
  */
 class Builder implements BuilderInterface
 {
+    /**
+     * 
+     * The class to use for creating fieldset collections.
+     * 
+     * @var string
+     * 
+     */
     protected $collection_class = 'Aura\Input\Collection';
     
+    /**
+     * 
+     * The class to use for creating fields.
+     * 
+     * @var string
+     * 
+     */
     protected $field_class = 'Aura\Input\Field';
-    
-    protected $map;
     
     /**
      * 
@@ -33,9 +45,18 @@ class Builder implements BuilderInterface
      * @var array
      * 
      */
-    public function __construct(
-        array $map = []
-    ) {
+    protected $map;
+    
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param array $map A map of fieldset types to *callables that create 
+     * objects* (as vs class names).
+     * 
+     */
+    public function __construct(array $map = [])
+    {
         $this->map = $map;
     }
     
@@ -43,9 +64,9 @@ class Builder implements BuilderInterface
      * 
      * Creates a new Field object.
      * 
-     * @param string $name The field name.
-     * 
      * @param string $type The field type.
+     * 
+     * @param string $name The field name.
      * 
      * @return Field
      * 
@@ -62,9 +83,9 @@ class Builder implements BuilderInterface
      * 
      * Creates a new Fieldset object.
      * 
-     * @param string $name The fieldset name.
-     * 
      * @param string $type The fieldset type.
+     * 
+     * @param string $name The fieldset name.
      * 
      * @return Fieldset
      * 
@@ -81,9 +102,9 @@ class Builder implements BuilderInterface
      * 
      * Creates a new Collection object.
      * 
-     * @param string $name The collection name.
-     * 
      * @param string $type The collection type.
+     * 
+     * @param string $name The collection name.
      * 
      * @return Collection
      * 
