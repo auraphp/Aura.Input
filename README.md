@@ -1,8 +1,12 @@
 Aura.Input
 ==========
 
-This package contains tools to describe and filter the fields and values in an
-HTML form. Note that this package does not include output functionality.
+This package contains tools to describe and filter user inputs from an HTML
+form, including sub-forms/sub-fieldsets, fieldset collections, an interface
+for injecting custom filter systems, and CSRF protection. Note that this
+package does not include output functionality, although the "hints" provided
+by the `Form` object can be used with any presentation system to generate an
+HTML form.
 
 This package is compliant with [PSR-0][], [PSR-1][], and [PSR-2][]. If you
 notice compliance oversights, please send a patch via pull request.
@@ -13,6 +17,9 @@ notice compliance oversights, please send a patch via pull request.
 
 Getting Started
 ===============
+
+Instantiation
+-------------
 
 The easiest way to instantiate a new `Form` is to include the `instance.php`
 script:
@@ -30,241 +37,182 @@ instantiate manually:
 use Aura\Input\Form;
 use Aura\Input\Builder;
 use Aura\Input\Filter;
-use Aura\Input\Options;
 
-$form = new Form(new Builder, new Filter, new Options);
+$form = new Form(new Builder, new Filter);
 ```
 
-Setting Fields On The Form
-==========================
+Setting Input Fields On The Form
+--------------------------------
 
-Use the `setField()` method to create a `Field` object in the form. The first
-parameter is the field name; the second parameter is an HTML5 field type. If
-no type is specified, it defaults to 'text'.
+Use the `setField()` method to add an input field to the form.
 
 ```php
 <?php
 $form->setField('first_name')
 $form->setField('last_name');
-$form->setField('birthday', 'date');
-$form->setField('phone_number', 'tel');
+$form->setField('email');
+$form->setField('website');
+$form->setField('street_address');
+$form->setField('city');
+$form->setField('state');
+$form->setField('zip');
+$form->setField('phone_number');
+$form->setField('phone_type');
+$form->setField('birthday');
 ```
 
-For a series of radio buttons, choose type 'radios' (note the plural) 
+(We will discuss later how to set the field type, attributes, and options;
+these will provide hints to your view layer on how to present the field.)
 
-For a `<select>` field, choose type 'select' and provide an array of options:
+
+Setting Filters On The Form
+---------------------------
+
+Aura.Input comes with a very basic filter system. Use the `getFilter()` method
+to get the `Filter` object, then add rules to the filter using the `setRule()`
+method.
+
+Rules are closures that test a form input value. The first parameter is the
+name of the form field to test; the second parameter is the message to use if
+the rule fails; the third parameter is a closure to test the form input value.
+The closure should return `true` if the rule passes, or `false` if it does
+not.
 
 ```php
 <?php
-$form->setField('state', 'select')
-     ->setOptions([
-        'AL' => 'Alabama',
-        'AZ' => 'Arizona',
-        'TN' => 'Tennessee',
-     ]);
+$filter = $form->getFilter();
+
+$filter->setRule(
+    'first_name',
+    'First name must be alphabetic only.',
+    function ($value) {
+        return ctype_alpha($value);
+    }
+);
+
+$filter->setRule(
+    'last_name',
+    'Last name must be alphabetic only.',
+    function ($value) {
+        return ctype_alpha($value);
+    }
+);
+
+$filter->setRule(
+    'state',
+    'State not recognized.',
+    function ($value) {
+        $states = [
+            'AK', 'AL', 'AR', 'AZ',
+            // ...
+            'WA', 'WI', 'WV', 'WY',
+        ];
+        return in_array($value, $states);
+    }
+);
+
+$filter->setRule(
+    'zip',
+    'ZIP code must be between 00000 and 99999.',
+    function ($value) {
+        return ctype_digit($value)
+            && $value >= 00000
+            && $value <= 99999;
+    }
+);
+
+$filter->setRule(
+    'phone_type',
+    'Phone type not recognized.',
+    function ($value) {
+        $types = ['cell', 'home', 'work'];
+        return in_array($value, $types);
+    }
+);
+
+$filter->setRule(
+    'birthday',
+    'Birthday is not a valid date.',
+    function ($value) {
+        $datetime = date_create($value);
+        if (! $datetime) {
+            return false;
+        }
+        $errors = \DateTime::getLastErrors();
+        if ($errors['warnings']) {
+            return false;
+        }
+        return true;
+    }
+);
 ```
 
-Set HTML attributes for a field by using the setAttribs() method after
-setting a field:
+(We will discuss later how to implement `FilterInterface` and use your own
+filters.)
+
+
+Populating and Validating User Input
+------------------------------------
+
+Now that we have input fields, and filters for those inputs, we can fill the
+form with user input and see if the user input is valid. First, we use the
+`fill()` method to set the input values. We then call the `filter()` method to
+see if the user input is valid; if not, we show the messages for the inputs
+that did not pass their filter rules.
 
 ```php
 <?php
-$form->setField('zip_code')
-     ->setAttribs([
-        'size' => 10,
-        'maxlength' => 10,
-     ]);
-```
+// fill the form with $_POST array elements
+// that match the form input names.
+$form->fill($_POST);
 
-$form->setField('last_name', 'text');
-$form->setField('birthday', 'date');
-$form->setField('phone_number', 'tel');
-```
+// apply the filters
+$pass = $form->filter();
 
-$form->setField('phone_type', 'select')
-     ->setOptions([
-        'mobile' => 'Mobile',
-        'home'   => 'Home',
-        'work'   => 'Work',
-     ]);
-
-The `setField()` method returns a `Field` object. We can set the 
-attributes, options to the field via `setAttribs()` and `setOptions()` methods.
-
-Alternatively you can set the fields inside the `init` method of the 
-class which extends the `Form`.
-
-```php
-<?php
-namespace Vendor\Package;
-
-use Aura\Input\Form
-
-class ContactForm extends Form
-{
-    public function init()
-    {
-        $this->setField('first_name', 'text')
-        $this->setField('last_name', 'text');
-        $this->setField('birthday', 'date');
-        $this->setField('phone_type', 'select')
-             ->setOptions([
-                'mobile' => 'Mobile',
-                'home'   => 'Home',
-                'work'   => 'Work',
-             ]);
-        $this->setField('phone_number', 'tel');
+// did all the filters pass?
+if ($pass) {
+    // yes
+    echo "User input is valid." . PHP_EOL;
+} else {
+    // no; get the messages.
+    echo "User input is not valid." . PHP_EOL;
+    foreach ($form->getMessages() as $name => $messages) {
+        foreach ($messages as $message) {
+            echo "Input '{$name}': {$message}" . PHP_EOL;
+        }
     }
 }
 ```
 
-Getting An Input
-================
-
-We can get the whole attributes, value, option of a field via `getField`
-method. Note that this is an array and not the Field object.
-
-```php
-<?php
-$form->getField('fieldname');
-```
-
-Setting Values
-==============
-You can set the values to the fields of a `Form` object via `setValues()`.
-
-```php
-<?php
-$data = ['key' => 'value', ]; 
-//Eg : ['name' => 'Paul M Jones', 'email' => 'hello@example.com'];
-$form->setValues($data);
-```
-
-The `Aura.Input` has a base filter class which you can pass closure as the rules.
-But you are not limited, you can always use [Aura.Filter][] or some other 
-validating and filtering packages. Also the Aura.Input does not have 
-rendering functionality.
-
-Making use of Aura.Filter
-=========================
-
-To make use of [Aura.Filter][] in `Aura.Input`, we need to extend the 
-`Aura\Filter\RuleCollection` object and implement the `Aura\Input\FilterInterface`
-
-```php
-<?php
-namespace Vendor\Package;
-
-use Aura\Filter\RuleCollection;
-use Aura\Input\FilterInterface;
-
-class Filter extends RuleCollection implements FilterInterface
-{
-}
-```
-
-Now we can create the object of the `Vendor\Package\Filter` which accepts 
-the same parameters as of `Aura\Filter\RuleCollection`.
-
-Let us create a `ContactForm` and validate it.
-
-```php
-<?php
-namespace Vendor\Package;
-
-use Aura\Framework\Input\Form as InputForm;
-
-class ContactForm extends InputForm
-{
-    public function init()
-    {
-        $name    = $this->setField('name');
-        $email   = $this->setField('email');
-        $url     = $this->setField('url');
-        $message = $this->setField('message', 'textarea');
-        
-        // Get the filter and set rules
-        
-        $filter = $this->getFilter();
-        $filter->addSoftRule('name', $filter::IS, 'string');
-        $filter->addSoftRule('email', $filter::IS, 'email');
-        $filter->addSoftRule('url', $filter::IS, 'url');
-        $filter->addSoftRule('message', $filter::FIX, 'string');
-        $filter->addSoftRule('message', $filter::FIX, 'strlenMin', 6);
-    }
-}
-```
-
-The `init()` method adds the fields to the input. The `setField` returns 
-`Aura\Input\Field` object. You can add the attributes and options via `attribs`
-and `options` method on `Aura\Input\Field` object.
-
-```php
-<?php
-//create a filter object
-$filter = new Vendor\Package\Filter(
-    new RuleLocator(array_merge(
-        require 'path/to/Aura.Filter/scripts/registry.php',
-        ['any' => function () {
-            $rule = new \Aura\Filter\Rule\Any;
-            $rule->setRuleLocator(new \Aura\Filter\RuleLocator(
-                require 'path/to/Aura.Filter/scripts/registry.php'
-            ));
-            return $rule;
-        }]
-    )),
-    new Translator(require 'path/to/Aura.Filter/scripts/intl/en_US.php')
-);
-
-$form = new Vendor\Package\ContactForm(
-    new FieldCollection(new FieldBuilder)
-    $filter
-);
-```
-
-Please visit [Aura.Filter][] for more information on manual instantiation, 
-validating and filtering.
-
-Setting Values
+Advanced Usage
 ==============
 
-You can use `setValues` on the form object.
+Self-Initializing Forms
+-----------------------
 
-```php
-$form->setValues($data);
-```
+TBD.
 
-Validate, Filter and Getting Error Message
-==========================================
-In the above example we can filter and validate the fields and get the
-error messages via `getMessages` method. It accepts null and field name.
-If you pass the fieldname it will be giving the error message of the 
-field only.
+Passing Options Into Forms
+--------------------------
 
-```php
-<?php
-if (! $form->filter()) {
-    $messages = $form->getMessages();
-}
-```
+TBD.
 
-Rendering : via Aura.View
-=========================
+Applying CSRF Protections
+-------------------------
 
-As `Aura.Input` doesn't have a rendering functionality we can make use 
-of [Aura.View][] or similar ones. The [Aura.View][] has built in capability
-of rendering the field attributes and values.
+TBD.
 
-```php
-<?php
-// We assume you have passed the form object to the view
-$field = $form->getField('fieldname');
-// from the template
-echo $this->field($field);
-```
+Providing "Hints" To The View Layer
+-----------------------------------
 
-For more information visit [Aura.View][]
+TBD.
 
-[Aura.Di]: https://github.com/auraphp/Aura.Di
-[Aura.Filter]: https://github.com/auraphp/Aura.Filter
-[Aura.View]: https://github.com/auraphp/Aura.View
+Reusable Fieldsets (aka "Sub-Forms")
+------------------------------------
+
+TBD.
+
+Fieldset Collections
+--------------------
+
+TBD.
