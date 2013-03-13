@@ -55,11 +55,10 @@ class CollectionIterator implements \Iterator
      * @param string $name_prefix The name of the parent input.
      * 
      */
-    public function __construct(array $fieldsets, $name_prefix)
+    public function __construct(Collection $collection)
     {
-        $this->fieldsets = $fieldsets;
-        $this->name_prefix = $name_prefix;
-        $this->keys = array_keys($fieldsets);
+        $this->collection = $collection;
+        $this->keys = $this->collection->getKeys();
     }
 
     /**
@@ -71,9 +70,7 @@ class CollectionIterator implements \Iterator
      */
     public function current()
     {
-        $fieldset = $this->fieldsets[$this->key()];
-        $fieldset->setNamePrefix($this->name_prefix);
-        return $fieldset;
+        return $this->collection->offsetGet($this->key());
     }
 
     /**

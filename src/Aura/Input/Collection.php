@@ -10,6 +10,8 @@
  */
 namespace Aura\Input;
 
+use ArrayAccess;
+use Countable;
 use IteratorAggregate;
 
 /**
@@ -19,7 +21,7 @@ use IteratorAggregate;
  * @package Aura.Input
  * 
  */
-class Collection extends AbstractInput implements IteratorAggregate
+class Collection extends AbstractInput implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * 
@@ -121,14 +123,46 @@ class Collection extends AbstractInput implements IteratorAggregate
      */
     public function getIterator()
     {
-        return new CollectionIterator($this->fieldsets, $this->getFullName());
+        return new CollectionIterator($this);
     }
 
+    public function getKeys()
+    {
+        return array_keys($this->fieldsets);
+    }
+    
     protected function newFieldset($name)
     {
         $factory = $this->factory;
         $fieldset = $factory();
         $fieldset->setName($name);
         return $fieldset;
+    }
+    
+    public function offsetGet($offset)
+    {
+        $fieldset = $this->fieldsets[$offset];
+        $fieldset->setNamePrefix($this->getFullName());
+        return $fieldset;
+    }
+    
+    public function offsetSet($offset, $fieldset)
+    {
+        $this->fieldsets[$offset] = $fieldset;
+    }
+    
+    public function offsetExists($offset)
+    {
+        return isset($this->fieldsets[$offset]);
+    }
+    
+    public function offsetUnset($offset)
+    {
+        unset($this->fieldsets[$offset]);
+    }
+    
+    public function count()
+    {
+        return count($this->fieldsets);
     }
 }

@@ -190,7 +190,42 @@ Advanced Usage
 Self-Initializing Forms
 -----------------------
 
-TBD.
+In the "Getting Started" example, we create a form object and then manipulate
+it to add inputs.  While perfectly reasonable, sometimes we will want to have
+a form object initialize its own inputs and filters.  To do this, extend
+the `Form` object and override the `init()` method.
+
+```php
+<?php
+namespace Vendor\Package;
+
+use Aura\Input\Form;
+
+class ContactForm extends Form
+{
+    protected function init()
+    {
+        // set input fields
+        $this->setField('first_name')
+        $this->setField('last_name');
+        // etc.
+        
+        // set input filters
+        $filter = $this->getFilter();
+        $filter->setRule(
+            'first_name',
+            'First name must be alphabetic only.',
+            function ($value) {
+                return ctype_alpha($value);
+            }
+        );
+        // etc.
+    }
+}
+```
+
+Now when we instantiate the `ContactForm` the inputs and filters will be there
+automatically.
 
 Passing Options Into Forms
 --------------------------
