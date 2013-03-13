@@ -74,4 +74,32 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertSame($expect, $actual);
     }
+    
+    public function testArrayAccessCount()
+    {
+        $collection = $this->newCollection();
+        
+        $data = [
+            ['foo' => 'foo'],
+            ['foo' => 'bar123'],
+            ['foo' => 'baz'],
+            ['foo' => 'dib123'],
+        ];
+        
+        $collection->fill($data);
+        
+        $this->assertSame(4, count($collection));
+        
+        $collection[0]->foo = 'changefoo';
+        $this->assertSame('changefoo', $collection[0]->foo);
+        
+        $fieldset = new MockFieldset(new Builder, new Filter);
+        $fieldset->foo = 'newfoo';
+        $collection[0] = $fieldset;
+        $this->assertSame('newfoo', $collection[0]->foo);
+        
+        $this->assertTrue(isset($collection[3]));
+        unset($collection[3]);
+        $this->assertFalse(isset($collection[3]));
+    }
 }
