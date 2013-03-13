@@ -251,7 +251,7 @@ class Fieldset extends AbstractInput
         }
         
         $input = $this->inputs[$name];
-        $input->setNamePrefix($this->name);
+        $input->setNamePrefix($this->getFullName());
         return $input->get();
     }
     
