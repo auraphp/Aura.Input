@@ -21,7 +21,7 @@ interface FilterInterface
 {
     /**
      * 
-     * Set Rule on a field
+     * Add Rule on a field
      * 
      * @param string $field The field value
      * 
@@ -30,7 +30,7 @@ interface FilterInterface
      * @param \Closure $closure A closure
      * 
      */
-    public function setRule($field, $message, \Closure $closure);
+    public function addRule($field, $message, \Closure $closure);
     
     /**
      * 
