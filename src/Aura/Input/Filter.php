@@ -25,7 +25,7 @@ class Filter implements FilterInterface
     
     /**
      * 
-     * Set Rule on a field
+     * Add Rule on a field
      * 
      * @param string $field The field value
      * 
@@ -34,7 +34,7 @@ class Filter implements FilterInterface
      * @param \Closure $closure A closure
      * 
      */
-    public function setRule($field, $message, \Closure $closure)
+    public function addRule($field, $message, \Closure $closure)
     {
         $this->rules[$field][] = [$message, $closure];
     }

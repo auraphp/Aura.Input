@@ -10,17 +10,17 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->filter = new Filter;
         
         // validate
-        $this->filter->setRule('foo', 'Foo should be alpha only', function ($value) {
+        $this->filter->addRule('foo', 'Foo should be alpha only', function ($value) {
             return ctype_alpha($value);
         });
         
-        $this->filter->setRule('foo', 'Foo should be more than 7 characters', function ($value) {
+        $this->filter->addRule('foo', 'Foo should be more than 7 characters', function ($value) {
             $length = strlen($value);
             return ($length > 7);
         });
         
         // sanitize
-        $this->filter->setRule('bar', 'Remove non-alpha from bar', function (&$value) {
+        $this->filter->addRule('bar', 'Remove non-alpha from bar', function (&$value) {
             $value = preg_replace('/[^a-z]/i', '!', $value);
             return true;
         });

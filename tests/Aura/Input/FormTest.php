@@ -100,7 +100,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form->setField('bar', 'text');
         
         $filter = $form->getFilter();
-        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+        $filter->addRule('foo', 'Foo should be alpha', function ($value) {
             return ctype_alpha($value);
         });
         
