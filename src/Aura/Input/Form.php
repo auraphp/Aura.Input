@@ -17,7 +17,7 @@ namespace Aura\Input;
  * @package Aura.Input
  * 
  */
-class Form
+class Form implements \IteratorAggregate
 {
     /**
      * 
@@ -276,5 +276,17 @@ class Form
     public function getMessages($field = null)
     {
         return $this->filter->getMessages($field);
+    }
+    
+    /**
+     * 
+     * Returns all the fields collection
+     * 
+     * @return \ArrayIterator
+     * 
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->fields);
     }
 }
