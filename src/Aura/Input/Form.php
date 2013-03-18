@@ -3,17 +3,17 @@ namespace Aura\Input;
 
 class Form extends Fieldset
 {
-    protected $csrf;
+    protected $anti_csrf;
     
-    public function setCsrf(CsrfInterface $csrf)
+    public function setAntiCsrf(AntiCsrfInterface $anti_csrf)
     {
-        $this->csrf = $csrf;
-        $this->csrf->setField($this);
+        $this->anti_csrf = $anti_csrf;
+        $this->anti_csrf->setField($this);
     }
     
-    public function getCsrf()
+    public function getAntiCsrf()
     {
-        return $this->csrf;
+        return $this->anti_csrf;
     }
     
     /**
@@ -27,7 +27,7 @@ class Form extends Fieldset
      */
     public function fill(array $data)
     {
-        if ($this->csrf && ! $this->csrf->isValid($data)) {
+        if ($this->anti_csrf && ! $this->anti_csrf->isValid($data)) {
             throw new Exception\CsrfViolation;
         }
         parent::fill($data);

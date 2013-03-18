@@ -227,27 +227,114 @@ class ContactForm extends Form
 Now when we instantiate the `ContactForm` the inputs and filters will be there
 automatically.
 
-Passing Options Into Forms
---------------------------
-
-TBD.
 
 Applying CSRF Protections
 -------------------------
 
-TBD.
+Aura.Input comes with an interface for implementations that prevent
+[cross-site request forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery)
+attacks.  To make use of this interface, you will need to provide your own
+CSRF implentation; this is because it depends on two things that Aura.Input
+cannot provide: an object that tells us if the user is authenticated or not,
+and an object to generate and retain a crytpographically secure random value
+for the CSRF token value.  A psuedo-implementation follows.
+
+```php
+<?php
+namespace Vendor\Package\Input;
+
+use Aura\Input\AntiCsrfInterface;
+use Aura\Input\Fieldset;
+use Vendor\Package\CsrfObject;
+use Vendor\Package\UserObject;
+
+class AntiCsrf implements AntiCsrfInterface
+{
+    // a user object indicating if the user is authenticated or not
+    protected $user;
+    
+    // a csrf value generation object
+    protected $csrf;
+    
+    public function __construct(UserObject $user, CsrfObject $csrf)
+    {
+        $this->user = $user;
+        $this->csrf = $csrf;
+    }
+    
+    // implementation of setField(); adds a CSRF token field to the fieldset.
+    public function setField(Fieldset $fieldset)
+    {
+        if (! $this->user->isAuthenticated()) {
+            // user is not authenticated so CSRF cannot occur
+            return;
+        }
+        
+        // user is authenticated, so add a CSRF token
+        $fieldset->setField('__csrf_token', $this->csrf->getValue());
+    }
+    
+    // implementation of isValid().  return true if CSRF token is present
+    // and of the correct value, 
+    public function isValid(array $data)
+    {
+        if (! $this->user->isAuthenticated()) {
+            // user is not authenticated so CSRF cannot occur
+            return true;
+        }
+        
+        // user is authenticated, so check to see if input has a CSRF token
+        // of the correct value
+        return isset($data['__csrf_token'])
+            && $data['__csrf_token'] == $this->csrf->getValue();
+    }
+}
+
+You can then pass an instance of your implementation into your form using the
+`setAntiCsrf()` method.
+
+```php
+<?php
+use Aura\Input\Form;
+use Aura\Input\Builder;
+use Aura\Input\Filter;
+use Vendor\Package\Input\AntiCsrf;
+use Vendor\Package\UserObject;
+use Vendor\Package\CsrfObject;
+
+$form = new Form(new Builder, new Filter);
+
+$anti_csrf = new AntiCsrf(new UserObject, new CsrfObject);
+$form->setAntiCsrf($anti_csrf);
+```
+
+Calling `setAntiCsrf()` adds a CSRF field to the form.
+
+When you call `fill()` on the form, it will check the CSRF value in the data
+to make sure it is correct.  If not, the form will not fill in the data, and
+throw an exception and will not fill in the data.
+
 
 Providing "Hints" To The View Layer
 -----------------------------------
 
 TBD.
 
-Reusable Fieldsets (aka "Sub-Forms")
-------------------------------------
+
+Passing Options Into Forms
+--------------------------
 
 TBD.
 
-Fieldset Collections
---------------------
+
+Creating Reusable Fieldsets
+---------------------------
 
 TBD.
+
+
+Using Fieldset Collections
+--------------------------
+
+TBD.
+

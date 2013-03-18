@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Input;
 
-class MockCsrf implements CsrfInterface
+class MockAntiCsrf implements AntiCsrfInterface
 {
     protected $value = 'goodvalue';
     
