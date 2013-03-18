@@ -62,7 +62,7 @@ $form->setField('birthday');
 ```
 
 (We will discuss later how to set the field type, attributes, and options;
-these will provide hints to your view layer on how to present the field.)
+these will provide hints to our view layer on how to present the field.)
 
 
 Setting Filters On The Form
@@ -147,7 +147,7 @@ $filter->setRule(
 );
 ```
 
-(We will discuss later how to implement `FilterInterface` and use your own
+(We will discuss later how to implement `FilterInterface` and use our own
 filters.)
 
 
@@ -233,7 +233,7 @@ Applying CSRF Protections
 
 Aura.Input comes with an interface for implementations that prevent
 [cross-site request forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery)
-attacks.  To make use of this interface, you will need to provide your own
+attacks.  To make use of this interface, we will need to provide our own
 CSRF implentation; this is because it depends on two things that Aura.Input
 cannot provide: an object that tells us if the user is authenticated or not,
 and an object to generate and retain a crytpographically secure random value
@@ -275,7 +275,7 @@ class AntiCsrf implements AntiCsrfInterface
     }
     
     // implementation of isValid().  return true if CSRF token is present
-    // and of the correct value, 
+    // and of the correct value, or return false if not.
     public function isValid(array $data)
     {
         if (! $this->user->isAuthenticated()) {
@@ -289,8 +289,9 @@ class AntiCsrf implements AntiCsrfInterface
             && $data['__csrf_token'] == $this->csrf->getValue();
     }
 }
+```
 
-You can then pass an instance of your implementation into your form using the
+We can then pass an instance of the implementation into our form using the
 `setAntiCsrf()` method.
 
 ```php
@@ -310,7 +311,7 @@ $form->setAntiCsrf($anti_csrf);
 
 Calling `setAntiCsrf()` adds a CSRF field to the form.
 
-When you call `fill()` on the form, it will check the CSRF value in the data
+When we call `fill()` on the form, it will check the CSRF value in the data
 to make sure it is correct.  If not, the form will not fill in the data, and
 throw an exception and will not fill in the data.
 
