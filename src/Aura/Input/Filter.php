@@ -36,7 +36,7 @@ class Filter implements FilterInterface
      */
     public function setRule($field, $message, \Closure $closure)
     {
-        $this->rules[$field][] = [$message, $closure];
+        $this->rules[$field] = [$message, $closure];
     }
     
     /**
@@ -54,21 +54,18 @@ class Filter implements FilterInterface
         $this->messages = [];
         
         // go through each of the rules
-        foreach ($this->rules as $field => $rules) {
-            // A field can have more rules
-            foreach ($rules as $rule) {
-                // get the closure and message
-                list($message, $closure) = $rule;
-                
-                // apply the closure to the data and get back the result
-                $passed = $closure($values[$field]);
-                
-                // if the rule did not pass, retain a message for the field.
-                // note that it is in an array, so that other implementations
-                // can allow for multiple messages.
-                if (! $passed) {
-                    $this->messages[$field][] = $message;
-                }
+        foreach ($this->rules as $field => $rule) {
+            // get the message and closure
+            list($message, $closure) = $rule;
+            
+            // apply the closure to the data and get back the result
+            $passed = $closure($values[$field]);
+            
+            // if the rule did not pass, retain a message for the field.
+            // note that it is in an array, so that other implementations
+            // can allow for multiple messages.
+            if (! $passed) {
+                $this->messages[$field][] = $message;
             }
         }
         
