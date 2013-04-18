@@ -191,6 +191,8 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * 
      * ArrayAccess: is a particular Fieldset key set?
      * 
+     * @param mixed $offset The Fieldset key.
+     * 
      * @return bool True if the Fielset key is set, false if not.
      * 
      */
@@ -202,6 +204,8 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
     /**
      * 
      * ArrayAccess: unsets a particular Fieldset key.
+     * 
+     * @param mixed $offset The Fieldset key.
      * 
      * @return void
      * 

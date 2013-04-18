@@ -10,6 +10,14 @@
  */
 namespace Aura\Input;
 
+/**
+ * 
+ * A top-level form object to contain fields, fieldsets, collections, and
+ * anti-CSRF protection.
+ * 
+ * @package Aura.Input
+ * 
+ */
 class Form extends Fieldset
 {
     /**
@@ -53,9 +61,15 @@ class Form extends Fieldset
      * 
      * Fills this form with input values.
      * 
+     * If an anti-CSRF implementation is set and the incoming data does not
+     * have a valid anti-CSRF value, it will throw an exception.
+     * 
      * @param array $data The values for this fieldset.
      * 
      * @return void
+     * 
+     * @throws Exception\CsrfViolation if an anti-CSRF implementation is set
+     * and the incoming data does not have a valid anti-CSRF value.
      * 
      */
     public function fill(array $data)
