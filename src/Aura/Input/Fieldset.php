@@ -219,11 +219,8 @@ class Fieldset extends AbstractInput
      * 
      */
     public function setField($name, $type = null)
-    {
-        if (! $type) {
-            $type = 'text';
-        }
-        $this->inputs[$name] = $this->builder->newField($type, $name);
+    {        
+        $this->inputs[$name] = $this->builder->newField($name, $type);
         return $this->inputs[$name];
     }
     
@@ -239,11 +236,8 @@ class Fieldset extends AbstractInput
      * 
      */
     public function setFieldset($name, $type = null)
-    {
-        if (! $type) {
-            $type = $name;
-        }
-        $this->inputs[$name] = $this->builder->newFieldset($type, $name);
+    {        
+        $this->inputs[$name] = $this->builder->newFieldset($name, $type);
         return $this->inputs[$name];
     }
     
@@ -260,11 +254,8 @@ class Fieldset extends AbstractInput
      * 
      */
     public function setCollection($name, $type = null)
-    {
-        if (! $type) {
-            $type = $name;
-        }
-        $this->inputs[$name] = $this->builder->newCollection($type, $name);
+    {        
+        $this->inputs[$name] = $this->builder->newCollection($name, $type);
         return $this->inputs[$name];
     }
     

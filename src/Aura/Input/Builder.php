@@ -64,15 +64,18 @@ class Builder implements BuilderInterface
      * 
      * Creates a new Field object.
      * 
-     * @param string $type The field type.
-     * 
      * @param string $name The field name.
+     * 
+     * @param string $type The field type.
      * 
      * @return Field
      * 
      */
-    public function newField($type, $name)
+    public function newField($name, $type = null)
     {
+        if (! $type) {
+            $type = 'text';
+        }
         $class = $this->field_class;
         $field = new $class($type);
         $field->setName($name);
@@ -83,15 +86,18 @@ class Builder implements BuilderInterface
      * 
      * Creates a new Fieldset object.
      * 
-     * @param string $type The fieldset type.
-     * 
      * @param string $name The fieldset name.
+     * 
+     * @param string $type The fieldset type.
      * 
      * @return Fieldset
      * 
      */
-    public function newFieldset($type, $name)
+    public function newFieldset($name, $type = null)
     {
+        if (! $type) {
+            $type = $name;
+        }
         $factory = $this->fieldset_map[$type];
         $fieldset = $factory();
         $fieldset->setName($name);
@@ -102,15 +108,18 @@ class Builder implements BuilderInterface
      * 
      * Creates a new Collection object.
      * 
-     * @param string $type The collection type.
-     * 
      * @param string $name The collection name.
+     * 
+     * @param string $type The collection type.
      * 
      * @return Collection
      * 
      */
-    public function newCollection($type, $name)
+    public function newCollection($name, $type = null)
     {
+        if (! $type) {
+            $type = $name;
+        }
         $class = $this->collection_class;
         $collection = new $class($this->fieldset_map[$type]);
         $collection->setName($name);

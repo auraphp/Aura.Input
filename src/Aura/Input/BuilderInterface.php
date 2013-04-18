@@ -24,37 +24,37 @@ interface BuilderInterface
      * 
      * Creates a new Field object.
      * 
-     * @param string $type The field type.
-     * 
      * @param string $name The field name.
+     * 
+     * @param string $type The field type.
      * 
      * @return Field
      * 
      */
-    public function newField($type, $name);
+    public function newField($name, $type);
     
     /**
      * 
      * Creates a new Fieldset object.
-     * 
-     * @param string $type The fieldset type.
-     * 
+     *
      * @param string $name The fieldset name.
-     * 
+     *  
+     * @param string $type The fieldset type.
+     *
      * @return Fieldset
      * 
      */
-    public function newFieldset($type, $name);
+    public function newFieldset($name, $type);
     /**
      * 
      * Creates a new Collection object.
      * 
-     * @param string $type The collection type.
-     * 
      * @param string $name The collection name.
+     * 
+     * @param string $type The collection type.
      * 
      * @return Collection
      * 
      */
-    public function newCollection($type, $name);
+    public function newCollection($name, $type);
 }
