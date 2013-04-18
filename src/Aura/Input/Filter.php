@@ -41,7 +41,7 @@ class Filter implements FilterInterface
     
     /**
      * 
-     * Filter and Validate the data
+     * Apply filters to the input object.
      * 
      * @param mixed $values The value
      * 
@@ -59,7 +59,7 @@ class Filter implements FilterInterface
             list($message, $closure) = $rule;
             
             // apply the closure to the data and get back the result
-            $passed = $closure($values[$field]);
+            $passed = $closure($values->$field);
             
             // if the rule did not pass, retain a message for the field.
             // note that it is in an array, so that other implementations

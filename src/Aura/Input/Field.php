@@ -12,12 +12,12 @@ namespace Aura\Input;
 
 /**
  * 
- * A field object.
+ * A single field in a fieldset.
  * 
  * @package Aura.Input
  * 
  */
-class Field
+class Field extends AbstractInput
 {
     /**
      * 
@@ -40,8 +40,8 @@ class Field
     
     /**
      * 
-     * Options for the field as key-value pairs (typically for checkbox, select,
-     * and radio elements). The key is the option value and the value is the
+     * Options for the field as key-value pairs (typically for select and
+     * radio elements). The key is the option value and the value is the
      * option label.  Nested options may be honored as the key being an
      * optgroup label and the array value as the options under that optgroup.
      * 
@@ -52,22 +52,13 @@ class Field
     
     /**
      * 
-     * The label to use on this field.
+     * The value for the field.  This may or may not be the same as the
+     * 'value' attribue.
      * 
-     * @var string
-     * 
-     */
-    protected $label;
-    
-    /**
-     * 
-     * Attributes for the label on this field.
-     * 
-     * @var array
+     * @var mixed
      * 
      */
-    protected $label_attribs = [];
-    
+    protected $value;
     
     /**
      * 
@@ -83,6 +74,61 @@ class Field
     
     /**
      * 
+     * Fills this field with a value.
+     * 
+     * @param mixed $value The value for the field.
+     * 
+     * @return void
+     * 
+     */
+    public function fill($value)
+    {
+        $this->value = $value;
+    }
+    
+    /**
+     * 
+     * Reads the value from this field.
+     * 
+     * @return mixed
+     * 
+     */
+    public function read()
+    {
+        return $this->value;
+    }
+    
+    /**
+     * 
+     * Returns this field as a plain old PHP array for use in a view.
+     * 
+     * @return array An array with keys `'type'`, `'name'`, `'attribs'`, 
+     * `'options'`, and `'value'`.
+     * 
+     */
+    public function get()
+    {
+        $attribs = array_merge(
+            [
+                // force a particular order on some attributes
+                'id'   => null,
+                'type' => null,
+                'name' => null,
+            ],
+            $this->attribs
+        );
+        
+        return [
+            'type'          => $this->type,
+            'name'          => $this->getFullName(),
+            'attribs'       => $attribs,
+            'options'       => $this->options,
+            'value'         => $this->value,
+        ];
+    }
+    
+    /**
+     * 
      * Sets the HTML attributes on this field.
      * 
      * @param array $attribs HTML attributes for the field as key-value pairs;
@@ -91,7 +137,7 @@ class Field
      * @return self
      * 
      */
-    public function attribs(array $attribs)
+    public function setAttribs(array $attribs)
     {
         $this->attribs = $attribs;
         return $this;
@@ -109,7 +155,7 @@ class Field
      * @return self
      * 
      */
-    public function options(array $options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
         return $this;
@@ -117,60 +163,16 @@ class Field
     
     /**
      * 
-     * Sets the label for this field, typically for a checkbox.
+     * Sets the value on this field.
      * 
-     * @param string
-     * 
-     * @return self
-     * 
-     */
-    public function label($label)
-    {
-        $this->label = $label;
-        return $this;
-    }
-    
-    /**
-     * 
-     * Sets the HTML attributes for the label on this field.
-     * 
-     * @param array $attribs HTML attributes for the label as key-value pairs;
-     * the key is the attribute name and the value is the attribute value.
+     * @param mixed $value The value for the field.
      * 
      * @return self
      * 
      */
-    public function labelAttribs(array $label_attribs)
+    public function setValue($value)
     {
-        $this->label_attribs = $label_attribs;
+        $this->value = $value;
         return $this;
-    }
-    
-    /**
-     * 
-     * Returns this field as a plain old PHP array.
-     * 
-     * @return array An array with keys `'type'`, `'attribs'`, and 
-     * `'options'`.
-     * 
-     */
-    public function toArray()
-    {
-        $attribs = array_merge(
-            [
-                'id'   => null,
-                'type' => null,
-                'name' => null,
-            ],
-            $this->attribs
-        );
-        
-        return [
-            'type'          => $this->type,
-            'attribs'       => $attribs,
-            'options'       => $this->options,
-            'label'         => $this->label,
-            'label_attribs' => $this->label_attribs,
-        ];
     }
 }

@@ -14,7 +14,6 @@ class WiringTest extends \PHPUnit_Framework_TestCase
     
     public function testInstances()
     {
-        $this->assertNewInstance('Aura\Input\FieldCollection');
-        $this->assertNewInstance('Aura\Input\Form');
+        $this->assertNewInstance('Aura\Input\Fieldset');
     }
 }

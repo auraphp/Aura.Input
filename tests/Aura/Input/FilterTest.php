@@ -24,7 +24,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     public function testAll()
     {
         // initial data
-        $values = [
+        $values = (object) [
             'foo' => 'foo_value',
             'bar' => 'bar_value',
         ];
@@ -51,19 +51,19 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertSame($expect, $actual);
         
-        // no failures on this field
+        // no failures on nonexistent field
         $this->assertSame([], $this->filter->getMessages('no-such-failure'));
         
         // should have changed the values on 'bar'
-        $expect = [
+        $expect = (object) [
             'foo' => 'foo_value',
             'bar' => 'bar!value',
         ];
-        $this->assertSame($expect, $values);
+        $this->assertEquals($expect, $values);
         
         // let's make it valid
-        $data['foo'] = 'foovalue';
-        $passed = $this->filter->values($data);
+        $values->foo = 'foovalue';
+        $passed = $this->filter->values($values);
         $this->assertTrue($passed);
     }
 }
