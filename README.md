@@ -51,6 +51,7 @@ Use the `setField()` method to add an input field to the form.
 $form->setField('first_name')
 $form->setField('last_name');
 $form->setField('email');
+$form->setField('email_confirm');
 $form->setField('website');
 $form->setField('street_address');
 $form->setField('city');
@@ -76,7 +77,8 @@ Rules are closures that test a form input value. The first parameter is the
 name of the form field to test; the second parameter is the message to use if
 the rule fails; the third parameter is a closure to test the form input value.
 The closure should return `true` if the rule passes, or `false` if it does
-not.
+not, and it should take two parameters: the value of the field being tested,
+and the set of all fields (in case we need to compare to other inputs).
 
 ```php
 <?php
@@ -85,7 +87,7 @@ $filter = $form->getFilter();
 $filter->setRule(
     'first_name',
     'First name must be alphabetic only.',
-    function ($value) {
+    function ($value, $fields) {
         return ctype_alpha($value);
     }
 );
@@ -93,15 +95,23 @@ $filter->setRule(
 $filter->setRule(
     'last_name',
     'Last name must be alphabetic only.',
-    function ($value) {
+    function ($value, $fields) {
         return ctype_alpha($value);
+    }
+);
+
+$filter->setRule(
+    'email_confirm',
+    'The email addresses must match.',
+    function ($value, $fields) {
+        return $value == $fields->email;
     }
 );
 
 $filter->setRule(
     'state',
     'State not recognized.',
-    function ($value) {
+    function ($value, $form) {
         $states = [
             'AK', 'AL', 'AR', 'AZ',
             // ...
@@ -114,7 +124,7 @@ $filter->setRule(
 $filter->setRule(
     'zip',
     'ZIP code must be between 00000 and 99999.',
-    function ($value) {
+    function ($value, $form) {
         return ctype_digit($value)
             && $value >= 00000
             && $value <= 99999;
@@ -124,7 +134,7 @@ $filter->setRule(
 $filter->setRule(
     'phone_type',
     'Phone type not recognized.',
-    function ($value) {
+    function ($value, $form) {
         $types = ['cell', 'home', 'work'];
         return in_array($value, $types);
     }
@@ -133,7 +143,7 @@ $filter->setRule(
 $filter->setRule(
     'birthday',
     'Birthday is not a valid date.',
-    function ($value) {
+    function ($value, $form) {
         $datetime = date_create($value);
         if (! $datetime) {
             return false;

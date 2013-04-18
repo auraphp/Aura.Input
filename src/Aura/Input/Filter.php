@@ -31,7 +31,9 @@ class Filter implements FilterInterface
      * 
      * @param string $message The message when the rule fails
      * 
-     * @param \Closure $closure A closure
+     * @param \Closure $closure A closure with two params; the first is the
+     * value of the field being tested, and the second is the set of all
+     * values (typically the Fieldset object itself).
      * 
      */
     public function setRule($field, $message, \Closure $closure)
@@ -59,7 +61,7 @@ class Filter implements FilterInterface
             list($message, $closure) = $rule;
             
             // apply the closure to the data and get back the result
-            $passed = $closure($values->$field);
+            $passed = $closure($values->$field, $values);
             
             // if the rule did not pass, retain a message for the field.
             // note that it is in an array, so that other implementations

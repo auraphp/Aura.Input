@@ -9,16 +9,33 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     {
         $this->filter = new Filter;
         
-        // validate
-        $this->filter->setRule('foo', 'Foo should be alpha only', function ($value) {
-            return ctype_alpha($value);
-        });
+        // simple validate
+        $this->filter->setRule(
+            'foo',
+            'Foo should be alpha only',
+            function ($value) {
+                return ctype_alpha($value);
+            }
+        );
         
         // sanitize
-        $this->filter->setRule('bar', 'Remove non-alpha from bar', function (&$value) {
-            $value = preg_replace('/[^a-z]/i', '!', $value);
-            return true;
-        });
+        $this->filter->setRule(
+            'bar',
+            'Remove non-alpha from bar',
+            function (&$value) {
+                $value = preg_replace('/[^a-z]/i', '!', $value);
+                return true;
+            }
+        );
+
+        // matching validate
+        $this->filter->setRule(
+            'baz_confirm',
+            'Baz confirm must match baz',
+            function ($value, $fields) {
+                return $value == $fields->baz;
+            }
+        );
     }
     
     public function testAll()
@@ -27,6 +44,8 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $values = (object) [
             'foo' => 'foo_value',
             'bar' => 'bar_value',
+            'baz' => 'baz_value',
+            'baz_confirm' => 'baz_value',
         ];
         
         // do the values pass all filters?
@@ -58,6 +77,8 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $expect = (object) [
             'foo' => 'foo_value',
             'bar' => 'bar!value',
+            'baz' => 'baz_value',
+            'baz_confirm' => 'baz_value',
         ];
         $this->assertEquals($expect, $values);
         
