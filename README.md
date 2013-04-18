@@ -76,9 +76,11 @@ method.
 Rules are closures that test a form input value. The first parameter is the
 name of the form field to test; the second parameter is the message to use if
 the rule fails; the third parameter is a closure to test the form input value.
-The closure should return `true` if the rule passes, or `false` if it does
-not, and it should take two parameters: the value of the field being tested,
-and the set of all fields (in case we need to compare to other inputs).
+
+The rule should take two parameters: the value of the field being tested,
+and optionally the set of all fields (in case we need to compare to other
+inputs). It should return `true` if the rule passes, or `false` if it does
+not.
 
 ```php
 <?php
@@ -87,7 +89,7 @@ $filter = $form->getFilter();
 $filter->setRule(
     'first_name',
     'First name must be alphabetic only.',
-    function ($value, $fields) {
+    function ($value) {
         return ctype_alpha($value);
     }
 );
@@ -95,11 +97,12 @@ $filter->setRule(
 $filter->setRule(
     'last_name',
     'Last name must be alphabetic only.',
-    function ($value, $fields) {
+    function ($value) {
         return ctype_alpha($value);
     }
 );
 
+// note that this rule compares the value to that of another field
 $filter->setRule(
     'email_confirm',
     'The email addresses must match.',
@@ -111,7 +114,7 @@ $filter->setRule(
 $filter->setRule(
     'state',
     'State not recognized.',
-    function ($value, $form) {
+    function ($value) {
         $states = [
             'AK', 'AL', 'AR', 'AZ',
             // ...
@@ -124,7 +127,7 @@ $filter->setRule(
 $filter->setRule(
     'zip',
     'ZIP code must be between 00000 and 99999.',
-    function ($value, $form) {
+    function ($value) {
         return ctype_digit($value)
             && $value >= 00000
             && $value <= 99999;
