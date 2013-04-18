@@ -245,7 +245,7 @@ Applying CSRF Protections
 Aura.Input comes with an interface for implementations that prevent
 [cross-site request forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery)
 attacks.  To make use of this interface, we will need to provide our own
-CSRF implentation; this is because it depends on two things that Aura.Input
+CSRF implementation; this is because it depends on two things that Aura.Input
 cannot provide: an object that tells us if the user is authenticated or not,
 and an object to generate and retain a crytpographically secure random value
 for the CSRF token value.  A psuedo-implementation follows.
