@@ -19,8 +19,22 @@ namespace Aura\Input;
  */
 class Filter implements FilterInterface
 {
+    /**
+     * 
+     * The array of rules to be applied to fields.
+     * 
+     * @var array
+     * 
+     */
     protected $rules = [];
     
+    /**
+     * 
+     * The array of messages to be used when rules fail.
+     * 
+     * @var array
+     * 
+     */
     protected $messages = [];
     
     /**

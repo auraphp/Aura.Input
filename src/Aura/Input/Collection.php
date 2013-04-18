@@ -175,9 +175,9 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * 
      * ArrayAccess: sets an offset as a Fieldset.
      * 
-     * @param mixed The Fieldset key.
+     * @param mixed $offset The Fieldset key.
      * 
-     * @param Fieldset The Fieldset for that key.
+     * @param Fieldset $fieldset The Fieldset for that key.
      * 
      * @return void
      * 

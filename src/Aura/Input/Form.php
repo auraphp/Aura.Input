@@ -12,14 +12,38 @@ namespace Aura\Input;
 
 class Form extends Fieldset
 {
+    /**
+     * 
+     * The anti-CSRF implementation, if any.
+     * 
+     * @var AntiCsrfInterface
+     * 
+     */
     protected $anti_csrf;
     
+    /**
+     * 
+     * Sets the anti-CSRF implementation; calls the `setField()` method on the
+     * implementation to set the anti-CSRF field.
+     * 
+     * @param AntiCsrfInterface $anti_csrf The anti-CSRF implementation.
+     * 
+     * @return void
+     * 
+     */
     public function setAntiCsrf(AntiCsrfInterface $anti_csrf)
     {
         $this->anti_csrf = $anti_csrf;
         $this->anti_csrf->setField($this);
     }
     
+    /**
+     * 
+     * Returns the anti-CSRF implementation, if any.
+     * 
+     * @return mixed
+     * 
+     */
     public function getAntiCsrf()
     {
         return $this->anti_csrf;

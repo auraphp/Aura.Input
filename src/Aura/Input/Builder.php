@@ -51,8 +51,8 @@ class Builder implements BuilderInterface
      * 
      * Constructor.
      * 
-     * @param array $map A map of fieldset types to *callables that create 
-     * objects* (as vs class names).
+     * @param array $fieldset_map A map of fieldset types to *callables that
+     * create objects* (as vs class names).
      * 
      */
     public function __construct(array $fieldset_map = [])

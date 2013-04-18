@@ -110,11 +110,27 @@ class Fieldset extends AbstractInput
         $this->getInput($key)->fill($val);
     }
     
+    /**
+     * 
+     * Returns the filter object.
+     * 
+     * @return FilterInterface
+     * 
+     */
     public function getFilter()
     {
         return $this->filter;
     }
     
+    /**
+     * 
+     * Returns an individual input object by name.
+     * 
+     * @param string $name The name of the input object.
+     * 
+     * @return AbstractInput
+     * 
+     */
     public function getInput($name)
     {
         if (! isset($this->inputs[$name])) {
@@ -126,16 +142,37 @@ class Fieldset extends AbstractInput
         return $input;
     }
 
+    /**
+     * 
+     * Returns the names of all input objects in this fieldset.
+     * 
+     * @return array
+     * 
+     */
     public function getInputNames()
     {
         return array_keys($this->inputs);
     }
     
+    /**
+     * 
+     * Returns the input builder.
+     * 
+     * @return BuilderInterface
+     * 
+     */
     public function getBuilder()
     {
         return $this->builder;
     }
     
+    /**
+     * 
+     * Returns the options object
+     * 
+     * @return mixed
+     * 
+     */
     public function getOptions()
     {
         return $this->options;
@@ -277,8 +314,8 @@ class Fieldset extends AbstractInput
      * @return array The filter messages.
      * 
      */
-    public function getMessages($field = null)
+    public function getMessages($name = null)
     {
-        return $this->filter->getMessages($field);
+        return $this->filter->getMessages($name);
     }
 }
