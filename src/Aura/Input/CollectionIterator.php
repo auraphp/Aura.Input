@@ -50,9 +50,7 @@ class CollectionIterator implements \Iterator
      * 
      * Constructor.
      * 
-     * @param array $fieldsets The fieldsets over which to iterate.
-     * 
-     * @param string $name_prefix The name of the parent input.
+     * @param array $collection The fieldsets over which to iterate.
      * 
      */
     public function __construct(Collection $collection)

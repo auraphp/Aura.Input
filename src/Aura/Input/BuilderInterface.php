@@ -12,14 +12,49 @@ namespace Aura\Input;
 
 /**
  * 
- * A factory to create fields, fieldsets, and fieldset collections.
+ * The interface for a builder to create fields, fieldsets, and fieldset
+ * collections.
  * 
  * @package Aura.Input
  * 
  */
 interface BuilderInterface
 {
+    /**
+     * 
+     * Creates a new Field object.
+     * 
+     * @param string $type The field type.
+     * 
+     * @param string $name The field name.
+     * 
+     * @return Field
+     * 
+     */
     public function newField($type, $name);
+    
+    /**
+     * 
+     * Creates a new Fieldset object.
+     * 
+     * @param string $type The fieldset type.
+     * 
+     * @param string $name The fieldset name.
+     * 
+     * @return Fieldset
+     * 
+     */
     public function newFieldset($type, $name);
+    /**
+     * 
+     * Creates a new Collection object.
+     * 
+     * @param string $type The collection type.
+     * 
+     * @param string $name The collection name.
+     * 
+     * @return Collection
+     * 
+     */
     public function newCollection($type, $name);
 }

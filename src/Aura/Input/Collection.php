@@ -126,19 +126,44 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
         return new CollectionIterator($this);
     }
 
+    /**
+     * 
+     * Gets all the keys for all Fieldsets in this collection.
+     * 
+     * @return array
+     * 
+     */
     public function getKeys()
     {
         return array_keys($this->fieldsets);
     }
     
-    protected function newFieldset($name)
+    /**
+     * 
+     * Creates and returns a new fieldset.
+     * 
+     * @param string $key The key for the new fieldset.
+     * 
+     * @return Fieldset
+     * 
+     */
+    protected function newFieldset($key)
     {
         $factory = $this->factory;
         $fieldset = $factory();
-        $fieldset->setName($name);
+        $fieldset->setName($key);
         return $fieldset;
     }
     
+    /**
+     * 
+     * ArrayAccess: returns the fieldset at a particular offset.
+     * 
+     * @param mixed $offset The fieldset key.
+     * 
+     * @return Fieldset
+     * 
+     */
     public function offsetGet($offset)
     {
         $fieldset = $this->fieldsets[$offset];
@@ -146,21 +171,53 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
         return $fieldset;
     }
     
-    public function offsetSet($offset, $fieldset)
+    /**
+     * 
+     * ArrayAccess: sets an offset as a Fieldset.
+     * 
+     * @param mixed The Fieldset key.
+     * 
+     * @param Fieldset The Fieldset for that key.
+     * 
+     * @return void
+     * 
+     */
+    public function offsetSet($offset, Fieldset $fieldset)
     {
         $this->fieldsets[$offset] = $fieldset;
     }
     
+    /**
+     * 
+     * ArrayAccess: is a particular Fieldset key set?
+     * 
+     * @return bool True if the Fielset key is set, false if not.
+     * 
+     */
     public function offsetExists($offset)
     {
         return isset($this->fieldsets[$offset]);
     }
     
+    /**
+     * 
+     * ArrayAccess: unsets a particular Fieldset key.
+     * 
+     * @return void
+     * 
+     */
     public function offsetUnset($offset)
     {
         unset($this->fieldsets[$offset]);
     }
     
+    /**
+     * 
+     * Countable: returns the number of Fieldsets in this collection.
+     * 
+     * @return int
+     * 
+     */
     public function count()
     {
         return count($this->fieldsets);

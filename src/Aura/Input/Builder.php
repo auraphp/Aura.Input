@@ -12,7 +12,7 @@ namespace Aura\Input;
 
 /**
  * 
- * A factory to create Field, Fieldset, and fieldset Collection objects.
+ * A builder to create Field, Fieldset, and fieldset Collection objects.
  * 
  * @package Aura.Input
  * 
