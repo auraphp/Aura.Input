@@ -182,7 +182,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return void
      * 
      */
-    public function offsetSet($offset, Fieldset $fieldset)
+    public function offsetSet($offset, $fieldset)
     {
         $this->fieldsets[$offset] = $fieldset;
     }
