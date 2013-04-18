@@ -71,16 +71,14 @@ Setting Filters On The Form
 
 Aura.Input comes with a very basic filter system. Use the `getFilter()` method
 to get the `Filter` object, then add rules to the filter using the `setRule()`
-method.
+method. The first parameter to `setRule()` is the name of the form field to
+test; the second parameter is the message to use if the rule fails; the third
+parameter is a closure to test the form input value.
 
-Rules are closures that test a form input value. The first parameter is the
-name of the form field to test; the second parameter is the message to use if
-the rule fails; the third parameter is a closure to test the form input value.
-
-The rule should take two parameters: the value of the field being tested,
-and optionally the set of all fields (in case we need to compare to other
-inputs). It should return `true` if the rule passes, or `false` if it does
-not.
+The closure for the rule should take two parameters: the value of the field
+being tested, and optionally the set of all fields in the form (in case we
+need to compare to other inputs). The closure should return `true` if the rule
+passes, or `false` if it does not.
 
 ```php
 <?php
@@ -137,7 +135,7 @@ $filter->setRule(
 $filter->setRule(
     'phone_type',
     'Phone type not recognized.',
-    function ($value, $form) {
+    function ($value) {
         $types = ['cell', 'home', 'work'];
         return in_array($value, $types);
     }
@@ -146,7 +144,7 @@ $filter->setRule(
 $filter->setRule(
     'birthday',
     'Birthday is not a valid date.',
-    function ($value, $form) {
+    function ($value) {
         $datetime = date_create($value);
         if (! $datetime) {
             return false;
