@@ -219,7 +219,7 @@ class ContactForm extends Form
     protected function init()
     {
         // set input fields
-        $this->setField('first_name')
+        $this->setField('first_name');
         $this->setField('last_name');
         // etc.
         
