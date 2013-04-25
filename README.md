@@ -351,16 +351,19 @@ $form->setField('first_name', 'text')
      ]);
 
 // hint the view layer to treat the state field as a select, with a 
-// particular set of options
+// particular set of options (the keys are the option values, and the values
+// are the displayed text)
 $form->setField('state', 'select')
      ->setOptions([
         'AL' => 'Alabama',
+        'AK' => 'Alaska',
         'AZ' => 'Arizona',
+        'AR' => 'Arkansas',
         // ...
      ]);
 ```
 
-In your view layer, you can extract the hints for a field using the `get()`
+In our view layer, we can extract the hints for a field using the `get()`
 method.
 
 ```php
@@ -391,7 +394,54 @@ series of helpers that can translate the hints array to HTML.
 Passing Options Into Forms
 --------------------------
 
-TBD.
+Frequently, the application using the inputs will have a standard set of
+options used across all forms and filters. It would be inconvenient to have
+to duplicate those standard options for each different form, so Aura.Input
+allows us to pass in any object at all as a container for application-wide
+options.  We can then use those options for building the inputs.
+
+For example, we would construct our `ContactForm` with an arbitrary options
+object ...
+
+```
+<?php
+use Aura\Input\Form;
+use Aura\Input\Builder;
+use Aura\Input\Filter;
+use Vendor\Package\Options;
+
+$options = new Options;
+$form = new ContactForm(new Builder, new Filter, $options);
+```
+
+... and then use it in the `init()` method:
+
+```php
+<?php
+class ContactForm extends Form
+{
+    protected function init()
+    {
+        // the options object injected via constructor
+        $options = $this->options;
+        
+        // set input fields
+        $this->setField('state', 'select')
+             ->setOptions($options->getStates());
+        
+        // set input filters
+        $filter = $this->getFilter();
+        $options = $this->options;
+        $filter->setRule(
+            'state',
+            'State not recognized.',
+            function ($value) use ($options) {
+                return in_array($value, $options->getStates());
+            }
+        );
+    }
+}
+```
 
 
 Creating Reusable Fieldsets
