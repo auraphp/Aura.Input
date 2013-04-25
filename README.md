@@ -403,7 +403,7 @@ options.  We can then use those options for building the inputs.
 For example, we would construct our `ContactForm` with an arbitrary options
 object ...
 
-```
+```php
 <?php
 use Aura\Input\Form;
 use Aura\Input\Builder;
