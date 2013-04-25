@@ -405,9 +405,9 @@ object ...
 
 ```php
 <?php
-use Aura\Input\Form;
 use Aura\Input\Builder;
 use Aura\Input\Filter;
+use Vendor\Package\ContactForm;
 use Vendor\Package\Options;
 
 $options = new Options;
