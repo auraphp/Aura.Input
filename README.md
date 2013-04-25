@@ -418,6 +418,10 @@ $form = new ContactForm(new Builder, new Filter, $options);
 
 ```php
 <?php
+namespace Vendor\Package;
+
+use Aura\Input\Form;
+
 class ContactForm extends Form
 {
     protected function init()
