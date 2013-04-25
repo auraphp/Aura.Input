@@ -330,7 +330,62 @@ throw an exception and will not fill in the data.
 Providing "Hints" To The View Layer
 -----------------------------------
 
-TBD.
+The Aura.Input package only describes the user inputs and their values. It
+does not render forms or fields; that task is for the view layer. However,
+Aura.Input does allow for "hints" that the view layer can use for rendering.
+
+When defining a field, we can set the type as the second parameter to the
+`setField()` method. This can be an HTML input type, an HTML tag name, a
+custom name that the view layer recognizes, or anything else; recall that
+these are only hints for the view, and are not strict. In addition, we can use
+fluent methods to set attributes and options on the field.
+
+```php
+<?php
+// hint the view layer to treat the first_name field as a text input,
+// with size and maxlength attributes
+$form->setField('first_name', 'text')
+     ->setAttribs([
+        'size' => 20,
+        'maxlength' => 20,
+     ]);
+
+// hint the view layer to treat the state field as a select, with a 
+// particular set of options
+$form->setField('state', 'select')
+     ->setOptions([
+        'AL' => 'Alabama',
+        'AZ' => 'Arizona',
+        // ...
+     ]);
+```
+
+In your view layer, you can extract the hints for a field using the `get()`
+method.
+
+```php
+<?php
+// get the hints for the state field
+$hints = $form->get('state');
+
+// the hints array looks like this:
+// $hints = [
+//     'type' => 'select',      # the input type
+//     'name' => 'state',       # the input name
+//     'attribs' => [           # attributes as key-value pairs
+//         // ...
+//     ],
+//     'options' => [           # options as key-value pairs
+//         'AL' => 'Alabama',
+//         'AZ' => 'Arizona',
+//         // ...
+//     ],
+//     'value' => '',           # the current value of the input
+// ];
+```
+
+The [Aura.View](http://github.com/auraphp/Aura.View) package comes with a
+series of helpers that can translate the hints array to HTML.
 
 
 Passing Options Into Forms
