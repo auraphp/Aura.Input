@@ -427,7 +427,7 @@ class ContactForm extends Form
     protected function init()
     {
         // the options object injected via constructor
-        $options = $this->options;
+        $options = $this->getOptions();
         
         // set input fields
         $this->setField('state', 'select')
@@ -435,7 +435,6 @@ class ContactForm extends Form
         
         // set input filters
         $filter = $this->getFilter();
-        $options = $this->options;
         $filter->setRule(
             'state',
             'State not recognized.',
