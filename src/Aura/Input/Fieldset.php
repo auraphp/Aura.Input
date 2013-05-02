@@ -84,30 +84,64 @@ class Fieldset extends AbstractInput
      * 
      * Gets an input value from this fieldset.
      * 
-     * @param string $key The input name.
+     * @param string $name The input name.
      * 
      * @return mixed The input value.
      * 
      */
-    public function __get($key)
+    public function __get($name)
     {
-        return $this->getInput($key)->read();
+        return $this->getInput($name)->read();
     }
     
     /**
      * 
      * Sets an input value on this fieldset.
      * 
-     * @param string $key The input name.
+     * @param string $name The input name.
      * 
-     * @param mixed $val The input value.
+     * @param mixed $value The input value.
      * 
      * @return void
      * 
      */
-    public function __set($key, $val)
+    public function __set($name, $value)
     {
-        $this->getInput($key)->fill($val);
+        $this->getInput($name)->fill($value);
+    }
+    
+    /**
+     * 
+     * Checks if a value is set on an input in this fieldset.
+     * 
+     * @param string $name The input name.
+     * 
+     * @return bool
+     * 
+     */
+    public function __isset($name)
+    {
+        if (! isset($this->inputs[$name])) {
+            return false;
+        }
+
+        return $this->getInput($name)->read() !== null;
+    }
+    
+    /**
+     * 
+     * Sets the value of an input in this fieldset to null.
+     * 
+     * @param string $name The input name.
+     * 
+     * @return void
+     * 
+     */
+    public function __unset($name)
+    {
+        if (isset($this->inputs[$name])) {
+            $this->getInput($name)->fill(null);
+        }
     }
     
     /**
