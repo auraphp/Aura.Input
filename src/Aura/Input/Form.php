@@ -12,222 +12,83 @@ namespace Aura\Input;
 
 /**
  * 
- * A form object of fields and values.
+ * A top-level form object to contain fields, fieldsets, collections, and
+ * anti-CSRF protection.
  * 
  * @package Aura.Input
  * 
  */
-class Form
+class Form extends Fieldset
 {
     /**
      * 
-     * Fields in the form.
+     * The anti-CSRF implementation, if any.
      * 
-     * @var FieldCollection
+     * @var AntiCsrfInterface
      * 
      */
-    protected $fields;
+    protected $anti_csrf;
     
     /**
      * 
-     * Values of the fields.
+     * Sets the anti-CSRF implementation; calls the `setField()` method on the
+     * implementation to set the anti-CSRF field.
      * 
-     * @var array
-     * 
-     */
-    protected $values = [];
-    
-    /**
-     * 
-     * Constructor; calls `init()` at the end.
-     * 
-     * @param FieldCollection $fields A field collection object.
-     * 
-     * @see init()
-     * 
-     */
-    public function __construct(FieldCollection $fields)
-    {
-        $this->fields = $fields;
-        $this->init();
-    }
-    
-    /**
-     * 
-     * Initializes this form object; called at the end of `__construct()`.
+     * @param AntiCsrfInterface $anti_csrf The anti-CSRF implementation.
      * 
      * @return void
      * 
      */
-    protected function init()
+    public function setAntiCsrf(AntiCsrfInterface $anti_csrf)
     {
+        $this->anti_csrf = $anti_csrf;
+        $this->anti_csrf->setField($this);
     }
     
     /**
      * 
-     * Sets a field into the form.
-     * 
-     * @param string $name The field name; e.g., `'foo[bar]'`.
-     * 
-     * @param string $type The field type; e.g. `'checkbox'`.
-     * 
-     * @return Field
-     * 
-     */
-    public function setField($name, $type = 'text')
-    {
-        return $this->fields->set($name, $type);
-    }
-    
-    /**
-     * 
-     * Returns a single field as a plain old PHP array.
-     * 
-     * @param string $name The name of the field to get.
-     * 
-     * @return array An array with keys `'name'`, `'type'`, `'attribs'`,
-     * `'options'`, and `'value'`.
-     * 
-     */
-    public function getField($name)
-    {
-        $value = isset($this->values[$name])
-               ? $this->values[$name]
-               : null;
-               
-        return ['name' => $name]
-             + $this->fields->get($name)->asArray()
-             + ['value' => $value];
-    }
-    
-    /**
-     * 
-     * Returns the field collection.
-     * 
-     * @return FieldCollection
-     * 
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-    
-    /**
-     * 
-     * Sets the values of fields. The value of `$data['foo']['bar']['baz']`
-     * will be set on the field named `'foo[bar][baz]'`.
-     * 
-     * @param array $data The values to set into fields.
-     * 
-     * @return void
-     * 
-     * @see getValue()
-     * 
-     */
-    public function setValues($data)
-    {
-        $names = $this->fields->getNames();
-        foreach ($names as $name) {
-            $value = $this->getValue($name, $data);
-            if ($value !== null) {
-                $this->values[$name] = $value;
-            }
-        }
-    }
-    
-    /**
-     * 
-     * Gets the value for a field out of a data array.
-     * 
-     * @param string $name The field name.
-     * 
-     * @param string $data The data array, or a subset of an original array.
+     * Returns the anti-CSRF implementation, if any.
      * 
      * @return mixed
      * 
-     * @see setValues()
-     * 
      */
-    protected function getValue($name, $data)
+    public function getAntiCsrf()
     {
-        // if no subarray in the name, return the named key from the data
-        $pos = strpos($name, '[');
-        if ($pos === false) {
-            return isset($data[$name]) ? $data[$name] : null;
-        }
-        
-        // get the data key:
-        // foo[bar][baz] => foo
-        $key = substr($name, 0, $pos); // foo
-
-        // get the subarray name:
-        // foo[bar][baz] => bar[baz]
-        $end = strpos($name, ']');
-        $sub = substr($name, $pos + 1, $end - $pos - 1)
-             . substr($name, $end + 1);
-    
-        // recursively descend into the data
-        return $this->getValue($sub, $data[$key]);
+        return $this->anti_csrf;
     }
     
     /**
      * 
-     * Returns the value of all fields as an array keyed on the field names.
-     * Fields named, e.g., `'foo[bar][baz]'` will be returned in the array
-     * element `$values['foo']['bar']['baz']`.
+     * Fills this form with input values.
      * 
-     * @return array
+     * If an anti-CSRF implementation is set and the incoming data does not
+     * have a valid anti-CSRF value, it will throw an exception.
      * 
-     * @see setValue()
-     * 
-     */
-    public function getValues()
-    {
-        $data = [];
-        foreach ($this->values as $name => $value) {
-            $this->setValue($name, $value, $data);
-        }
-        return $data;
-    }
-    
-    /**
-     * 
-     * Sets the value of a field into a data array.
-     * 
-     * @param string $name The field name, or part of a field name.
-     * 
-     * @param string $value The value to set into the data array.
-     * 
-     * @param string &$data A reference to the data array.
+     * @param array $data The values for this fieldset.
      * 
      * @return void
      * 
-     * @see getValues()
+     * @throws Exception\CsrfViolation if an anti-CSRF implementation is set
+     * and the incoming data does not have a valid anti-CSRF value.
      * 
      */
-    protected function setValue($name, $value, &$data)
+    public function fill(array $data)
     {
-        // if no subarray in the name, set the named value into the data
-        $pos = strpos($name, '[');
-        if ($pos === false) {
-            $data[$name] = $value;
-            return;
+        if ($this->anti_csrf && ! $this->anti_csrf->isValid($data)) {
+            throw new Exception\CsrfViolation;
         }
-            
-        // create a subarray in the data
-        // foo[bar][baz] => foo
-        $key = substr($name, 0, $pos); // foo
-        if (! isset($data[$key])) {
-            $data[$key] = [];
-        }
-        
-        // get the subarray name:
-        // foo[bar][baz] => bar[baz]
-        $end = strpos($name, ']');
-        $sub = substr($name, $pos + 1, $end - $pos - 1)
-             . substr($name, $end + 1);
+        parent::fill($data);
+    }
     
-        // recursively descend into the data
-        $this->setValue($sub, $value, $data[$key]);
+    /**
+     * 
+     * Returns all the fields collection
+     * 
+     * @return \ArrayIterator
+     * 
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->fields);
     }
 }

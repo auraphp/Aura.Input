@@ -12,12 +12,12 @@ namespace Aura\Input;
 
 /**
  * 
- * A field object.
+ * A single field in a fieldset.
  * 
  * @package Aura.Input
  * 
  */
-class Field
+class Field extends AbstractInput
 {
     /**
      * 
@@ -52,6 +52,16 @@ class Field
     
     /**
      * 
+     * The value for the field.  This may or may not be the same as the
+     * 'value' attribue.
+     * 
+     * @var mixed
+     * 
+     */
+    protected $value;
+    
+    /**
+     * 
      * Constructor.
      * 
      * @param string $type The field type.
@@ -64,6 +74,61 @@ class Field
     
     /**
      * 
+     * Fills this field with a value.
+     * 
+     * @param mixed $value The value for the field.
+     * 
+     * @return void
+     * 
+     */
+    public function fill($value)
+    {
+        $this->value = $value;
+    }
+    
+    /**
+     * 
+     * Reads the value from this field.
+     * 
+     * @return mixed
+     * 
+     */
+    public function read()
+    {
+        return $this->value;
+    }
+    
+    /**
+     * 
+     * Returns this field as a plain old PHP array for use in a view.
+     * 
+     * @return array An array with keys `'type'`, `'name'`, `'attribs'`, 
+     * `'options'`, and `'value'`.
+     * 
+     */
+    public function get()
+    {
+        $attribs = array_merge(
+            [
+                // force a particular order on some attributes
+                'id'   => null,
+                'type' => null,
+                'name' => null,
+            ],
+            $this->attribs
+        );
+        
+        return [
+            'type'          => $this->type,
+            'name'          => $this->getFullName(),
+            'attribs'       => $attribs,
+            'options'       => $this->options,
+            'value'         => $this->value,
+        ];
+    }
+    
+    /**
+     * 
      * Sets the HTML attributes on this field.
      * 
      * @param array $attribs HTML attributes for the field as key-value pairs;
@@ -72,7 +137,7 @@ class Field
      * @return self
      * 
      */
-    public function attribs(array $attribs)
+    public function setAttribs(array $attribs)
     {
         $this->attribs = $attribs;
         return $this;
@@ -90,7 +155,7 @@ class Field
      * @return self
      * 
      */
-    public function options(array $options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
         return $this;
@@ -98,18 +163,16 @@ class Field
     
     /**
      * 
-     * Returns this field as a plain old PHP array.
+     * Sets the value on this field.
      * 
-     * @return array An array with keys `'type'`, `'attribs'`, and 
-     * `'options'`.
+     * @param mixed $value The value for the field.
+     * 
+     * @return self
      * 
      */
-    public function asArray()
+    public function setValue($value)
     {
-        return [
-            'type'    => $this->type,
-            'attribs' => $this->attribs,
-            'options' => $this->options,
-        ];
+        $this->value = $value;
+        return $this;
     }
 }

@@ -3,57 +3,73 @@ namespace Aura\Input;
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
-    protected $form;
-    
-    protected function setUp()
+    public function testAddCsrf()
     {
-        $this->form = new Form(new FieldCollection(new FieldFactory));
-        $this->form->setField('foo');
-        $this->form->setField('bar[baz]');
-        $this->form->setField('bar[dib]');
-        $this->form->setField('zim[gir][irk]');
-    }
-    
-    public function testGetFields()
-    {
-        $actual = $this->form->getFields();
-        $expect = 'Aura\Input\FieldCollection';
-        $this->assertInstanceOf($expect, $actual);
-    }
-    
-    public function testSetAndGetValues()
-    {
-        $data = [
-            'foo' => 'foo_value',
-            'bar' => [
-                'baz' => 'bar.baz_value',
-                'dib' => 'bar.dib_value',
-            ],
-            'zim' => [
-                'gir' => [
-                    'irk' => 'zim.gir.irk_value'
-                ],
-            ],
-            'doom' => 'doom_value', // should not show up
-        ];
+        // set up the basic form
+        $form = new Form(new Builder, new Filter);
+        $form->setField('foo');
         
-        $this->form->setValues($data);
-        
-        $actual = $this->form->getField('zim[gir][irk]');
-        $expect = [
-            'name' => 'zim[gir][irk]',
-            'type' => 'text',
-            'attribs' => [],
-            'options' => [],
-            'value' => 'zim.gir.irk_value',
-        ];
-        
+        // there should be only one field
+        $expect = ['foo'];
+        $actual = $form->getInputNames();
         $this->assertSame($expect, $actual);
         
-        $expect = $data;
-        unset($expect['doom']);
+        // set CSRF into the form
+        $csrf = new MockAntiCsrf;
+        $form->setAntiCsrf($csrf);
+        $this->assertSame($csrf, $form->getAntiCsrf());
         
-        $actual = $this->form->getValues();
+        // there should be two fields now
+        $expect = ['foo', '__csrf_token'];
+        $actual = $form->getInputNames();
         $this->assertSame($expect, $actual);
+    }
+    
+    public function testMissingCsrf()
+    {
+        // set up the basic form
+        $form = new Form(new Builder, new Filter);
+        $form->setField('foo');
+        
+        // set CSRF into the form
+        $csrf = new MockAntiCsrf;
+        $form->setAntiCsrf($csrf);
+        
+        // load it with a missing csrf token
+        $data = ['foo' => 'bar'];
+        $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
+        $form->fill($data);
+    }
+    
+    public function testBadCsrf()
+    {
+        // set up the basic form
+        $form = new Form(new Builder, new Filter);
+        $form->setField('foo');
+        
+        // set CSRF into the form
+        $csrf = new MockAntiCsrf;
+        $form->setAntiCsrf($csrf);
+        
+        // load it with a bad token    
+        $data = ['foo' => 'bar', '__csrf_token' => 'badvalue'];
+        $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
+        $form->fill($data);
+    }
+    
+    public function testGoodCsrf()
+    {
+        // set up the basic form
+        $form = new Form(new Builder, new Filter);
+        $form->setField('foo');
+        
+        // set CSRF into the form
+        $csrf = new MockAntiCsrf;
+        $form->setAntiCsrf($csrf);
+        
+        // load it with a good token
+        $data = ['foo' => 'bar', '__csrf_token' => 'goodvalue'];
+        $form->fill($data);
+        $this->assertSame('bar', $form->foo);
     }
 }
