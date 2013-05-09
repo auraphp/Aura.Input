@@ -71,16 +71,14 @@ Setting Filters On The Form
 
 Aura.Input comes with a very basic filter system. Use the `getFilter()` method
 to get the `Filter` object, then add rules to the filter using the `setRule()`
-method.
+method. The first parameter to `setRule()` is the name of the form field to
+test; the second parameter is the message to use if the rule fails; the third
+parameter is a closure to test the form input value.
 
-Rules are closures that test a form input value. The first parameter is the
-name of the form field to test; the second parameter is the message to use if
-the rule fails; the third parameter is a closure to test the form input value.
-
-The rule should take two parameters: the value of the field being tested,
-and optionally the set of all fields (in case we need to compare to other
-inputs). It should return `true` if the rule passes, or `false` if it does
-not.
+The closure for the rule should take two parameters: the value of the field
+being tested, and optionally the set of all fields in the form (in case we
+need to compare to other inputs). The closure should return `true` if the rule
+passes, or `false` if it does not.
 
 ```php
 <?php
@@ -137,7 +135,7 @@ $filter->setRule(
 $filter->setRule(
     'phone_type',
     'Phone type not recognized.',
-    function ($value, $form) {
+    function ($value) {
         $types = ['cell', 'home', 'work'];
         return in_array($value, $types);
     }
@@ -146,7 +144,7 @@ $filter->setRule(
 $filter->setRule(
     'birthday',
     'Birthday is not a valid date.',
-    function ($value, $form) {
+    function ($value) {
         $datetime = date_create($value);
         if (! $datetime) {
             return false;
@@ -247,7 +245,7 @@ Applying CSRF Protections
 Aura.Input comes with an interface for implementations that prevent
 [cross-site request forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery)
 attacks.  To make use of this interface, we will need to provide our own
-CSRF implentation; this is because it depends on two things that Aura.Input
+CSRF implementation; this is because it depends on two things that Aura.Input
 cannot provide: an object that tells us if the user is authenticated or not,
 and an object to generate and retain a crytpographically secure random value
 for the CSRF token value.  A psuedo-implementation follows.
@@ -332,13 +330,121 @@ throw an exception and will not fill in the data.
 Providing "Hints" To The View Layer
 -----------------------------------
 
-TBD.
+The Aura.Input package only describes the user inputs and their values. It
+does not render forms or fields; that task is for the view layer. However,
+Aura.Input does allow for "hints" that the view layer can use for rendering.
+
+When defining a field, we can set the type as the second parameter to the
+`setField()` method. This can be an HTML input type, an HTML tag name, a
+custom name that the view layer recognizes, or anything else; recall that
+these are only hints for the view, and are not strict. In addition, we can use
+fluent methods to set attributes and options on the field.
+
+```php
+<?php
+// hint the view layer to treat the first_name field as a text input,
+// with size and maxlength attributes
+$form->setField('first_name', 'text')
+     ->setAttribs([
+        'size' => 20,
+        'maxlength' => 20,
+     ]);
+
+// hint the view layer to treat the state field as a select, with a 
+// particular set of options (the keys are the option values, and the values
+// are the displayed text)
+$form->setField('state', 'select')
+     ->setOptions([
+        'AL' => 'Alabama',
+        'AK' => 'Alaska',
+        'AZ' => 'Arizona',
+        'AR' => 'Arkansas',
+        // ...
+     ]);
+```
+
+In our view layer, we can extract the hints for a field using the `get()`
+method.
+
+```php
+<?php
+// get the hints for the state field
+$hints = $form->get('state');
+
+// the hints array looks like this:
+// $hints = [
+//     'type' => 'select',      # the input type
+//     'name' => 'state',       # the input name
+//     'attribs' => [           # attributes as key-value pairs
+//         // ...
+//     ],
+//     'options' => [           # options as key-value pairs
+//         'AL' => 'Alabama',
+//         'AZ' => 'Arizona',
+//         // ...
+//     ],
+//     'value' => '',           # the current value of the input
+// ];
+```
+
+The [Aura.View](http://github.com/auraphp/Aura.View) package comes with a
+series of helpers that can translate the hints array to HTML.
 
 
 Passing Options Into Forms
 --------------------------
 
-TBD.
+Frequently, the application using the inputs will have a standard set of
+options used across all forms and filters. It would be inconvenient to have
+to duplicate those standard options for each different form, so Aura.Input
+allows us to pass in any object at all as a container for application-wide
+options.  We can then use those options for building the inputs.
+
+For example, we would construct our `ContactForm` with an arbitrary options
+object ...
+
+```php
+<?php
+use Aura\Input\Builder;
+use Aura\Input\Filter;
+use Vendor\Package\ContactForm;
+use Vendor\Package\Options;
+
+$options = new Options;
+$form = new ContactForm(new Builder, new Filter, $options);
+```
+
+... and then use it in the `init()` method:
+
+```php
+<?php
+namespace Vendor\Package;
+
+use Aura\Input\Form;
+
+class ContactForm extends Form
+{
+    protected function init()
+    {
+        // the options object injected via constructor
+        $options = $this->getOptions();
+        
+        // set input fields
+        $this->setField('state', 'select')
+             ->setOptions($options->getStates());
+        
+        // set input filters
+        $filter = $this->getFilter();
+        $filter->setRule(
+            'state',
+            'State not recognized.',
+            function ($value) use ($options) {
+                return in_array($value, $options->getStates());
+            }
+        );
+    }
+}
+```
 
 
 Creating Reusable Fieldsets
