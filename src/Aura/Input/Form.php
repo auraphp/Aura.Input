@@ -89,6 +89,6 @@ class Form extends Fieldset
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->fields);
+        return new \ArrayIterator($this->inputs);
     }
 }
