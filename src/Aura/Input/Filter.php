@@ -110,4 +110,26 @@ class Filter implements FilterInterface
         
         return [];
     }
+    
+    /**
+     *
+     * Set the array of failure messages.
+     *
+     * @param string $field set the messages just for this field; if empty,
+     * set messages for all fields.
+     *
+     * @return RuleCollection
+     *
+     */
+    public function setMessages($messages, $field = null)
+    {
+        if (! $field) {
+            $this->messages = $messages;
+        }
+
+        if (isset($this->messages[$field])) {
+            $this->messages[$field] = $messages;
+        }
+        return $this;
+    }
 }
