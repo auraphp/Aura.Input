@@ -113,11 +113,11 @@ $filter->setRule(
     'state',
     'State not recognized.',
     function ($value) {
-        $states = [
+        $states = array(
             'AK', 'AL', 'AR', 'AZ',
             // ...
             'WA', 'WI', 'WV', 'WY',
-        ];
+        );
         return in_array($value, $states);
     }
 );
@@ -136,7 +136,7 @@ $filter->setRule(
     'phone_type',
     'Phone type not recognized.',
     function ($value) {
-        $types = ['cell', 'home', 'work'];
+        $types = array('cell', 'home', 'work');
         return in_array($value, $types);
     }
 );
@@ -345,22 +345,22 @@ fluent methods to set attributes and options on the field.
 // hint the view layer to treat the first_name field as a text input,
 // with size and maxlength attributes
 $form->setField('first_name', 'text')
-     ->setAttribs([
+     ->setAttribs(array(
         'size' => 20,
         'maxlength' => 20,
-     ]);
+     ));
 
 // hint the view layer to treat the state field as a select, with a 
 // particular set of options (the keys are the option values, and the values
 // are the displayed text)
 $form->setField('state', 'select')
-     ->setOptions([
+     ->setOptions(array(
         'AL' => 'Alabama',
         'AK' => 'Alaska',
         'AZ' => 'Arizona',
         'AR' => 'Arkansas',
         // ...
-     ]);
+     ));
 ```
 
 In our view layer, we can extract the hints for a field using the `get()`
@@ -372,19 +372,19 @@ method.
 $hints = $form->get('state');
 
 // the hints array looks like this:
-// $hints = [
+// $hints = array(
 //     'type' => 'select',      # the input type
 //     'name' => 'state',       # the input name
-//     'attribs' => [           # attributes as key-value pairs
+//     'attribs' => array(           # attributes as key-value pairs
 //         // ...
-//     ],
-//     'options' => [           # options as key-value pairs
+//     ),
+//     'options' => array(           # options as key-value pairs
 //         'AL' => 'Alabama',
 //         'AZ' => 'Arizona',
 //         // ...
-//     ],
+//     ),
 //     'value' => '',           # the current value of the input
-// ];
+// );
 ```
 
 The [Aura.View](http://github.com/auraphp/Aura.View) package comes with a

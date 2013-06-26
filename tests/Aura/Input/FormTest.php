@@ -10,7 +10,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form->setField('foo');
         
         // there should be only one field
-        $expect = ['foo'];
+        $expect = array('foo');
         $actual = $form->getInputNames();
         $this->assertSame($expect, $actual);
         
@@ -20,7 +20,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($csrf, $form->getAntiCsrf());
         
         // there should be two fields now
-        $expect = ['foo', '__csrf_token'];
+        $expect = array('foo', '__csrf_token');
         $actual = $form->getInputNames();
         $this->assertSame($expect, $actual);
     }
@@ -36,7 +36,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form->setAntiCsrf($csrf);
         
         // load it with a missing csrf token
-        $data = ['foo' => 'bar'];
+        $data = array('foo' => 'bar');
         $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
         $form->fill($data);
     }
@@ -52,7 +52,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form->setAntiCsrf($csrf);
         
         // load it with a bad token    
-        $data = ['foo' => 'bar', '__csrf_token' => 'badvalue'];
+        $data = array('foo' => 'bar', '__csrf_token' => 'badvalue');
         $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
         $form->fill($data);
     }
@@ -68,7 +68,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form->setAntiCsrf($csrf);
         
         // load it with a good token
-        $data = ['foo' => 'bar', '__csrf_token' => 'goodvalue'];
+        $data = array('foo' => 'bar', '__csrf_token' => 'goodvalue');
         $form->fill($data);
         $this->assertSame('bar', $form->foo);
     }
@@ -82,6 +82,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         $iterator = $form->getIterator();
         $keys = array_keys($iterator->getArrayCopy());
-        $this->assertSame(['foo', 'bar'], $keys);
+        $this->assertSame(array('foo', 'bar'), $keys);
     }
 }

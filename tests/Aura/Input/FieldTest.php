@@ -8,24 +8,24 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $field = new Field('text');
         $field->setName('field_name')
               ->setNamePrefix('prefix')
-              ->setAttribs(['foo' => 'bar'])
-              ->setOptions(['baz' => 'dib'])
+              ->setAttribs(array('foo' => 'bar'))
+              ->setOptions(array('baz' => 'dib'))
               ->setValue('doom');
         
         $actual = $field->get();
         
-        $expect = [
+        $expect = array(
             'type' => 'text',
             'name' => 'prefix[field_name]',
-            'attribs' => [
+            'attribs' => array(
                 'id'   => null,
                 'type' => null,
                 'name' => null,
                 'foo'  => 'bar',
-            ],
-            'options' => ['baz' => 'dib'],
+            ),
+            'options' => array('baz' => 'dib'),
             'value' => 'doom',
-        ];
+        );
         
         $this->assertSame($expect, $actual);
         

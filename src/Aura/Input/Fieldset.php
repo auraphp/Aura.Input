@@ -45,7 +45,7 @@ class Fieldset extends AbstractInput
      * @var array
      * 
      */
-    protected $inputs = [];
+    protected $inputs = array();
     
     /**
      * 
