@@ -282,7 +282,8 @@ class AntiCsrf implements AntiCsrfInterface
         }
         
         // user is authenticated, so add a CSRF token
-        $fieldset->setField('__csrf_token', $this->csrf->getValue());
+        $fieldset->setField('__csrf_token', 'hidden')
+            ->setAttribs(['value' => $this->csrf->getValue()]);
     }
     
     // implementation of isValid().  return true if CSRF token is present
