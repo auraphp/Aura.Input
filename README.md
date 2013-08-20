@@ -48,7 +48,7 @@ Use the `setField()` method to add an input field to the form.
 
 ```php
 <?php
-$form->setField('first_name')
+$form->setField('first_name');
 $form->setField('last_name');
 $form->setField('email');
 $form->setField('email_confirm');
