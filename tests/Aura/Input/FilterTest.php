@@ -82,6 +82,18 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertEquals($expect, $values);
         
+        // add some messages manually
+        $this->filter->addMessages('foo', 'Added 1');
+        $this->filter->addMessages('foo', ['Added 2', 'Added 3']);
+        $expect = [
+            'Foo should be alpha only',
+            'Added 1',
+            'Added 2',
+            'Added 3',
+        ];
+        $actual = $this->filter->getMessages('foo');
+        $this->assertSame($expect, $actual);
+        
         // let's make it valid
         $values->foo = 'foovalue';
         $passed = $this->filter->values($values);
