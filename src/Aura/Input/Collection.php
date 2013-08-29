@@ -39,7 +39,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @var array
      * 
      */
-    protected $fieldsets = [];
+    protected $fieldsets = array();
 
     /**
      * 
@@ -49,8 +49,11 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * this collection.
      * 
      */
-    public function __construct(callable $factory)
+    public function __construct($factory)
     {
+        if (! is_callable($factory)) {
+            throw new \Exception("Should be callable");
+        }
         $this->factory = $factory;
     }
 
@@ -63,7 +66,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      */
     public function fill(array $data)
     {
-        $this->fieldsets = [];
+        $this->fieldsets = array();
         foreach ($data as $key => $inputs) {
             $fieldset = $this->newFieldset($key);
             foreach ($inputs as $name => $value) {
@@ -107,7 +110,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
             return $this->fieldsets[$key]->getMessages();
         }
         
-        $messages = [];
+        $messages = array();
         foreach ($this->fieldsets as $key => $fieldset) {
             $messages[$key] = $fieldset->getMessages();
         }

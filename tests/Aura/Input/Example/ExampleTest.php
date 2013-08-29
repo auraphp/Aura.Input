@@ -10,7 +10,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     
     protected function setUp()
     {
-        $builder = new Builder([
+        $builder = new Builder(array(
             'address' => function () {
                 return new AddressFieldset(
                     new Builder,
@@ -23,7 +23,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                     new Filter
                 );
             },
-        ]);
+        ));
         
         $this->form = new ContactForm($builder, new Filter);
     }
@@ -31,77 +31,77 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
     public function testAll()
     {
         // fill the form with data
-        $this->form->fill([
+        $this->form->fill(array(
             'first_name' => 'Bolivar',
             'last_name' => 'Shagnasty',
             'no_such_field' => 'nonesuch',
             'email' => 'boshag@example.com',
             'website' => 'http://boshag.example.com',
-            'address' => [
+            'address' => array(
                 'street' => '123 Main',
                 'city' => 'Beverly Hills',
                 'state' => 'CA',
                 'zip' => '90210',
-            ],
-            'phone_numbers' => [
-                0 => [
+            ),
+            'phone_numbers' => array(
+                0 => array(
                     'type' => 'mobile',
                     'number' => '123-456-7890',
-                ],
-                1 => [
+                ),
+                1 => array(
                     'type' => 'home',
                     'number' => '234-567-8901',
-                ],
-                2 => [
+                ),
+                2 => array(
                     'type' => 'fax',
                     'number' => '345-678-9012',
-                ],
-            ],
-        ]);
+                ),
+            ),
+        ));
         
         // first-level input
         $actual = $this->form->get('email');
-        $expect = [
+        $expect = array(
             'type' => 'text',
             'name' => 'email',
-            'attribs' => [
+            'attribs' => array(
                 'id' => NULL,
                 'type' => NULL,
                 'name' => NULL,
-            ],
-            'options' => [],
+            ),
+            'options' => array(),
             'value' => 'boshag@example.com',
-        ];
+        );
         $this->assertSame($expect, $actual);
         
         // fieldset-level input
         $actual = $this->form->address->get('street');
-        $expect = [
+        $expect = array(
             'type' => 'text',
             'name' => 'address[street]',
-            'attribs' => [
+            'attribs' => array(
                 'id' => NULL,
                 'type' => NULL,
                 'name' => NULL,
-            ],
-            'options' => [],
+            ),
+            'options' => array(),
             'value' => '123 Main',
-        ];
+        );
         $this->assertSame($expect, $actual);
         
         // collection-level input
         $actual = $this->form->phone_numbers[1]->get('number');
-        $expect = [
+        $expect = array(
             'type' => 'text',
             'name' => 'phone_numbers[1][number]',
-            'attribs' => [
+            'attribs' => array(
                 'id' => NULL,
                 'type' => NULL,
                 'name' => NULL,
-            ],
-            'options' => [],
+            ),
+            'options' => array(),
             'value' => '234-567-8901',
-        ];
+        );
         $this->assertSame($expect, $actual);
         
         

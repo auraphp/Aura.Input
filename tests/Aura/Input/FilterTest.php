@@ -41,12 +41,12 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     public function testAll()
     {
         // initial data
-        $values = (object) [
+        $values = (object) array(
             'foo' => 'foo_value',
             'bar' => 'bar_value',
             'baz' => 'baz_value',
             'baz_confirm' => 'baz_value',
-        ];
+        );
         
         // do the values pass all filters?
         $passed = $this->filter->values($values);
@@ -56,30 +56,30 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         
         // get all messages
         $actual = $this->filter->getMessages();
-        $expect = [
-            'foo' => [
+        $expect = array(
+            'foo' => array(
                 'Foo should be alpha only',
-            ]
-        ];
+            )
+        );
         $this->assertSame($expect, $actual);
         
         // get just 'foo' messages
         $actual = $this->filter->getMessages('foo');
-        $expect = [
+        $expect = array(
             'Foo should be alpha only',
-        ];
+        );
         $this->assertSame($expect, $actual);
         
         // no failures on nonexistent field
-        $this->assertSame([], $this->filter->getMessages('no-such-failure'));
+        $this->assertSame(array(), $this->filter->getMessages('no-such-failure'));
         
         // should have changed the values on 'bar'
-        $expect = (object) [
+        $expect = (object) array(
             'foo' => 'foo_value',
             'bar' => 'bar!value',
             'baz' => 'baz_value',
             'baz_confirm' => 'baz_value',
-        ];
+        );
         $this->assertEquals($expect, $values);
         
         // let's make it valid
