@@ -108,4 +108,6 @@ abstract class AbstractInput
     {
         return $this;
     }
+    
+    abstract public function getValue();
 }

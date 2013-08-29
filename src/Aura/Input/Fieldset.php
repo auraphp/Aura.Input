@@ -343,4 +343,13 @@ class Fieldset extends AbstractInput
     {
         return $this->filter->getMessages($name);
     }
+    
+    public function getValue()
+    {
+        $data = [];
+        foreach ($this->inputs as $name => $input) {
+            $data[$name] = $input->getValue();
+        }
+        return $data;
+    }
 }

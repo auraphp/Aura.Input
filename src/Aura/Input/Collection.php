@@ -226,4 +226,13 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
     {
         return count($this->fieldsets);
     }
+    
+    public function getValue()
+    {
+        $data = [];
+        foreach ($this->fieldsets as $key => $fieldset) {
+            $data[$key] = $fieldset->getValue();
+        }
+        return $data;
+    }
 }
