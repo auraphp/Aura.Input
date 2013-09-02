@@ -23,21 +23,6 @@ interface FilterInterface
 {
     /**
      * 
-     * Sets a filter rule on a field.
-     *  
-     * @param string $field The field name.
-     * 
-     * @param string $message The message when the rule fails.
-     * 
-     * @param Closure $closure A closure that implements the rule. It must
-     * have the signature `function ($value, &$fields)`; it must return
-     * boolean true on success, or boolean false on failure.
-     * 
-     */
-    public function setRule($field, $message, Closure $closure);
-    
-    /**
-     * 
      * Filter (sanitize and validate) the data.
      * 
      * @param mixed $values The values to be filtered.
