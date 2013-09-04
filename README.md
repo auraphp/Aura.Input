@@ -1,6 +1,8 @@
 Aura.Input
 ==========
 
+[![Build Status](https://travis-ci.org/auraphp/Aura.Input.png)](https://travis-ci.org/auraphp/Aura.Input)
+
 This package contains tools to describe and filter user inputs from an HTML
 form, including sub-forms/sub-fieldsets, fieldset collections, an interface
 for injecting custom filter systems, and CSRF protection. Note that this
