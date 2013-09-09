@@ -39,15 +39,15 @@ class Filter implements FilterInterface
     
     /**
      * 
-     * Set Rule on a field
+     * Sets a filter rule on a field.
+     *  
+     * @param string $field The field name.
      * 
-     * @param string $field The field value
+     * @param string $message The message when the rule fails.
      * 
-     * @param string $message The message when the rule fails
-     * 
-     * @param \Closure $closure A closure with two params; the first is the
-     * value of the field being tested, and the second is the set of all
-     * values (typically the Fieldset object itself).
+     * @param Closure $closure A closure that implements the rule. It must
+     * have the signature `function ($value, &$fields)`; it must return
+     * boolean true on success, or boolean false on failure.
      * 
      */
     public function setRule($field, $message, \Closure $closure)
@@ -57,11 +57,11 @@ class Filter implements FilterInterface
     
     /**
      * 
-     * Apply filters to the input object.
+     * Filter (sanitize and validate) the data.
      * 
-     * @param mixed $values The value
+     * @param mixed $values The values to be filtered.
      * 
-     * @return bool
+     * @return bool True if all rules passed; false if one or more failed.
      * 
      */
     public function values(&$values)
@@ -91,9 +91,10 @@ class Filter implements FilterInterface
     
     /**
      * 
-     * Get messages
+     * Gets the messages for all fields, or for a single field.
      * 
-     * @param string $field All error messages or only for a single field
+     * @param string $field If empty, return all messages for all fields;
+     * otherwise, return only messages for the named field.
      * 
      * @return mixed
      * 
@@ -109,5 +110,24 @@ class Filter implements FilterInterface
         }
         
         return [];
+    }
+    
+    /**
+     * 
+     * Manually add messages to a particular field.
+     * 
+     * @param string $field Add to this field.
+     * 
+     * @param string|array $messages Add these messages to the field.
+     * 
+     * @return void
+     * 
+     */
+    public function addMessages($field, $messages)
+    {
+        $this->messages[$field] = array_merge(
+            $this->messages[$field],
+            (array) $messages
+        );
     }
 }

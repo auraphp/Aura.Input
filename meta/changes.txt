@@ -1,1 +1,13 @@
-Initial release.
+- [FIX] Form::getIterator() no longer throws Exception\NoSuchInput; thanks
+  @koriym.
+
+- [ADD] AbstractInput::getValue() method; implemented in Field, Fieldset,
+  Collection. Per an idea by @harikt.
+
+- [ADD] Filter::addMessages(). Fixes #23 and #24 per @harikt, but a little
+  differently than suggested.
+
+- [DEL] FilterInterface::setRule(), as it is not needed for the filtering
+  process itself.
+
+- [DOC] Fixes from @dhaaker and @harikt.

@@ -1,6 +1,8 @@
 Aura.Input
 ==========
 
+[![Build Status](https://travis-ci.org/auraphp/Aura.Input.png)](https://travis-ci.org/auraphp/Aura.Input)
+
 This package contains tools to describe and filter user inputs from an HTML
 form, including sub-forms/sub-fieldsets, fieldset collections, an interface
 for injecting custom filter systems, and CSRF protection. Note that this
@@ -27,6 +29,7 @@ script:
 ```php
 <?php
 $form = require "/path/to/Aura.Input/scripts/instance.php";
+?>
 ```
 
 Alternatively, we can add the `Aura.Input` package to an autoloader, and
@@ -39,6 +42,7 @@ use Aura\Input\Builder;
 use Aura\Input\Filter;
 
 $form = new Form(new Builder, new Filter);
+?>
 ```
 
 Setting Input Fields On The Form
@@ -48,7 +52,7 @@ Use the `setField()` method to add an input field to the form.
 
 ```php
 <?php
-$form->setField('first_name')
+$form->setField('first_name');
 $form->setField('last_name');
 $form->setField('email');
 $form->setField('email_confirm');
@@ -60,6 +64,7 @@ $form->setField('zip');
 $form->setField('phone_number');
 $form->setField('phone_type');
 $form->setField('birthday');
+?>
 ```
 
 (We will discuss later how to set the field type, attributes, and options;
@@ -156,6 +161,7 @@ $filter->setRule(
         return true;
     }
 );
+?>
 ```
 
 (We will discuss later how to implement `FilterInterface` and use our own
@@ -193,6 +199,7 @@ if ($pass) {
         }
     }
 }
+?>
 ```
 
 Advanced Usage
@@ -233,6 +240,7 @@ class ContactForm extends Form
         // etc.
     }
 }
+?>
 ```
 
 Now when we instantiate the `ContactForm` the inputs and filters will be there
@@ -282,7 +290,8 @@ class AntiCsrf implements AntiCsrfInterface
         }
         
         // user is authenticated, so add a CSRF token
-        $fieldset->setField('__csrf_token', $this->csrf->getValue());
+        $fieldset->setField('__csrf_token', 'hidden')
+            ->setAttribs(['value' => $this->csrf->getValue()]);
     }
     
     // implementation of isValid().  return true if CSRF token is present
@@ -300,6 +309,7 @@ class AntiCsrf implements AntiCsrfInterface
             && $data['__csrf_token'] == $this->csrf->getValue();
     }
 }
+?>
 ```
 
 We can then pass an instance of the implementation into our form using the
@@ -318,6 +328,7 @@ $form = new Form(new Builder, new Filter);
 
 $anti_csrf = new AntiCsrf(new UserObject, new CsrfObject);
 $form->setAntiCsrf($anti_csrf);
+?>
 ```
 
 Calling `setAntiCsrf()` adds a CSRF field to the form.
@@ -361,6 +372,7 @@ $form->setField('state', 'select')
         'AR' => 'Arkansas',
         // ...
      ]);
+?>
 ```
 
 In our view layer, we can extract the hints for a field using the `get()`
@@ -385,6 +397,7 @@ $hints = $form->get('state');
 //     ],
 //     'value' => '',           # the current value of the input
 // ];
+?>
 ```
 
 The [Aura.View](http://github.com/auraphp/Aura.View) package comes with a
@@ -412,6 +425,7 @@ use Vendor\Package\Options;
 
 $options = new Options;
 $form = new ContactForm(new Builder, new Filter, $options);
+?>
 ```
 
 ... and then use it in the `init()` method:
@@ -444,6 +458,7 @@ class ContactForm extends Form
         );
     }
 }
+?>
 ```
 
 

@@ -72,4 +72,16 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form->fill($data);
         $this->assertSame('bar', $form->foo);
     }
+
+    public function testGetIterator()
+    {
+        // set up the basic form
+        $form = new Form(new Builder, new Filter);
+        $form->setField('foo');
+        $form->setField('bar');
+
+        $iterator = $form->getIterator();
+        $keys = array_keys($iterator->getArrayCopy());
+        $this->assertSame(['foo', 'bar'], $keys);
+    }
 }
