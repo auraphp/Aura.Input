@@ -344,6 +344,13 @@ class Fieldset extends AbstractInput
         return $this->filter->getMessages($name);
     }
     
+    /**
+     * 
+     * Returns the value of this input for use in arrays.
+     * 
+     * @return array
+     * 
+     */
     public function getValue()
     {
         $data = [];

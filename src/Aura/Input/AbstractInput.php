@@ -109,5 +109,12 @@ abstract class AbstractInput
         return $this;
     }
     
+    /**
+     * 
+     * Returns the value of this input for use in arrays.
+     * 
+     * @return mixed
+     * 
+     */
     abstract public function getValue();
 }

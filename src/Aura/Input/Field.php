@@ -176,6 +176,13 @@ class Field extends AbstractInput
         return $this;
     }
     
+    /**
+     * 
+     * Returns the value of this input for use in arrays.
+     * 
+     * @return mixed
+     * 
+     */
     public function getValue()
     {
         return $this->value;
