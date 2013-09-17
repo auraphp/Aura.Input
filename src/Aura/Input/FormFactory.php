@@ -44,9 +44,9 @@ class FormFactory
 
     /**
      * 
-     * Constructor.
+     * Returns a new instance of a named form.
      * 
-     * @param array $map A map of form names to factory callables.
+     * @param string $name The name of the form to create.
      * 
      * @return Form
      * 
