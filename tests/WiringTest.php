@@ -16,4 +16,9 @@ class WiringTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertNewInstance('Aura\Input\Fieldset');
     }
+    
+    public function testServices()
+    {
+        $this->assertGet('input_form_factory', 'Aura\Input\FormFactory');
+    }
 }
