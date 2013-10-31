@@ -10,6 +10,7 @@
  */
 namespace Aura\Input;
 
+use Closure;
 /**
  * 
  * A filter
@@ -52,7 +53,7 @@ class Filter implements FilterInterface
      */
     public function setRule($field, $message, \Closure $closure)
     {
-        $this->rules[$field] = [$message, $closure];
+        $this->rules[$field][] = [$message, $closure];
     }
     
     /**
@@ -70,18 +71,21 @@ class Filter implements FilterInterface
         $this->messages = [];
         
         // go through each of the rules
-        foreach ($this->rules as $field => $rule) {
-            // get the message and closure
-            list($message, $closure) = $rule;
-            
-            // apply the closure to the data and get back the result
-            $passed = $closure($values->$field, $values);
-            
-            // if the rule did not pass, retain a message for the field.
-            // note that it is in an array, so that other implementations
-            // can allow for multiple messages.
-            if (! $passed) {
-                $this->messages[$field][] = $message;
+        foreach ($this->rules as $field => $rules) {
+            // go through multiple rules for a field
+            foreach ($rules as $rule) {
+                // get the message and closure
+                list($message, $closure) = $rule;
+
+                // apply the closure to the data and get back the result
+                $passed = $closure($values->$field, $values);
+
+                // if the rule did not pass, retain a message for the field.
+                // note that it is in an array, so that other implementations
+                // can allow for multiple messages.
+                if (! $passed) {
+                    $this->messages[$field][] = $message;
+                }
             }
         }
         
