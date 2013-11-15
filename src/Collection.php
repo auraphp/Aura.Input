@@ -49,8 +49,11 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * this collection.
      * 
      */
-    public function __construct(callable $factory)
+    public function __construct($factory)
     {
+        if (! is_callable($factory)) {
+            throw new Exception\NotCallable($factory);
+        }
         $this->factory = $factory;
     }
 
