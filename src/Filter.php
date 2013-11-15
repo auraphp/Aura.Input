@@ -26,7 +26,7 @@ class Filter implements FilterInterface
      * @var array
      * 
      */
-    protected $rules = [];
+    protected $rules = array();
     
     /**
      * 
@@ -35,7 +35,7 @@ class Filter implements FilterInterface
      * @var array
      * 
      */
-    protected $messages = [];
+    protected $messages = array();
     
     /**
      * 
@@ -52,7 +52,7 @@ class Filter implements FilterInterface
      */
     public function setRule($field, $message, \Closure $closure)
     {
-        $this->rules[$field] = [$message, $closure];
+        $this->rules[$field] = array($message, $closure);
     }
     
     /**
@@ -67,7 +67,7 @@ class Filter implements FilterInterface
     public function values(&$values)
     {
         // reset the messages
-        $this->messages = [];
+        $this->messages = array();
         
         // go through each of the rules
         foreach ($this->rules as $field => $rule) {
@@ -109,7 +109,7 @@ class Filter implements FilterInterface
             return $this->messages[$field];
         }
         
-        return [];
+        return array();
     }
     
     /**

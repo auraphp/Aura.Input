@@ -7,11 +7,11 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function test()
     {
-        $map = [
+        $map = array(
             'mock' => function () {
                 return new StdClass;
             },
-        ];
+        );
         $form_factory = new FormFactory($map);
         
         $actual = $form_factory->newInstance('mock');

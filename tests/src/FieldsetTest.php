@@ -61,32 +61,32 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $fieldset = $this->newFieldset();
         
         $fieldset->setField('field1', 'text')
-                 ->setAttribs(['foo' => 'bar'])
-                 ->setOptions(['baz' => 'dib']);
+                 ->setAttribs(array('foo' => 'bar'))
+                 ->setOptions(array('baz' => 'dib'));
         
         $fieldset->setField('field2', 'date')
-                 ->setAttribs(['zim' => 'gir'])
-                 ->setOptions(['irk' => 'doom']);
+                 ->setAttribs(array('zim' => 'gir'))
+                 ->setOptions(array('irk' => 'doom'));
         
         $actual = $fieldset->get('field2');
-        $expect = [
+        $expect = array(
             'type' => 'date',
             'name' => 'field2',
-            'attribs' => [
+            'attribs' => array(
                 'id' => null,
                 'type' => null,
                 'name' => null,
                 'zim' => 'gir',
-            ],
-            'options' => ['irk' => 'doom'],
+            ),
+            'options' => array('irk' => 'doom'),
             'value' => null,
-        ];
+        );
         
         $this->assertSame($expect, $actual);
         
         // get the names
         $actual = $fieldset->getInputNames();
-        $expect = ['field1', 'field2'];
+        $expect = array('field1', 'field2');
         $this->assertSame($expect, $actual);
     }
     
@@ -106,18 +106,18 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         });
         
         // set values on the fieldset
-        $fieldset->fill(['foo' => 'foo_value', 'bar' => 'bar_value']);
+        $fieldset->fill(array('foo' => 'foo_value', 'bar' => 'bar_value'));
         
         // apply the filter
         $passed = $fieldset->filter();
         $this->assertFalse($passed);
         
         $actual = $fieldset->getMessages();
-        $expect = [
-            'foo' => [
+        $expect = array(
+            'foo' => array(
                 'Foo should be alpha',
-            ],
-        ];
+            ),
+        );
         $this->assertSame($expect, $actual);
     }
     
@@ -188,44 +188,44 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
             new Builder($map),
             new Filter
         );
-        $outer->fill([
+        $outer->fill(array(
             'foo' => 'foo_val',
             'bar' => 'bar_val',
             'baz' => 'baz_val',
-        ]);
+        ));
         
         // create an inner collection called 'mock'
         $inner = $outer->setCollection('mock');
-        $inner->fill([
-            'zim' => [
+        $inner->fill(array(
+            'zim' => array(
                 'foo' => 'foo_zim_val',
                 'bar' => 'bar_zim_val',
                 'baz' => 'baz_zim_val',
-            ],
-            'gir' => [
+            ),
+            'gir' => array(
                 'foo' => 'foo_gir_val',
                 'bar' => 'bar_gir_val',
                 'baz' => 'baz_gir_val',
-            ],
-        ]);
+            ),
+        ));
         
-        $expect = [
+        $expect = array(
             'foo' => 'foo_val',
             'bar' => 'bar_val',
             'baz' => 'baz_val',
-            'mock' => [
-                'zim' => [
+            'mock' => array(
+                'zim' => array(
                     'foo' => 'foo_zim_val',
                     'bar' => 'bar_zim_val',
                     'baz' => 'baz_zim_val',
-                ],
-                'gir' => [
+                ),
+                'gir' => array(
                     'foo' => 'foo_gir_val',
                     'bar' => 'bar_gir_val',
                     'baz' => 'baz_gir_val',
-                ],
-            ],
-        ];
+                ),
+            ),
+        );
         
         $actual = $outer->getValue();
         
@@ -239,10 +239,10 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
             new Filter
         );
         
-        $fieldset->fill([
+        $fieldset->fill(array(
             'foo' => 'foo_val',
             'bar' => 'bar_val',
-        ]);
+        ));
         
         $this->assertTrue(isset($fieldset->foo));
         $this->assertFalse(isset($fieldset->baz));

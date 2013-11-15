@@ -17,12 +17,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $collection = $this->newCollection();
         
-        $data = [
-            ['foo' => 'foo1'],
-            ['foo' => 'foo2'],
-            ['foo' => 'foo3'],
-            ['foo' => 'foo4'],
-        ];
+        $data = array(
+            array('foo' => 'foo1'),
+            array('foo' => 'foo2'),
+            array('foo' => 'foo3'),
+            array('foo' => 'foo4'),
+        );
         
         $collection->fill($data);
         
@@ -37,41 +37,41 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $collection = $this->newCollection();
         
-        $data = [
-            ['foo' => 'foo'],
-            ['foo' => 'bar123'],
-            ['foo' => 'baz'],
-            ['foo' => 'dib123'],
-        ];
+        $data = array(
+            array('foo' => 'foo'),
+            array('foo' => 'bar123'),
+            array('foo' => 'baz'),
+            array('foo' => 'dib123'),
+        );
         
         $collection->fill($data);
         $actual = $collection->filter();
         $this->assertFalse($actual);
         
         $actual = $collection->getMessages();
-        $expect = [
-            0 => [],
-            1 => [
-                'foo' => [
+        $expect = array(
+            0 => array(),
+            1 => array(
+                'foo' => array(
                     'Use alpha only!',
-                ],
-            ],
-            2 => [],
-            3 => [
-                'foo' => [
+                )
+            ),
+            2 => array(),
+            3 => array(
+                'foo' => array(
                     'Use alpha only!',
-                ],
-            ],
-        ];
+                )
+            )
+        );
         
         $this->assertSame($expect, $actual);
         
         $actual = $collection->getMessages(1);
-        $expect = [
-            'foo' => [
+        $expect = array(
+            'foo' => array(
                 'Use alpha only!',
-            ],
-        ];
+            )
+        );
         $this->assertSame($expect, $actual);
     }
     
@@ -79,12 +79,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $collection = $this->newCollection();
         
-        $data = [
-            ['foo' => 'foo'],
-            ['foo' => 'bar123'],
-            ['foo' => 'baz'],
-            ['foo' => 'dib123'],
-        ];
+        $data = array(
+            array('foo' => 'foo'),
+            array('foo' => 'bar123'),
+            array('foo' => 'baz'),
+            array('foo' => 'dib123'),
+        );
         
         $collection->fill($data);
         
