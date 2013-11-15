@@ -52,7 +52,7 @@ class Filter implements FilterInterface
      */
     public function setRule($field, $message, \Closure $closure)
     {
-        $this->rules[$field] = [$message, $closure];
+        $this->rules[$field] = array($message, $closure);
     }
     
     /**

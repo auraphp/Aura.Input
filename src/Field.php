@@ -109,22 +109,22 @@ class Field extends AbstractInput
     public function get()
     {
         $attribs = array_merge(
-            [
+            array(
                 // force a particular order on some attributes
                 'id'   => null,
                 'type' => null,
                 'name' => null,
-            ],
+            ),
             $this->attribs
         );
         
-        return [
+        return array(
             'type'          => $this->type,
             'name'          => $this->getFullName(),
             'attribs'       => $attribs,
             'options'       => $this->options,
             'value'         => $this->value,
-        ];
+        );
     }
     
     /**
