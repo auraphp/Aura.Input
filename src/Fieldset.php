@@ -45,7 +45,7 @@ class Fieldset extends AbstractInput
      * @var array
      * 
      */
-    protected $inputs = [];
+    protected $inputs = array();
     
     /**
      * 
@@ -353,7 +353,7 @@ class Fieldset extends AbstractInput
      */
     public function getValue()
     {
-        $data = [];
+        $data = array();
         foreach ($this->inputs as $name => $input) {
             $data[$name] = $input->getValue();
         }

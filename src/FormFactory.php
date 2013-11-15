@@ -28,7 +28,7 @@ class FormFactory
      * @var array
      * 
      */
-    protected $map = [];
+    protected $map = array();
 
     /**
      * 
@@ -37,7 +37,7 @@ class FormFactory
      * @param array $map A map of form names to factory callables.
      * 
      */
-    public function __construct($map = [])
+    public function __construct($map = array())
     {
         $this->map = $map;
     }

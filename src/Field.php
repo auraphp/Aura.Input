@@ -36,7 +36,7 @@ class Field extends AbstractInput
      * @var array
      * 
      */
-    protected $attribs = [];
+    protected $attribs = array();
     
     /**
      * 
@@ -48,7 +48,7 @@ class Field extends AbstractInput
      * @var array
      * 
      */
-    protected $options = [];
+    protected $options = array();
     
     /**
      * 

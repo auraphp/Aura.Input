@@ -55,7 +55,7 @@ class Builder implements BuilderInterface
      * create objects* (as vs class names).
      * 
      */
-    public function __construct(array $fieldset_map = [])
+    public function __construct(array $fieldset_map = array())
     {
         $this->fieldset_map = $fieldset_map;
     }
