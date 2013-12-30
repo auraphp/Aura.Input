@@ -104,6 +104,22 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertSame($expect, $actual);
         
-        
+    }
+    
+    public function testDontFillData()
+    {
+        $actual = $this->form->phone_numbers[1]->get('number');
+        $expect = [
+            'type' => 'text',
+            'name' => 'phone_numbers[1][number]',
+            'attribs' => [
+                'id' => NULL,
+                'type' => NULL,
+                'name' => NULL,
+            ],
+            'options' => [],
+            'value' => '',
+        ];
+        $this->assertSame($expect, $actual);
     }
 }
