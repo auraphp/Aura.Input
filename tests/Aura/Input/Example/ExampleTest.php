@@ -118,8 +118,48 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                 'name' => NULL,
             ],
             'options' => [],
-            'value' => '',
+            'value' => NULL,
         ];
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testBeforeFillAndFill()
+    {
+        $actual = $this->form->phone_numbers[0]->get('number');
+        $expect = [
+            'type' => 'text',
+            'name' => 'phone_numbers[0][number]',
+            'attribs' => [
+                'id' => NULL,
+                'type' => NULL,
+                'name' => NULL,
+            ],
+            'options' => [],
+            'value' => NULL,
+        ];
+        $this->assertSame($expect, $actual);
+        
+        $this->form->fill([
+            'phone_numbers' => [
+                0 => [
+                    'type' => 'mobile',
+                    'number' => '123-456-7890',
+                ],
+            ]
+        ]);
+        
+        $expect = [
+            'type' => 'text',
+            'name' => 'phone_numbers[0][number]',
+            'attribs' => [
+                'id' => NULL,
+                'type' => NULL,
+                'name' => NULL,
+            ],
+            'options' => [],
+            'value' => '123-456-7890',
+        ];
+        $actual = $this->form->phone_numbers[0]->get('number');
         $this->assertSame($expect, $actual);
     }
 }

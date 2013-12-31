@@ -148,7 +148,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * 
      */
     protected function newFieldset($key)
-    {
+    {        
         $factory = $this->factory;
         $fieldset = $factory();
         $fieldset->setName($key);
@@ -166,7 +166,12 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      */
     public function offsetGet($offset)
     {
-        $fieldset = $this->fieldsets[$offset];
+        if (isset($this->fieldsets[$offset])) {
+            $fieldset = $this->fieldsets[$offset];
+        } else {
+            $fieldset = $this->newFieldset($offset);
+        }
+        $this->fieldsets[$offset] = $fieldset;
         $fieldset->setNamePrefix($this->getFullName());
         return $fieldset;
     }
