@@ -30,6 +30,17 @@
     "autoload": {
         "psr-0": {
             "Aura\\Input": "src/"
+        },        
+        "psr-4": {
+            "Aura\\Input\\_Config\\": "config/"
+        }
+    },
+    "extra": {
+        "aura": {
+            "type": "library",
+            "config": {
+                "common": "Aura\\Input\\_Config\\Common"                
+            }
         }
     }
 }
