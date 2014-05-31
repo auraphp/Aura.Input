@@ -1,1 +1,1 @@
-- [NEW] FormFactory to create form objects
+Hygiene release to soothe Composer.
