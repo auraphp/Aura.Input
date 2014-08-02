@@ -99,4 +99,45 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $passed = $this->filter->values($values);
         $this->assertTrue($passed);
     }
+    
+     public function testMultipleErrorMessages()
+    {
+        // initial data
+        $values = (object) [
+            'foo' => '',
+        ];
+        
+        // set the rule of 'foo'
+        $filter = new Filter;
+        $filter->setRule(
+            'foo',
+            'Enter Foo correctly',
+            function ($value) use ($filter) {
+                $pass = true;
+                if ($value == '') {
+                    $filter->addMessages('foo', 'Foo is required');
+                    $pass = false;
+                }
+                
+                if (! ctype_alpha($value)) {
+                    $filter->addMessages('foo', 'Foo should be alpha only');
+                    $pass = false;
+                }
+                return $pass;
+            }
+        );
+        
+        // do the values pass the filter?
+        $passed = $filter->values($values);
+        $this->assertFalse($passed);
+        
+        // get 'foo' messages
+        $actual = $filter->getMessages('foo');
+        $expect = [
+            'Enter Foo correctly',
+            'Foo is required',
+            'Foo should be alpha only',
+        ];
+        $this->assertSame($expect, $actual);
+    }
 }
