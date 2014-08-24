@@ -1,4 +1,1 @@
-Hygiene release.
-
-- Merge pull request #36 from harikt/configv2 to add v2 config files.
-- Update docblocks
+Hygiene release: update Composer.
