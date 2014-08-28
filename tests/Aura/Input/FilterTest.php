@@ -98,5 +98,14 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $values->foo = 'foovalue';
         $passed = $this->filter->values($values);
         $this->assertTrue($passed);
+
+		$this->filter->addMessages('zzz', 'First message');
+		$this->filter->addMessages('zzz', 'Second message');
+		$expect = [
+			'First message',
+			'Second message',
+		];
+		$actual = $this->filter->getMessages('zzz');
+        $this->assertSame($expect, $actual);
     }
 }
