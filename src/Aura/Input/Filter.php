@@ -125,6 +125,10 @@ class Filter implements FilterInterface
      */
     public function addMessages($field, $messages)
     {
+        if (!array_key_exists($field, $this->messages)) {
+            $this->messages[$field] = [];
+        }
+        
         $this->messages[$field] = array_merge(
             $this->messages[$field],
             (array) $messages
