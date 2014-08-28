@@ -99,13 +99,14 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $passed = $this->filter->values($values);
         $this->assertTrue($passed);
 
-		$this->filter->addMessages('zzz', 'First message');
-		$this->filter->addMessages('zzz', 'Second message');
-		$expect = [
-			'First message',
-			'Second message',
-		];
-		$actual = $this->filter->getMessages('zzz');
+	// test undefined key
+	$this->filter->addMessages('zzz', 'First message');
+	$this->filter->addMessages('zzz', 'Second message');
+	$expect = [
+		'First message',
+		'Second message',
+	];
+	$actual = $this->filter->getMessages('zzz');
         $this->assertSame($expect, $actual);
     }
 }
