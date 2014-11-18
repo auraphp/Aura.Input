@@ -400,7 +400,7 @@ $hints = $form->get('state');
 ?>
 ```
 
-The [Aura.View](http://github.com/auraphp/Aura.View) package comes with a
+The [Aura.Html](http://github.com/auraphp/Aura.Html) package comes with a
 series of helpers that can translate the hints array to HTML.
 
 
