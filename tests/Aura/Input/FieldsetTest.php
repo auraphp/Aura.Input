@@ -121,6 +121,42 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
+    public function testIsSuccessAll()
+    {
+        // new fieldset
+        $fieldset = $this->newFieldset();
+        
+        // add fields
+        $fieldset->setField('foo');
+        $fieldset->setField('bar');
+        
+        // get the filter and add a rule
+        $filter = $fieldset->getFilter();
+        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+            return ctype_alpha($value);
+        });
+        
+        // set values on the fieldset
+        $fieldset->fill(['foo' => 'foo_value', 'bar' => 'bar_value']);
+        
+        // Filter has not been called, so isSuccess must return null
+        $this->assertNull($fieldset->isSuccess());
+        
+        // apply the filter
+        $pass = $fieldset->filter();
+        
+        // After calling filter, isSuccess should return a boolean
+        // and filter() should also return a boolean
+        $this->assertFalse($fieldset->isSuccess());
+        $this->assertFalse($pass);
+        
+        // Let's fix the data and test if isSuccess returns true
+        $fieldset->fill(['foo' => 'fooValue', 'bar' => 'barValue']);
+        $pass = $fieldset->filter();
+        $this->assertTrue($fieldset->isSuccess());
+        $this->assertTrue($pass);
+    }
+    
     public function testSetFieldset()
     {
         // a map so the outer fieldset can create the inner fieldset
