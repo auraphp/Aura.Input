@@ -59,6 +59,15 @@ class Fieldset extends AbstractInput
     
     /**
      * 
+     * Property for storing the result of the last filter() call.
+     * 
+     * @var bool
+     * 
+     */
+    protected $success;
+    
+    /**
+     * 
      * Constructor.
      * 
      * @param BuilderInterface $builder An object to build input objects.
@@ -250,6 +259,7 @@ class Fieldset extends AbstractInput
      */
     public function isSuccess()
     {
+        return $this->success;
     }
     
     /**
@@ -337,7 +347,7 @@ class Fieldset extends AbstractInput
      */
     public function filter()
     {
-        return $this->filter->values($this);
+        return $this->success = $this->filter->values($this);
     }
     
     /**
