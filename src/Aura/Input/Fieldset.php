@@ -243,6 +243,17 @@ class Fieldset extends AbstractInput
     
     /**
      * 
+     * Did the input data pass the filter rules?
+     * 
+     * @return null|bool
+     * 
+     */
+    public function isSuccess()
+    {
+    }
+    
+    /**
+     * 
      * Sets a new Field input.
      * 
      * @param string $name The Field name.
