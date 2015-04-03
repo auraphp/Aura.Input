@@ -81,7 +81,12 @@ class Filter implements FilterInterface
             // note that it is in an array, so that other implementations
             // can allow for multiple messages.
             if (! $passed) {
-                $this->messages[$field][] = $message;
+                if (! isset($this->messages[$field])) {
+                    $this->messages[$field][] = $message;
+                } else {
+                    // the message should be first.
+                    array_unshift($this->messages[$field], $message);
+                }
             }
         }
         
@@ -125,9 +130,13 @@ class Filter implements FilterInterface
      */
     public function addMessages($field, $messages)
     {
-        $this->messages[$field] = array_merge(
-            $this->messages[$field],
-            (array) $messages
-        );
+        if (! isset($this->messages[$field])) {
+            $this->messages[$field][] = $messages;
+        } else {
+            $this->messages[$field] = array_merge(
+                $this->messages[$field],
+                (array) $messages
+            );
+        }
     }
 }
