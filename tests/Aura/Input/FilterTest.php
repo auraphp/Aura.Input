@@ -99,4 +99,36 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $passed = $this->filter->values($values);
         $this->assertTrue($passed);
     }
+    
+    public function testMultipleRules()
+    {
+        // initial data
+        $values = (object) [
+            'foo' => 'foo_value',
+            'bar' => 'bar_value',
+            'baz' => 'baz_value',
+            'baz_confirm' => 'baz_value',
+        ];
+        
+        // add another rule to 'foo'
+        $this->filter->setRule(
+            'foo',
+            'Foo should be less than 9 letters',
+            function ($value) {
+                return strlen($value) < 9;
+            }
+        );
+        
+        // do the values pass all filters?
+        $passed = $this->filter->values($values);
+        $this->assertFalse($passed);
+        
+        // get just 'foo' messages
+        $actual = $this->filter->getMessages('foo');
+        $expect = [
+            'Foo should be alpha only',
+            'Foo should be less than 9 letters',
+        ];
+        $this->assertSame($expect, $actual);
+    }
 }
