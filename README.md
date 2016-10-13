@@ -164,6 +164,30 @@ $filter->setRule(
 ?>
 ```
 
+You can also add custom messages to failed filter as below.
+
+> This is only available in 1.2+
+
+```php
+$filter->setRule(
+    'foo',
+    'Enter Foo correctly',
+    function ($value) use ($filter) {
+        $pass = true;
+        if ($value == '') {
+            $filter->addMessages('foo', 'Foo is required');
+            $pass = false;
+        }
+
+        if (! ctype_alpha($value)) {
+            $filter->addMessages('foo', 'Foo should be alpha only');
+            $pass = false;
+        }
+        return $pass;
+    }
+);
+```
+
 (We will discuss later how to implement `FilterInterface` and use our own
 filters.)
 
