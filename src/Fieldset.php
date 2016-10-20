@@ -5,7 +5,7 @@
  * 
  * @package Aura.Input
  * 
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT-license.php MIT
  * 
  */
 namespace Aura\Input;

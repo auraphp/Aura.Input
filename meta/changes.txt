@@ -1,6 +1,0 @@
-# 1.2.0
-
-* Support for adding messages in closure rule, see https://github.com/auraphp/Aura.Input/pull/40
-* New `isSuccess` method, see https://github.com/auraphp/Aura.Input/pull/45
-* Branch alias `dev-develop` removed from `composer.json`, see https://github.com/auraphp/Aura.Input/commit/02e125148dcb23813799f8fe0bb8a70d66706b45
-* Tests are now running on 5.4, 5.5, 5.6, 7.0 and HHVM on travis-ci.

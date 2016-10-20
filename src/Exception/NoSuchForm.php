@@ -5,7 +5,7 @@
  * 
  * @package Aura.Input
  * 
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/MIT-license.php MIT
  * 
  */
 namespace Aura\Input\Exception;
@@ -14,11 +14,11 @@ use Aura\Input\Exception;
 
 /**
  * 
- * The requested input does not exist.
+ * The requested form does not exist.
  * 
  * @package Aura.Input
  * 
  */
-class NoSuchInput extends Exception
+class NoSuchForm extends Exception
 {
 }
