@@ -1,24 +1,24 @@
 <?php
 /**
- * 
+ *
  * This file is part of the Aura project for PHP.
- * 
+ *
  * @package Aura.Input
- * 
- * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
+ * @license http://opensource.org/licenses/MIT-license.php MIT
+ *
  */
 namespace Aura\Input\Exception;
 
 use Aura\Input\Exception;
 
 /**
- * 
- * The requested form does not exist.
- * 
+ *
+ * The incoming anti-CSRF value is not valid.
+ *
  * @package Aura.Input
- * 
+ *
  */
-class NoSuchForm extends Exception
+class CsrfViolation extends Exception
 {
 }

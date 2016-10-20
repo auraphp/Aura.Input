@@ -1,6 +1,6 @@
 {
     "name": "aura/input",
-    "type": "aura-package",
+    "type": "library",
     "description": "This package contains tools to describe and filter user inputs from an HTML form, including sub-forms/sub-fieldsets, fieldset collections, an interface for injecting custom filter systems, and CSRF protection. Note that this package does not include output functionality, although the \"hints\" provided by the Form object can be used with any presentation system to generate an HTML form.",
     "keywords": [
         "input",
@@ -8,8 +8,8 @@
         "form",
         "field"
     ],
-    "homepage": "http://auraphp.com/Aura.Input",
-    "license": "BSD-2-Clause",
+    "homepage": "http://auraphp.com/",
+    "license": "MIT",
     "authors": [
         {
             "name": "Aura.Input Contributors",
@@ -35,25 +35,16 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "aura/installer-default": "1.*"
+        "php": ">=5.6.0"
     },
     "autoload": {
-        "psr-0": {
-            "Aura\\Input": "src/"
-        },
         "psr-4": {
-            "Aura\\Input\\_Config\\": "config/"
+            "Aura\\Input\\": "src/"
         }
     },
-    "extra": {
-        "aura": {
-            "type": "library",
-            "config": {
-                "common": "Aura\\Input\\_Config\\Common"
-            }
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Input\\": "tests/"
         }
-    },
-    "version": "1.2.0",
-    "time": "2016-10-13"
+    }
 }
