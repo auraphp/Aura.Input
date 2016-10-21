@@ -7,7 +7,7 @@ use Aura\Input\Filter;
 class ExampleTest extends \PHPUnit_Framework_TestCase
 {
     protected $form;
-    
+
     protected function setUp()
     {
         $builder = new Builder([
@@ -24,10 +24,10 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                 );
             },
         ]);
-        
+
         $this->form = new ContactForm($builder, new Filter);
     }
-    
+
     public function testAll()
     {
         // fill the form with data
@@ -58,7 +58,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ]);
-        
+
         // first-level input
         $actual = $this->form->get('email');
         $expect = [
@@ -73,7 +73,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             'value' => 'boshag@example.com',
         ];
         $this->assertSame($expect, $actual);
-        
+
         // fieldset-level input
         $actual = $this->form->address->get('street');
         $expect = [
@@ -88,7 +88,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             'value' => '123 Main',
         ];
         $this->assertSame($expect, $actual);
-        
+
         // collection-level input
         $actual = $this->form->phone_numbers[1]->get('number');
         $expect = [
@@ -103,7 +103,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             'value' => '234-567-8901',
         ];
         $this->assertSame($expect, $actual);
-        
-        
+
+
     }
 }

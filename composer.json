@@ -14,28 +14,17 @@
         {
             "name": "Aura.Input Contributors",
             "homepage": "https://github.com/auraphp/Aura.Input/contributors"
-        },
+        }
+    ],
+    "repositories": [
         {
-            "name": "Paul M. Jones",
-            "email": "pmjones88@gmail.com",
-            "homepage": "http://paul-m-jones.com"
-        },
-        {
-            "name": "Hari KT",
-            "email": "kthari85@gmail.com",
-            "homepage": "http://harikt.com"
-        },
-        {
-            "name": "Akihito Koriyama",
-            "email": "akihito.koriyama@gmail.com"
-        },
-        {
-            "name": "Daniel Haaker",
-            "email": "d.haaker@gmail.com"
+            "type": "vcs",
+            "url": "https://github.com/harikt/Aura.Filter_Interface"
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "aura/filter-interface":"@dev"
     },
     "autoload": {
         "psr-4": {
