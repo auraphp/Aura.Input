@@ -1,14 +1,16 @@
 <?php
 namespace Aura\Input;
 
+use ArrayObject;
+
 class FilterTest extends \PHPUnit_Framework_TestCase
 {
     protected $filter;
-    
+
     protected function setUp()
     {
         $this->filter = new Filter;
-        
+
         // simple validate
         $this->filter->setRule(
             'foo',
@@ -17,7 +19,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                 return ctype_alpha($value);
             }
         );
-        
+
         // sanitize
         $this->filter->setRule(
             'bar',
@@ -37,7 +39,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             }
         );
     }
-    
+
     public function testAll()
     {
         // initial data
@@ -47,32 +49,32 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             'baz' => 'baz_value',
             'baz_confirm' => 'baz_value',
         ];
-        
+
         // do the values pass all filters?
-        $passed = $this->filter->values($values);
-        
+        $passed = $this->filter->apply($values);
+
         // 'foo' is invalid
         $this->assertFalse($passed);
-        
+
         // get all messages
-        $actual = $this->filter->getMessages();
-        $expect = [
+        $actual = $this->filter->getFailures();
+        $expect = new ArrayObject([
             'foo' => [
                 'Foo should be alpha only',
             ]
-        ];
-        $this->assertSame($expect, $actual);
-        
+        ]);
+        $this->assertEquals($expect, $actual);
+
         // get just 'foo' messages
-        $actual = $this->filter->getMessages('foo');
+        $actual = $this->filter->getFailures()->offsetGet('foo');
         $expect = [
             'Foo should be alpha only',
         ];
         $this->assertSame($expect, $actual);
-        
+
         // no failures on nonexistent field
-        $this->assertSame([], $this->filter->getMessages('no-such-failure'));
-        
+        $this->assertFalse($this->filter->getFailures()->offsetExists('no-such-failure'));
+
         // should have changed the values on 'bar'
         $expect = (object) [
             'foo' => 'foo_value',
@@ -81,7 +83,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             'baz_confirm' => 'baz_value',
         ];
         $this->assertEquals($expect, $values);
-        
+
         // add some messages manually
         $this->filter->addMessages('foo', 'Added 1');
         $this->filter->addMessages('foo', ['Added 2', 'Added 3']);
@@ -91,22 +93,22 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             'Added 2',
             'Added 3',
         ];
-        $actual = $this->filter->getMessages('foo');
+        $actual = $this->filter->getFailures()->offsetGet('foo');
         $this->assertSame($expect, $actual);
-        
+
         // let's make it valid
         $values->foo = 'foovalue';
-        $passed = $this->filter->values($values);
+        $passed = $this->filter->apply($values);
         $this->assertTrue($passed);
     }
-    
+
      public function testMultipleErrorMessages()
     {
         // initial data
         $values = (object) [
             'foo' => '',
         ];
-        
+
         // set the rule of 'foo'
         $filter = new Filter;
         $filter->setRule(
@@ -118,7 +120,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                     $filter->addMessages('foo', 'Foo is required');
                     $pass = false;
                 }
-                
+
                 if (! ctype_alpha($value)) {
                     $filter->addMessages('foo', 'Foo should be alpha only');
                     $pass = false;
@@ -126,13 +128,13 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                 return $pass;
             }
         );
-        
+
         // do the values pass the filter?
-        $passed = $filter->values($values);
+        $passed = $filter->apply($values);
         $this->assertFalse($passed);
-        
+
         // get 'foo' messages
-        $actual = $filter->getMessages('foo');
+        $actual = $filter->getFailures()->offsetGet('foo');
         $expect = [
             'Enter Foo correctly',
             'Foo is required',
