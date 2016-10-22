@@ -27,7 +27,7 @@ class Fieldset extends AbstractInput
      *
      * A builder to create input objects.
      *
-     * @var Builder
+     * @var BuilderInterface
      *
      */
     protected $builder;
@@ -338,16 +338,11 @@ class Fieldset extends AbstractInput
      */
     public function get($name = null)
     {
-        if (! $name) {
+        if ($name === null) {
             return $this;
         }
 
-        if (! isset($this->inputs[$name])) {
-            throw new Exception\NoSuchInput($name);
-        }
-
-        $input = $this->inputs[$name];
-        $input->setNamePrefix($this->getFullName());
+        $input = $this->getInput($name);
         return $input->get();
     }
 
