@@ -41,6 +41,24 @@ class Filter implements FilterInterface
     protected $messages = [];
 
     /**
+     * Initialize filters
+     */
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    /**
+     *
+     * Does nothing
+     *
+     */
+    protected function init()
+    {
+        # code...
+    }
+
+    /**
      *
      * Sets a filter rule on a field.
      *

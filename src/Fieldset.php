@@ -10,6 +10,7 @@
  */
 namespace Aura\Input;
 
+use ArrayObject;
 use Aura\Filter_Interface\FilterInterface;
 
 /**
@@ -67,6 +68,15 @@ class Fieldset extends AbstractInput
      *
      */
     protected $success;
+
+    /**
+     *
+     * Failures in the fieldset.
+     *
+     * @var ArrayObject|null
+     *
+     */
+    protected $failures;
 
     /**
      *
@@ -234,6 +244,7 @@ class Fieldset extends AbstractInput
      */
     public function fill(array $data)
     {
+        $this->success = null;
         foreach ($this->inputs as $key => $input) {
             if (array_key_exists($key, $data)) {
                 $input->fill($data[$key]);
@@ -347,22 +358,46 @@ class Fieldset extends AbstractInput
      * @return bool True if all the filter rules pass, false if not.
      *
      */
-    public function filter()
-    {
-        return $this->success = $this->filter->apply($this);
-    }
+     public function filter()
+     {
+         $success = $this->filter->apply($this);
+         if (! $success) {
+             $this->success = $success;
+             $this->failures = $this->filter->getFailures();
+         }
 
-    /**
-     *
-     * Returns the failures.
-     *
-     * @return \ArrayObject
-     *
-     */
-    public function getFailures()
-    {
-        return $this->filter->getFailures();
-    }
+         // Iterate on fieldset or collection and get failures
+         foreach ($this->inputs as $name => $input) {
+             if ($input instanceof Fieldset || $input instanceof Collection) {
+                 if (! $input->filter()) {
+                     $this->success = false;
+                     if (! $this->failures instanceof ArrayObject) {
+                         $this->failures = new ArrayObject();
+                     }
+                     $this->failures->offsetSet($name, $input->getFailures());
+                 }
+             }
+         }
+
+         // If there is no failure, then it is a success on all Filters
+         if (! isset($this->success) && $success) {
+             $this->success = true;
+         }
+
+         return $this->success;
+     }
+
+     /**
+      *
+      * Returns the failures.
+      *
+      * @return ArrayObject
+      *
+      */
+     public function getFailures()
+     {
+         return $this->failures;
+     }
 
     /**
      *

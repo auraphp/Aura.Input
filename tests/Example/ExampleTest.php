@@ -103,7 +103,5 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             'value' => '234-567-8901',
         ];
         $this->assertSame($expect, $actual);
-
-
     }
 }
