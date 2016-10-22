@@ -96,16 +96,16 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      *
      * Returns the failures for the fieldset filters.
      *
-     * @return \ArrayObject
+     * @return array
      *
      */
     public function getFailures()
     {
-        $messages = [];
+        $failures = [];
         foreach ($this->fieldsets as $key => $fieldset) {
-            $messages[$key] = $fieldset->getFailures();
+            $failures[$key] = $fieldset->getFailures();
         }
-        return new ArrayObject($messages);
+        return $failures;
     }
 
     /**
