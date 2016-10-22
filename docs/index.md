@@ -432,9 +432,51 @@ class ContactForm extends Form
 
 ### Creating Reusable Fieldsets
 
-TBD.
+Consider we want to address to different forms.
+Address have multiple fields, and it is not necessary to copy and paste the same.
+With `Fieldsets` we can create a `AddressFieldset` as below
 
+```php
+<?php
+use Aura\Input\Fieldset;
+
+class AddressFieldset extends Fieldset
+{
+    public function init()
+    {
+        $this->setField('street');
+        $this->setField('city');
+        $this->setField('state');
+        $this->setField('zip');
+    }
+}
+```
+
+and map it to the `Builder`.
+
+```
+$builder = new Builder([
+    'address' => function () {
+        return new AddressFieldset(
+            new Builder,
+            new Filter
+        );
+    },
+    // other fieldset if any
+]);
+```
+
+Now in our `ContactForm` `init()` method we can use `$this->setFieldset('address');`
+
+> NB: Don't forget to pass the builder to the Form.
+
+```
+$form = new ContactForm($builder, new Filter);
+```
 
 ### Using Fieldset Collections
 
-TBD.
+Consider we need multiple address like shipping and billing.
+Now we can reuse the same `AddressFieldset` in the form by calling `$this->setCollection('address', 'address');`
+
+Consider looking into the [examples](https://github.com/auraphp/Aura.Input/tree/3.x/tests/Example) for more information.
