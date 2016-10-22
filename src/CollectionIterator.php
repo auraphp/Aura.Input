@@ -111,7 +111,7 @@ class CollectionIterator implements \Iterator
      * 
      * Is the current iterator position valid?
      * 
-     * @return void
+     * @return boolean
      * 
      */
     public function valid()
