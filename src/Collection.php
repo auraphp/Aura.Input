@@ -96,7 +96,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      *
      * Returns the failures for the fieldset filters.
      *
-     * @return array
+     * @return ArrayObject
      *
      */
     public function getFailures()
@@ -105,7 +105,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
         foreach ($this->fieldsets as $key => $fieldset) {
             $failures[$key] = $fieldset->getFailures();
         }
-        return $failures;
+        return new ArrayObject($failures);
     }
 
     /**

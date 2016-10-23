@@ -1,57 +1,59 @@
 <?php
 /**
- * 
+ *
  * This file is part of the Aura project for PHP.
- * 
+ *
  * @package Aura.Input
- * 
+ *
  * @license http://opensource.org/licenses/MIT-license.php MIT
- * 
+ *
  */
 namespace Aura\Input;
 
+use Iterator;
+
 /**
- * 
+ *
  * An object to allow iteration over fieldsets.
- * 
+ *
  * @package Aura.Input
- * 
+ *
  */
-class CollectionIterator implements \Iterator
+class CollectionIterator implements Iterator
 {
     /**
-     * 
+     *
      * The fieldsets over which we are iterating.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $fieldsets;
 
     /**
-     * 
+     *
      * The keys to iterate over in the fieldsets.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $keys;
 
     /**
-     * 
+     *
      * Is the current iterator position valid?
-     * 
+     *
      * @var bool
-     * 
+     *
      */
     protected $valid;
 
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      * @param Collection $collection The fieldsets over which to iterate.
-     * 
+     *
      */
     public function __construct(Collection $collection)
     {
@@ -60,11 +62,11 @@ class CollectionIterator implements \Iterator
     }
 
     /**
-     * 
+     *
      * Returns the value at the current iterator position.
-     * 
+     *
      * @return mixed
-     * 
+     *
      */
     public function current()
     {
@@ -72,11 +74,11 @@ class CollectionIterator implements \Iterator
     }
 
     /**
-     * 
+     *
      * Returns the current iterator position.
-     * 
+     *
      * @return mixed
-     * 
+     *
      */
     public function key()
     {
@@ -84,11 +86,11 @@ class CollectionIterator implements \Iterator
     }
 
     /**
-     * 
+     *
      * Moves the iterator to the next position.
-     * 
+     *
      * @return void
-     * 
+     *
      */
     public function next()
     {
@@ -96,11 +98,11 @@ class CollectionIterator implements \Iterator
     }
 
     /**
-     * 
+     *
      * Moves the iterator to the first position.
-     * 
+     *
      * @return void
-     * 
+     *
      */
     public function rewind()
     {
@@ -108,11 +110,11 @@ class CollectionIterator implements \Iterator
     }
 
     /**
-     * 
+     *
      * Is the current iterator position valid?
-     * 
+     *
      * @return boolean
-     * 
+     *
      */
     public function valid()
     {

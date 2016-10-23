@@ -73,7 +73,7 @@ class Fieldset extends AbstractInput
      *
      * Failures in the fieldset.
      *
-     * @var ArrayObject|null
+     * @var ArrayObject
      *
      */
     protected $failures;
@@ -355,44 +355,41 @@ class Fieldset extends AbstractInput
      */
      public function filter()
      {
-         $success = $this->filter->apply($this);
-         if (! $success) {
-             $this->success = $success;
-             $this->failures = $this->filter->getFailures();
-         }
+        $success = $this->filter->apply($this);
+        if (! $success) {
+            $this->success = $success;
+        }
+        $this->failures = $this->filter->getFailures();
 
-         // Iterate on fieldset or collection and get failures
-         foreach ($this->inputs as $name => $input) {
-             if ($input instanceof Fieldset || $input instanceof Collection) {
-                 if (! $input->filter()) {
-                     $this->success = false;
-                     if (! $this->failures instanceof ArrayObject) {
-                         $this->failures = new ArrayObject();
-                     }
-                     $this->failures->offsetSet($name, $input->getFailures());
-                 }
-             }
-         }
+        // Iterate on fieldset or collection and get failures
+        foreach ($this->inputs as $name => $input) {
+            if ($input instanceof Fieldset || $input instanceof Collection) {
+                if (! $input->filter()) {
+                    $this->success = false;
+                    $this->failures->offsetSet($name, $input->getFailures());
+                }
+            }
+        }
 
          // If there is no failure, then it is a success on all Filters
-         if (! isset($this->success) && $success) {
-             $this->success = true;
-         }
+        if (! isset($this->success) && $success) {
+            $this->success = true;
+        }
 
-         return $this->success;
-     }
+        return $this->success;
+    }
 
-     /**
-      *
-      * Returns the failures.
-      *
-      * @return ArrayObject
-      *
-      */
-     public function getFailures()
-     {
-         return $this->failures;
-     }
+    /**
+     *
+     * Returns the failures.
+     *
+     * @return ArrayObject
+     *
+     */
+    public function getFailures()
+    {
+        return $this->failures;
+    }
 
     /**
      *
