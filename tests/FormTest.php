@@ -146,4 +146,91 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("First name must be alphabetic only.", $failures->offsetGet('first_name')[0]);
         $this->assertSame("Not a valid phone number.", $failures->offsetGet('phone_numbers')->offsetGet(2)->offsetGet('number')[0]);
     }
+
+    public function testIsSuccess()
+    {
+        $builder = new Builder([
+            'address' => function () {
+                return new AddressFieldset(
+                    new Builder,
+                    new Filter
+                );
+            },
+            'phone' => function () {
+                return new PhoneFieldset(
+                    new Builder,
+                    new PhoneFilter
+                );
+            },
+        ]);
+
+        $filter = new ContactFilter();
+
+        $form = new ContactForm($builder, $filter);
+        // fill the form with data
+        $form->fill([
+            'first_name' => 'Hari',
+            'last_name' => 'KT',
+            'no_such_field' => 'nonesuch',
+            'email' => 'someon@example.com',
+            'website' => 'http://boshag.example.com',
+            'address' => [
+                'street' => '123 Main',
+                'city' => 'Beverly Hills',
+                'state' => 'CA',
+                'zip' => '90210',
+            ],
+            'phone_numbers' => [
+                0 => [
+                    'type' => 'mobile',
+                    'number' => '123-456-7890',
+                ],
+                1 => [
+                    'type' => 'home',
+                    'number' => '234-567-8901',
+                ],
+                2 => [
+                    'type' => 'fax',
+                    'number' => 'AB-5345a34-8988',
+                ],
+            ],
+        ]);
+
+        $this->assertFalse($form->filter());
+        $failures = $form->getFailures();
+        $this->assertSame(1, $failures->count());
+        $this->assertSame("Not a valid phone number.", $failures->offsetGet('phone_numbers')->offsetGet(2)->offsetGet('number')[0]);
+
+
+        $form->fill([
+            'first_name' => 'Hari',
+            'last_name' => 'KT',
+            'email' => 'someon@example.com',
+            'website' => 'http://boshag.example.com',
+            'address' => [
+                'street' => '123 Main',
+                'city' => 'Beverly Hills',
+                'state' => 'CA',
+                'zip' => '90210',
+            ],
+            'phone_numbers' => [
+                0 => [
+                    'type' => 'mobile',
+                    'number' => '123-456-7890',
+                ],
+                1 => [
+                    'type' => 'home',
+                    'number' => '234-567-8901',
+                ],
+                2 => [
+                    'type' => 'fax',
+                    'number' => '53434-8988',
+                ],
+            ],
+        ]);
+
+        $this->assertTrue($form->filter());
+        $failures = $form->getFailures();
+        $this->assertSame(0, $failures->count());
+    }
 }
