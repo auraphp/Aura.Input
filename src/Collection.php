@@ -105,7 +105,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
         foreach ($this->fieldsets as $key => $fieldset) {
             $failures[$key] = $fieldset->getFailures();
         }
-        return $failures;
+        return new ArrayObject($failures);
     }
 
     /**

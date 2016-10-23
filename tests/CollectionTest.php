@@ -51,7 +51,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
 
         $actual = $collection->getFailures();
-        $expect = [
+        $expect = new ArrayObject([
             0 => null,
             1 => new ArrayObject([
                 'foo' => [
@@ -64,7 +64,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
                     'Use alpha only!',
                 ],
             ]),
-        ];
+        ]);
 
         $this->assertEquals($expect, $actual);
 
