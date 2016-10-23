@@ -96,7 +96,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      *
      * Returns the failures for the fieldset filters.
      *
-     * @return array
+     * @return ArrayObject
      *
      */
     public function getFailures()

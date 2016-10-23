@@ -52,13 +52,13 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $actual = $collection->getFailures();
         $expect = new ArrayObject([
-            0 => null,
+            0 => new ArrayObject(),
             1 => new ArrayObject([
                 'foo' => [
                     'Use alpha only!',
                 ],
             ]),
-            2 => null,
+            2 => new ArrayObject(),
             3 => new ArrayObject([
                 'foo' => [
                     'Use alpha only!',
