@@ -355,10 +355,7 @@ class Fieldset extends AbstractInput
      */
      public function filter()
      {
-        $success = $this->filter->apply($this);
-        if (! $success) {
-            $this->success = $success;
-        }
+        $this->success = $this->filter->apply($this);
         $this->failures = $this->filter->getFailures();
 
         // Iterate on fieldset or collection and get failures
@@ -369,11 +366,6 @@ class Fieldset extends AbstractInput
                     $this->failures->offsetSet($name, $input->getFailures());
                 }
             }
-        }
-
-         // If there is no failure, then it is a success on all Filters
-        if (! isset($this->success) && $success) {
-            $this->success = true;
         }
 
         return $this->success;
