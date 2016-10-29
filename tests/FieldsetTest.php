@@ -103,7 +103,7 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
 
         // get the filter and add a rule
         $filter = $fieldset->getFilter();
-        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+        $filter->addRule('foo', 'Foo should be alpha', function ($value) {
             return ctype_alpha($value);
         });
 
@@ -114,12 +114,12 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $passed = $fieldset->filter();
         $this->assertFalse($passed);
 
-        $actual = $fieldset->getFailures();
-        $expect = new ArrayObject([
+        $actual = $fieldset->getFailures()->getMessages();
+        $expect = [
             'foo' => [
                 'Foo should be alpha',
             ],
-        ]);
+        ];
         $this->assertEquals($expect, $actual);
     }
 
@@ -134,7 +134,7 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
 
         // get the filter and add a rule
         $filter = $fieldset->getFilter();
-        $filter->setRule('foo', 'Foo should be alpha', function ($value) {
+        $filter->addRule('foo', 'Foo should be alpha', function ($value) {
             return ctype_alpha($value);
         });
 

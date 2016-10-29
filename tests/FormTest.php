@@ -142,9 +142,9 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($form->filter());
         $failures = $form->getFailures();
-        $this->assertSame(2, $failures->count());
-        $this->assertSame("First name must be alphabetic only.", $failures->offsetGet('first_name')[0]);
-        $this->assertSame("Not a valid phone number.", $failures->offsetGet('phone_numbers')->offsetGet(2)->offsetGet('number')[0]);
+        $this->assertFalse($failures->isEmpty());
+        $this->assertSame(["First name must be alphabetic only."], $failures->getMessagesForField('first_name'));
+        $this->assertSame("Not a valid phone number.", $failures->getMessagesForField('phone_numbers')[2]['number'][0]);
     }
 
     public function testIsSuccess()
@@ -198,8 +198,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($form->filter());
         $failures = $form->getFailures();
-        $this->assertSame(1, $failures->count());
-        $this->assertSame("Not a valid phone number.", $failures->offsetGet('phone_numbers')->offsetGet(2)->offsetGet('number')[0]);
+        $this->assertFalse($failures->isEmpty());
+        $this->assertSame("Not a valid phone number.", $failures->getMessagesForField('phone_numbers')[2]['number'][0]);
 
 
         $form->fill([
@@ -231,6 +231,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($form->filter());
         $failures = $form->getFailures();
-        $this->assertSame(0, $failures->count());
+        $this->assertTrue($failures->isEmpty());
     }
 }

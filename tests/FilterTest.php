@@ -12,7 +12,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->filter = new Filter;
 
         // simple validate
-        $this->filter->setRule(
+        $this->filter->addRule(
             'foo',
             'Foo should be alpha only',
             function ($value) {
@@ -21,7 +21,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         );
 
         // sanitize
-        $this->filter->setRule(
+        $this->filter->addRule(
             'bar',
             'Remove non-alpha from bar',
             function (&$value) {
@@ -31,7 +31,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         );
 
         // matching validate
-        $this->filter->setRule(
+        $this->filter->addRule(
             'baz_confirm',
             'Baz confirm must match baz',
             function ($value, $fields) {
@@ -57,23 +57,23 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($passed);
 
         // get all messages
-        $actual = $this->filter->getFailures();
-        $expect = new ArrayObject([
+        $actual = $this->filter->getFailures()->getMessages();
+        $expect = [
             'foo' => [
                 'Foo should be alpha only',
             ]
-        ]);
+        ];
         $this->assertEquals($expect, $actual);
 
         // get just 'foo' messages
-        $actual = $this->filter->getFailures()->offsetGet('foo');
+        $actual = $this->filter->getFailures()->getMessagesForField('foo');
         $expect = [
             'Foo should be alpha only',
         ];
         $this->assertSame($expect, $actual);
 
         // no failures on nonexistent field
-        $this->assertFalse($this->filter->getFailures()->offsetExists('no-such-failure'));
+        $this->assertTrue(empty($this->filter->getFailures()->getMessagesForField('no-such-failure')));
 
         // should have changed the values on 'bar'
         $expect = (object) [
@@ -85,24 +85,25 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $values);
 
         // add some messages manually
-        $this->filter->addMessages('foo', 'Added 1');
-        $this->filter->addMessages('foo', ['Added 2', 'Added 3']);
+        $this->filter->getFailures()->addMessagesForField('foo', 'Added 1');
+        $this->filter->getFailures()->addMessagesForField('foo', ['Added 2', 'Added 3']);
         $expect = [
             'Foo should be alpha only',
             'Added 1',
             'Added 2',
             'Added 3',
         ];
-        $actual = $this->filter->getFailures()->offsetGet('foo');
+        $actual = $this->filter->getFailures()->getMessagesForField('foo');
         $this->assertSame($expect, $actual);
 
         // let's make it valid
         $values->foo = 'foovalue';
         $passed = $this->filter->apply($values);
         $this->assertTrue($passed);
+        $this->assertTrue($this->filter->getFailures()->isEmpty());
     }
 
-     public function testMultipleErrorMessages()
+    public function testMultipleErrorMessages()
     {
         // initial data
         $values = (object) [
@@ -111,18 +112,18 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         // set the rule of 'foo'
         $filter = new Filter;
-        $filter->setRule(
+        $filter->addRule(
             'foo',
             'Enter Foo correctly',
             function ($value) use ($filter) {
                 $pass = true;
                 if ($value == '') {
-                    $filter->addMessages('foo', 'Foo is required');
+                    $filter->getFailures()->addMessagesForField('foo', 'Foo is required');
                     $pass = false;
                 }
 
                 if (! ctype_alpha($value)) {
-                    $filter->addMessages('foo', 'Foo should be alpha only');
+                    $filter->getFailures()->addMessagesForField('foo', 'Foo should be alpha only');
                     $pass = false;
                 }
                 return $pass;
@@ -134,11 +135,11 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($passed);
 
         // get 'foo' messages
-        $actual = $filter->getFailures()->offsetGet('foo');
+        $actual = $filter->getFailures()->getMessagesForField('foo');
         $expect = [
-            'Enter Foo correctly',
             'Foo is required',
             'Foo should be alpha only',
+            'Enter Foo correctly',
         ];
         $this->assertSame($expect, $actual);
     }
