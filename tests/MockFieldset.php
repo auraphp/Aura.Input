@@ -14,7 +14,7 @@ class MockFieldset extends Fieldset
         $this->setField('baz');
         
         // add a filter
-        $this->filter->setRule('foo', 'Use alpha only!', function ($value) {
+        $this->filter->addRule('foo', 'Use alpha only!', function ($value) {
             return ctype_alpha($value);
         });
     }

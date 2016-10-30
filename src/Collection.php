@@ -11,7 +11,6 @@
 namespace Aura\Input;
 
 use ArrayAccess;
-use ArrayObject;
 use Countable;
 use IteratorAggregate;
 
@@ -96,16 +95,16 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      *
      * Returns the failures for the fieldset filters.
      *
-     * @return ArrayObject
+     * @return array
      *
      */
     public function getFailures()
     {
         $failures = [];
         foreach ($this->fieldsets as $key => $fieldset) {
-            $failures[$key] = $fieldset->getFailures();
+            $failures[$key] = $fieldset->getFailures()->getMessages();
         }
-        return new ArrayObject($failures);
+        return $failures;
     }
 
     /**

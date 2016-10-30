@@ -12,6 +12,7 @@ namespace Aura\Input;
 
 use ArrayObject;
 use Aura\Filter_Interface\FilterInterface;
+use Aura\Filter_Interface\FailureCollectionInterface;
 
 /**
  *
@@ -73,7 +74,7 @@ class Fieldset extends AbstractInput
      *
      * Failures in the fieldset.
      *
-     * @var ArrayObject
+     * @var FailureCollectionInterface
      *
      */
     protected $failures;
@@ -363,7 +364,11 @@ class Fieldset extends AbstractInput
             if ($input instanceof Fieldset || $input instanceof Collection) {
                 if (! $input->filter()) {
                     $this->success = false;
-                    $this->failures->offsetSet($name, $input->getFailures());
+                    $failures = $input->getFailures();
+                    if ($failures instanceof FailureCollectionInterface) {
+                        $failures = $failures->getMessages();
+                    }
+                    $this->failures->addMessagesForField($name, $failures);
                 }
             }
         }
@@ -375,7 +380,7 @@ class Fieldset extends AbstractInput
      *
      * Returns the failures.
      *
-     * @return ArrayObject
+     * @return FailureCollectionInterface
      *
      */
     public function getFailures()

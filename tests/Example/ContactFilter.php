@@ -7,7 +7,7 @@ class ContactFilter extends Filter
 {
     protected function init()
     {
-        $this->setRule(
+        $this->addRule(
             'first_name',
             'First name must be alphabetic only.',
             function ($value) {
@@ -15,7 +15,7 @@ class ContactFilter extends Filter
             }
         );
 
-        $this->setRule(
+        $this->addRule(
             'last_name',
             'Last name must be alphabetic only.',
             function ($value) {
@@ -23,7 +23,7 @@ class ContactFilter extends Filter
             }
         );
 
-        $this->setRule(
+        $this->addRule(
             'email',
             'Email not valid.',
             function ($value) {

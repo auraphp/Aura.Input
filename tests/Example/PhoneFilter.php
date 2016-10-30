@@ -7,7 +7,7 @@ class PhoneFilter extends Filter
 {
     protected function init()
     {
-        $this->setRule(
+        $this->addRule(
             'type',
             'Type is not valid.',
             function ($value) {
@@ -20,7 +20,7 @@ class PhoneFilter extends Filter
             }
         );
 
-        $this->setRule(
+        $this->addRule(
             'number',
             'Not a valid phone number.',
             function ($value) {

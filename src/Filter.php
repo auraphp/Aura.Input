@@ -10,8 +10,9 @@
  */
 namespace Aura\Input;
 
-use ArrayObject;
 use Aura\Filter_Interface\FilterInterface;
+use Aura\Filter_Interface\FailureCollectionInterface;
+use Aura\Input\Filter\FailureCollection;
 
 /**
  *
@@ -33,18 +34,31 @@ class Filter implements FilterInterface
 
     /**
      *
-     * The array of messages to be used when rules fail.
+     * The array of failures to be used when rules fail.
      *
-     * @var array
+     * @var FailureCollection
      *
      */
-    protected $messages = [];
+    protected $failures;
+
+    /**
+     *
+     * A prototype FailureCollection.
+     *
+     * @var FailureCollection
+     *
+     */
+    protected $proto_failures;
 
     /**
      * Initialize filters
      */
-    public function __construct()
+    public function __construct(FailureCollectionInterface $failures = null)
     {
+        if ($failures === null) {
+            $failures = new FailureCollection();
+        }
+        $this->proto_failures = $failures;
         $this->init();
     }
 
@@ -60,7 +74,7 @@ class Filter implements FilterInterface
 
     /**
      *
-     * Sets a filter rule on a field.
+     * Add multiple rules to a field.
      *
      * @param string $field The field name.
      *
@@ -71,9 +85,9 @@ class Filter implements FilterInterface
      * boolean true on success, or boolean false on failure.
      *
      */
-    public function setRule($field, $message, \Closure $closure)
+    public function addRule($field, $message, \Closure $closure)
     {
-        $this->rules[$field] = [$message, $closure];
+        $this->rules[$field][] = [$message, $closure];
     }
 
     /**
@@ -87,66 +101,36 @@ class Filter implements FilterInterface
      */
     public function apply(&$values)
     {
-        // reset the messages
-        $this->messages = [];
+        $this->failures = clone $this->proto_failures;
 
-        // go through each of the rules
-        foreach ($this->rules as $field => $rule) {
-            // get the message and closure
-            list($message, $closure) = $rule;
+        // go through each field rules
+        foreach ($this->rules as $field => $rules) {
+            foreach ($rules as $rule) {
+                // get the message and closure
+                list($message, $closure) = $rule;
 
-            // apply the closure to the data and get back the result
-            $passed = $closure($values->$field, $values);
+                // apply the closure to the data and get back the result
+                $passed = $closure($values->$field, $values);
 
-            // if the rule did not pass, retain a message for the field.
-            // note that it is in an array, so that other implementations
-            // can allow for multiple messages.
-            if (! $passed) {
-                if (! isset($this->messages[$field])) {
-                    $this->messages[$field][] = $message;
-                } else {
-                    // the message should be first.
-                    array_unshift($this->messages[$field], $message);
+                if (! $passed) {
+                    $this->failures->addMessagesForField($field, $message);
                 }
             }
         }
 
-        // if there are messages, one or more values failed
-        return $this->messages ? false : true;
+        // Is the failures empty or not
+        return $this->failures->isEmpty() ? true : false;
     }
 
     /**
      *
      * Gets the messages for all fields
      *
-     * @return ArrayObject
+     * @return FailureCollection
      *
      */
     public function getFailures()
     {
-        return new ArrayObject($this->messages);
-    }
-
-    /**
-     *
-     * Manually add messages to a particular field.
-     *
-     * @param string $field Add to this field.
-     *
-     * @param string|array $messages Add these messages to the field.
-     *
-     * @return void
-     *
-     */
-    public function addMessages($field, $messages)
-    {
-        if (! isset($this->messages[$field])) {
-            $this->messages[$field][] = $messages;
-        } else {
-            $this->messages[$field] = array_merge(
-                $this->messages[$field],
-                (array) $messages
-            );
-        }
+        return $this->failures;
     }
 }
