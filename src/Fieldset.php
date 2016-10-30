@@ -354,8 +354,8 @@ class Fieldset extends AbstractInput
      * @return bool True if all the filter rules pass, false if not.
      *
      */
-     public function filter()
-     {
+    public function filter()
+    {
         $this->success = $this->filter->apply($this);
         $this->failures = $this->filter->getFailures();
 
