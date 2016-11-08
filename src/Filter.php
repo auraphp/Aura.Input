@@ -74,13 +74,32 @@ class Filter implements FilterInterface
 
     /**
      *
+     * Resets all previous filter rules for the field and add the rule.
+     *
+     * @param string $field The field name.
+     *
+     * @param string $message The message when the rule fails.
+     *
+     * @param \Closure $closure A closure that implements the rule. It must
+     * have the signature `function ($value, &$fields)`; it must return
+     * boolean true on success, or boolean false on failure.
+     *
+     */
+    public function setRule($field, $message, \Closure $closure)
+    {
+        unset($this->rules[$field]);
+        $this->addRule($field, $message, $closure);
+    }
+
+    /**
+     *
      * Add multiple rules to a field.
      *
      * @param string $field The field name.
      *
      * @param string $message The message when the rule fails.
      *
-     * @param Closure $closure A closure that implements the rule. It must
+     * @param \Closure $closure A closure that implements the rule. It must
      * have the signature `function ($value, &$fields)`; it must return
      * boolean true on success, or boolean false on failure.
      *
@@ -132,5 +151,40 @@ class Filter implements FilterInterface
     public function getFailures()
     {
         return $this->failures;
+    }
+
+    /**
+     *
+     * Gets the messages for all fields, or for a single field.
+     *
+     * @param string $field If empty, return all messages for all fields;
+     * otherwise, return only messages for the named field.
+     *
+     * @return array
+     *
+     */
+    public function getMessages($field = null)
+    {
+        if ($field === null) {
+            return $this->failures->getMessages();
+        }
+
+        return $this->failures->getMessagesForField($field);
+    }
+
+    /**
+     *
+     * Manually add messages to a particular field.
+     *
+     * @param string $field Add to this field.
+     *
+     * @param string|array $messages Add these messages to the field.
+     *
+     * @return void
+     *
+     */
+    public function addMessages($field, $messages)
+    {
+        $this->failures->addMessagesForField($field, $messages);
     }
 }

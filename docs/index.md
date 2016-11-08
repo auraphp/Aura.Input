@@ -5,7 +5,8 @@ form, including sub-forms/sub-fieldsets, fieldset collections, an interface
 for injecting custom filter systems, and CSRF protection. Note that this
 package does not include output functionality, although the "hints" provided
 by the `Form` object can be used with any presentation system to generate an
-HTML form.
+HTML form. [Aura.Html](https://github.com/auraphp/Aura.Html) is one library
+that provide such functionality.
 
 ## Getting Started
 
@@ -44,8 +45,8 @@ these will provide hints to our view layer on how to present the field.)
 ### Setting Filters On The Form
 
 Aura.Input comes with a very basic filter system. Use the `getFilter()` method
-to get the `Filter` object, then add rules to the filter using the `setRule()`
-method. The first parameter to `setRule()` is the name of the form field to
+to get the `Filter` object, then add rules to the filter using the `addRule()`
+method. The first parameter to `addRule()` is the name of the form field to
 test; the second parameter is the message to use if the rule fails; the third
 parameter is a closure to test the form input value.
 
@@ -57,7 +58,7 @@ passes, or `false` if it does not.
 ```php
 $filter = $form->getFilter();
 
-$filter->setRule(
+$filter->addRule(
     'first_name',
     'First name must be alphabetic only.',
     function ($value) {
@@ -65,7 +66,7 @@ $filter->setRule(
     }
 );
 
-$filter->setRule(
+$filter->addRule(
     'last_name',
     'Last name must be alphabetic only.',
     function ($value) {
@@ -74,7 +75,7 @@ $filter->setRule(
 );
 
 // note that this rule compares the value to that of another field
-$filter->setRule(
+$filter->addRule(
     'email_confirm',
     'The email addresses must match.',
     function ($value, $fields) {
@@ -82,7 +83,7 @@ $filter->setRule(
     }
 );
 
-$filter->setRule(
+$filter->addRule(
     'state',
     'State not recognized.',
     function ($value) {
@@ -95,7 +96,7 @@ $filter->setRule(
     }
 );
 
-$filter->setRule(
+$filter->addRule(
     'zip',
     'ZIP code must be between 00000 and 99999.',
     function ($value) {
@@ -105,7 +106,7 @@ $filter->setRule(
     }
 );
 
-$filter->setRule(
+$filter->addRule(
     'phone_type',
     'Phone type not recognized.',
     function ($value) {
@@ -114,7 +115,7 @@ $filter->setRule(
     }
 );
 
-$filter->setRule(
+$filter->addRule(
     'birthday',
     'Birthday is not a valid date.',
     function ($value) {
@@ -134,7 +135,7 @@ $filter->setRule(
 You can also add custom messages to failed filter as below.
 
 ```php
-$filter->setRule(
+$filter->addRule(
     'foo',
     'Enter Foo correctly',
     function ($value) use ($filter) {
@@ -214,7 +215,7 @@ class ContactForm extends Form
 
         // set input filters
         $filter = $this->getFilter();
-        $filter->setRule(
+        $filter->addRule(
             'first_name',
             'First name must be alphabetic only.',
             function ($value) {
@@ -418,7 +419,7 @@ class ContactForm extends Form
 
         // set input filters
         $filter = $this->getFilter();
-        $filter->setRule(
+        $filter->addRule(
             'state',
             'State not recognized.',
             function ($value) use ($options) {
