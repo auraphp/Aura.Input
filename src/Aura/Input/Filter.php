@@ -45,7 +45,7 @@ class Filter implements FilterInterface
      * 
      * @param string $message The message when the rule fails.
      * 
-     * @param Closure $closure A closure that implements the rule. It must
+     * @param \Closure $closure A closure that implements the rule. It must
      * have the signature `function ($value, &$fields)`; it must return
      * boolean true on success, or boolean false on failure.
      * 
@@ -131,7 +131,7 @@ class Filter implements FilterInterface
     public function addMessages($field, $messages)
     {
         if (! isset($this->messages[$field])) {
-            $this->messages[$field][] = $messages;
+            $this->messages[$field] = (array) $messages;
         } else {
             $this->messages[$field] = array_merge(
                 $this->messages[$field],

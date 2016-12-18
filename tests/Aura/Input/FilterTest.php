@@ -100,7 +100,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($passed);
     }
     
-     public function testMultipleErrorMessages()
+    public function testMultipleErrorMessages()
     {
         // initial data
         $values = (object) [
@@ -139,5 +139,45 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             'Foo should be alpha only',
         ];
         $this->assertSame($expect, $actual);
+    }
+
+    public function testArrayOfErrorMessages()
+    {
+        $filter = new Filter();
+
+        $filter->addMessages('a_field', ['the value is in wrong format', 'just another error message']);
+
+        $actual = $filter->getMessages('a_field');
+
+        $expected = ['the value is in wrong format', 'just another error message'];
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testArrayOfErrorMessagesBeforeSingleMessage()
+    {
+        $filter = new Filter();
+
+        $filter->addMessages('a_field', ['the value is in wrong format', 'another message']);
+        $filter->addMessages('a_field', 'a message for the filed');
+
+        $actual = $filter->getMessages('a_field');
+
+        $expected = ['the value is in wrong format', 'another message', 'a message for the filed'];
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testSingleMessage()
+    {
+        $filter = new Filter();
+
+        $filter->addMessages('a_field', 'an error message');
+
+        $actual = $filter->getMessages('a_field');
+
+        $expected = ['an error message'];
+
+        $this->assertEquals($expected, $actual);
     }
 }
