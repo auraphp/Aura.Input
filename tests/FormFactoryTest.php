@@ -3,21 +3,31 @@ namespace Aura\Input;
 
 use StdClass;
 
-class FormFactoryTest extends \PHPUnit_Framework_TestCase
+class FormFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    public function test()
+
+    public function setUp()
     {
         $map = [
             'mock' => function () {
                 return new StdClass;
             },
         ];
-        $form_factory = new FormFactory($map);
-        
-        $actual = $form_factory->newInstance('mock');
+        $this->form_factory = new FormFactory($map);
+    }
+
+    public function test_newInstanceCanGetObject()
+    {
+
+        $actual = $this->form_factory->newInstance('mock');
         $this->assertInstanceOf('StdClass', $actual);
-        
-        $this->setExpectedException('Aura\Input\Exception\NoSuchForm');
-        $form_factory->newInstance('badname');
+    }
+
+    /**
+     * @expectedException Aura\Input\Exception\NoSuchForm
+     */
+    public function test_newInstanceNoSuchForm()
+    {
+        $this->form_factory->newInstance('badname');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -64,7 +65,7 @@ class FailureCollection  implements FailureCollectionInterface
      *
      */
     public function getMessages()
-    {        
+    {
         return $this->messages;
     }
 

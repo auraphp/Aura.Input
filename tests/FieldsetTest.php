@@ -3,7 +3,7 @@ namespace Aura\Input;
 
 use ArrayObject;
 
-class FieldsetTest extends \PHPUnit_Framework_TestCase
+class FieldsetTest extends \PHPUnit\Framework\TestCase
 {
     public function newFieldset()
     {
@@ -30,17 +30,21 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('foo_value', $fieldset->foo);
     }
 
+    /**
+     * @expectedException Aura\Input\Exception\NoSuchInput
+     */
     public function test__set_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
         $fieldset->foo = 'no such input';
     }
 
+    /**
+     * @expectedException Aura\Input\Exception\NoSuchInput
+     */
     public function test__get_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
         $foo = $fieldset->foo;
     }
 
@@ -51,10 +55,12 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($fieldset, $actual);
     }
 
+    /**
+     * @expectedException Aura\Input\Exception\NoSuchInput
+     */
     public function testGet_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
         $fieldset->get('foo');
     }
 

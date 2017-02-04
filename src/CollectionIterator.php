@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of the Aura project for PHP.
@@ -23,12 +24,12 @@ class CollectionIterator implements Iterator
 {
     /**
      *
-     * The fieldsets over which we are iterating.
+     * Represents a collection of fieldsets.
      *
-     * @var array
+     * @var Collection
      *
      */
-    protected $fieldsets;
+    protected $collection;
 
     /**
      *
