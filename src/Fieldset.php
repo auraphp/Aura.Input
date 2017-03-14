@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of the Aura project for PHP.
@@ -245,7 +246,7 @@ class Fieldset extends AbstractInput
      */
     public function fill(array $data)
     {
-        $this->success = null;
+        $this->success = NULL;
         foreach ($this->inputs as $key => $input) {
             if (array_key_exists($key, $data)) {
                 $input->fill($data[$key]);

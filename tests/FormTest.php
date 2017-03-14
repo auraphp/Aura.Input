@@ -7,7 +7,7 @@ use Aura\Input\Example\ContactForm;
 use Aura\Input\Example\PhoneFieldset;
 use Aura\Input\Example\PhoneFilter;
 
-class FormTest extends \PHPUnit_Framework_TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     public function testAddCsrf()
     {
@@ -31,6 +31,9 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    /**
+     * @expectedException Aura\Input\Exception\CsrfViolation
+     */
     public function testMissingCsrf()
     {
         // set up the basic form
@@ -43,10 +46,12 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         // load it with a missing csrf token
         $data = ['foo' => 'bar'];
-        $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
         $form->fill($data);
     }
 
+    /**
+     * @expectedException Aura\Input\Exception\CsrfViolation
+     */
     public function testBadCsrf()
     {
         // set up the basic form
@@ -59,7 +64,6 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         // load it with a bad token
         $data = ['foo' => 'bar', '__csrf_token' => 'badvalue'];
-        $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
         $form->fill($data);
     }
 

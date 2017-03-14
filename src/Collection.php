@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of the Aura project for PHP.
@@ -126,7 +127,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return array
      *
      */
-    public function getKeys()
+    public function getKeys() : array
     {
         return array_keys($this->fieldsets);
     }
@@ -140,7 +141,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return Fieldset
      *
      */
-    protected function newFieldset($key)
+    protected function newFieldset($key) : Fieldset
     {
         $factory = $this->factory;
         $fieldset = $factory();
@@ -157,7 +158,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return Fieldset
      *
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : Fieldset
     {
         $fieldset = $this->fieldsets[$offset];
         $fieldset->setNamePrefix($this->getFullName());
@@ -189,7 +190,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return bool True if the Fielset key is set, false if not.
      *
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return isset($this->fieldsets[$offset]);
     }
@@ -215,7 +216,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return int
      *
      */
-    public function count()
+    public function count() : int
     {
         return count($this->fieldsets);
     }
@@ -227,7 +228,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return array
      *
      */
-    public function getValue()
+    public function getValue() : array
     {
         $data = [];
         foreach ($this->fieldsets as $key => $fieldset) {

@@ -4,7 +4,7 @@ namespace Aura\Input\Example;
 use Aura\Input\Builder;
 use Aura\Input\Filter;
 
-class ExampleTest extends \PHPUnit_Framework_TestCase
+class ExampleTest extends \PHPUnit\Framework\TestCase
 {
     protected $form;
 
@@ -14,13 +14,13 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             'address' => function () {
                 return new AddressFieldset(
                     new Builder,
-                    new Filter
+                    new AddressFilter
                 );
             },
             'phone' => function () {
                 return new PhoneFieldset(
                     new Builder,
-                    new Filter
+                    new PhoneFilter
                 );
             },
         ]);
@@ -103,5 +103,41 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
             'value' => '234-567-8901',
         ];
         $this->assertSame($expect, $actual);
+    }
+
+
+    public function testAllFiltersAreCalled()
+    {
+        // fill the form with data
+        $this->form->fill([
+            'first_name' => 'Bolivar',
+            'last_name' => 'Shagnasty',
+            'no_such_field' => 'nonesuch',
+            'email' => 'boshag@example.com',
+            'website' => 'http://boshag.example.com',
+            'address' => [
+                'street' => '123 Main',
+                'city' => 'Beverly Hills',
+                'state' => 'CA',
+                'zip' => '90210',
+            ],
+            'phone_numbers' => [
+                0 => [
+                    'type' => 'somethingelse',
+                    'number' => '123-456-7890',
+                ],
+                1 => [
+                    'type' => 'home',
+                    'number' => '234-567-8901',
+                ],
+                2 => [
+                    'type' => 'fax',
+                    'number' => '345-678-9012',
+                ],
+            ],
+        ]);
+
+        $this->assertFalse($this->form->filter());
+        // $this->form->getFailures();
     }
 }
