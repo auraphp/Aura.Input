@@ -187,6 +187,28 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('mock[foo]', $field['name']);
     }
 
+    public function testSetFieldsetOptions()
+    {
+        $map['configurable'] = function ($options = null) {
+            return new ConfigurableFieldset(
+                new Builder(),
+                new Filter(),
+                $options
+            );
+        };
+
+        $fieldset = new Fieldset(
+            new Builder($map),
+            new Filter()
+        );
+
+        $inner = $fieldset->setFieldset('test', 'configurable', ['one', 'two', 'three']);
+        $this->assertInstanceOf(ConfigurableFieldset::class, $inner);
+
+        $field = $inner->get('foo');
+        $this->assertSame(['one', 'two', 'three'], $field['options']);
+    }
+
     public function testSetCollection()
     {
         // a map so the outer fieldset can create the inner collection
