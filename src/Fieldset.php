@@ -301,12 +301,14 @@ class Fieldset extends AbstractInput
      *
      * @param string $type A Fieldset of this type; defaults to $name.
      *
+     * @param mixed $options Optional: configuration options for the fieldset.
+     *
      * @return Fieldset
      *
      */
-    public function setFieldset($name, $type = null)
+    public function setFieldset($name, $type = null, $options = null)
     {
-        $this->inputs[$name] = $this->builder->newFieldset($name, $type);
+        $this->inputs[$name] = $this->builder->newFieldset($name, $type, $options);
         return $this->inputs[$name];
     }
 

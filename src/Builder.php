@@ -89,17 +89,19 @@ class Builder implements BuilderInterface
      * @param string $name The fieldset name.
      * 
      * @param string $type The fieldset type.
+     *
+     * @param mixed $options Optional: configuration options for the fieldset.
      * 
      * @return Fieldset
      * 
      */
-    public function newFieldset($name, $type = null)
+    public function newFieldset($name, $type = null, $options = null)
     {
         if (! $type) {
             $type = $name;
         }
         $factory = $this->fieldset_map[$type];
-        $fieldset = $factory();
+        $fieldset = $factory($options);
         $fieldset->setName($name);
         return $fieldset;
     }
