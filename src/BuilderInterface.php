@@ -32,19 +32,21 @@ interface BuilderInterface
      * 
      */
     public function newField($name, $type);
-    
+
     /**
-     * 
+     *
      * Creates a new Fieldset object.
      *
      * @param string $name The fieldset name.
-     *  
+     *
      * @param string $type The fieldset type.
      *
+     * @param mixed $options Optional: configuration options for the fieldset.
+     *
      * @return Fieldset
-     * 
+     *
      */
-    public function newFieldset($name, $type);
+    public function newFieldset($name, $type, $options = null);
     /**
      * 
      * Creates a new Collection object.

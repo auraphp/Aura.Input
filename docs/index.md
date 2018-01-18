@@ -430,6 +430,24 @@ class ContactForm extends Form
 }
 ```
 
+Passing options to the form also works with a FormFactory instance. The first parameter provided to the closure will be whatever is passed as options (the 2nd parameter of `FormFactory::newInstance`).
+
+``` php
+use Aura\Input\Builder;
+use Aura\Input\Filter;
+use Aura\Input\FormFactory;
+use Vendor\Package\ContactForm;
+use Vendor\Package\Options;
+
+$factory = new FormFactory([
+    'contact' => function ($options = null) {
+        return new ContactForm(new Builder(), new Filter(), $options);
+    },
+]);
+
+$form = $factory->newInstance('contact', new Options());
+```  
+
 
 ### Creating Reusable Fieldsets
 
@@ -473,6 +491,30 @@ Now in our `ContactForm` `init()` method we can use `$this->setFieldset('address
 
 ```
 $form = new ContactForm($builder, new Filter);
+```
+
+### Passing Options to Fieldsets
+
+You may need to reuse a fieldset class several times within the same form, and need a way to configure its fields. The builder factory methods can now accept an optional 1st argument to pass options.
+
+``` php
+$builder = new Builder([
+    'my-fieldset' => function ($options = null) {
+        return new MyFieldset(
+            new Builder,
+            new Filter,
+            $options
+        );
+    },
+    // other fieldset if any
+]);
+```
+
+Once registered, the fieldset may be created from within the form:
+
+``` php
+$form = new Form($builder, new Filter());
+$form->setFieldset('foo', 'my-fieldset', ['options here']);
 ```
 
 ### Using Fieldset Collections

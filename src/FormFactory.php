@@ -43,24 +43,25 @@ class FormFactory
     }
 
     /**
-     * 
+     *
      * Returns a new instance of a named form.
-     * 
+     *
      * @param string $name The name of the form to create.
-     * 
+     *
+     * @param mixed $options
+     *
      * @return Form
-     * 
+     *
      * @throws Exception\NoSuchForm When the named form does not exist.
-     * 
      */
-    public function newInstance($name)
+    public function newInstance($name, $options = null)
     {
         if (! isset($this->map[$name])) {
             throw new Exception\NoSuchForm($name);
         }
         
         $factory = $this->map[$name];
-        $form = $factory();
+        $form = $factory($options);
         return $form;
     }
 }
