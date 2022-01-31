@@ -1,13 +1,13 @@
 <?php
 namespace Aura\Input;
 
-use ArrayObject;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class FilterTest extends \PHPUnit_Framework_TestCase
+class FilterTest extends TestCase
 {
     protected $filter;
 
-    protected function setUp()
+    protected function set_up()
     {
         $this->filter = new Filter;
 

@@ -68,6 +68,7 @@ class CollectionIterator implements Iterator
      * @return mixed
      *
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->collection->offsetGet($this->key());
@@ -80,6 +81,7 @@ class CollectionIterator implements Iterator
      * @return mixed
      *
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return current($this->keys);
@@ -92,6 +94,7 @@ class CollectionIterator implements Iterator
      * @return void
      *
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->valid = (next($this->keys) !== false);
@@ -104,6 +107,7 @@ class CollectionIterator implements Iterator
      * @return void
      *
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->valid = (reset($this->keys) !== false);
@@ -116,6 +120,7 @@ class CollectionIterator implements Iterator
      * @return boolean
      *
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->valid;

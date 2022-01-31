@@ -26,8 +26,7 @@ without compromising flexibility. For specifics, please examine the package
 ## Quality
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Input/badges/quality-score.png?b=3.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Input/)
-[![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Input/badges/coverage.png?b=3.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Input/)
-[![Build Status](https://travis-ci.org/auraphp/Aura.Input.png?branch=3.x)](https://travis-ci.org/auraphp/Aura.Input)
+[![Continuous Integration](https://github.com/auraphp/Aura.Input/actions/workflows/continuous-integration.yml/badge.svg?branch=3.x)](https://github.com/auraphp/Aura.Input/actions/workflows/continuous-integration.yml)
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 

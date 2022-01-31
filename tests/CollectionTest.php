@@ -1,9 +1,9 @@
 <?php
 namespace Aura\Input;
 
-use ArrayObject;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends TestCase
 {
     public function newCollection()
     {

@@ -1,9 +1,9 @@
 <?php
 namespace Aura\Input;
 
-use ArrayObject;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class FieldsetTest extends \PHPUnit_Framework_TestCase
+class FieldsetTest extends TestCase
 {
     public function newFieldset()
     {
@@ -33,14 +33,14 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
     public function test__set_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
+        $this->expectException('Aura\Input\Exception\NoSuchInput');
         $fieldset->foo = 'no such input';
     }
 
     public function test__get_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
+        $this->expectException('Aura\Input\Exception\NoSuchInput');
         $foo = $fieldset->foo;
     }
 
@@ -54,7 +54,7 @@ class FieldsetTest extends \PHPUnit_Framework_TestCase
     public function testGet_noSuchInput()
     {
         $fieldset = $this->newFieldset();
-        $this->setExpectedException('Aura\Input\Exception\NoSuchInput');
+        $this->expectException('Aura\Input\Exception\NoSuchInput');
         $fieldset->get('foo');
     }
 

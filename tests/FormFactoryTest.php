@@ -2,8 +2,9 @@
 namespace Aura\Input;
 
 use StdClass;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class FormFactoryTest extends \PHPUnit_Framework_TestCase
+class FormFactoryTest extends TestCase
 {
     public function test()
     {
@@ -13,11 +14,11 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
             },
         ];
         $form_factory = new FormFactory($map);
-        
+
         $actual = $form_factory->newInstance('mock');
         $this->assertInstanceOf('StdClass', $actual);
-        
-        $this->setExpectedException('Aura\Input\Exception\NoSuchForm');
+
+        $this->expectException('Aura\Input\Exception\NoSuchForm');
         $form_factory->newInstance('badname');
     }
 
