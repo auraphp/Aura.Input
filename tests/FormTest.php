@@ -6,8 +6,9 @@ use Aura\Input\Example\ContactFilter;
 use Aura\Input\Example\ContactForm;
 use Aura\Input\Example\PhoneFieldset;
 use Aura\Input\Example\PhoneFilter;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class FormTest extends \PHPUnit_Framework_TestCase
+class FormTest extends TestCase
 {
     public function testAddCsrf()
     {
@@ -43,7 +44,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         // load it with a missing csrf token
         $data = ['foo' => 'bar'];
-        $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
+        $this->expectException('Aura\Input\Exception\CsrfViolation');
         $form->fill($data);
     }
 
@@ -59,7 +60,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         // load it with a bad token
         $data = ['foo' => 'bar', '__csrf_token' => 'badvalue'];
-        $this->setExpectedException('Aura\Input\Exception\CsrfViolation');
+        $this->expectException('Aura\Input\Exception\CsrfViolation');
         $form->fill($data);
     }
 

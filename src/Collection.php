@@ -114,6 +114,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return CollectionIterator
      *
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new CollectionIterator($this);
@@ -157,6 +158,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return Fieldset
      *
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $fieldset = $this->fieldsets[$offset];
@@ -175,6 +177,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return void
      *
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $fieldset)
     {
         $this->fieldsets[$offset] = $fieldset;
@@ -189,6 +192,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return bool True if the Fielset key is set, false if not.
      *
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->fieldsets[$offset]);
@@ -203,6 +207,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return void
      *
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->fieldsets[$offset]);
@@ -215,6 +220,7 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
      * @return int
      *
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->fieldsets);
