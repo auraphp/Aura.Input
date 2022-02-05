@@ -1,4 +1,4 @@
-# 3.0.0-dev
+# 3.0.0-alpha
 
 * License has been changed from BSD to MIT.
 * Removed `aura/installer-default` from `composer.json`.
