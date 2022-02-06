@@ -14,7 +14,7 @@ This package is installable and PSR-4 autoloadable via Composer as
 
 ## Dependencies
 
-This package requires PHP 5.6 or later; it has been tested on PHP 5.6-8.1. We recommend using the latest available version of PHP as a matter of
+This package requires PHP 7.2 or later; it has been tested on PHP 7.2 - 8.1. We recommend using the latest available version of PHP as a matter of
 principle.
 
 Aura library packages may sometimes depend on external interfaces, but never on
@@ -24,9 +24,9 @@ without compromising flexibility. For specifics, please examine the package
 
 ## Quality
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Input/badges/quality-score.png?b=3.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Input/)
-[![codecov](https://codecov.io/gh/auraphp/Aura.Input/branch/3.x/graph/badge.svg)](https://codecov.io/gh/auraphp/Aura.Input)
-[![Continuous Integration](https://github.com/auraphp/Aura.Input/actions/workflows/continuous-integration.yml/badge.svg?branch=3.x)](https://github.com/auraphp/Aura.Input/actions/workflows/continuous-integration.yml)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Input/badges/quality-score.png?b=4.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Input/)
+[![codecov](https://codecov.io/gh/auraphp/Aura.Input/branch/4.x/graph/badge.svg)](https://codecov.io/gh/auraphp/Aura.Input)
+[![Continuous Integration](https://github.com/auraphp/Aura.Input/actions/workflows/continuous-integration.yml/badge.svg?branch=4.x)](https://github.com/auraphp/Aura.Input/actions/workflows/continuous-integration.yml)
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
