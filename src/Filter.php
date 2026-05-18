@@ -53,7 +53,7 @@ class Filter implements FilterInterface
     /**
      * Initialize filters
      */
-    public function __construct(FailureCollectionInterface $failures = null)
+    public function __construct(?FailureCollectionInterface $failures = null)
     {
         if ($failures === null) {
             $failures = new FailureCollection();
@@ -118,7 +118,7 @@ class Filter implements FilterInterface
      * @return bool True if all rules passed; false if one or more failed.
      *
      */
-    public function apply(&$values)
+    public function apply(&$values): bool
     {
         $this->failures = clone $this->proto_failures;
 
@@ -148,7 +148,7 @@ class Filter implements FilterInterface
      * @return FailureCollection
      *
      */
-    public function getFailures()
+    public function getFailures(): FailureCollectionInterface
     {
         return $this->failures;
     }

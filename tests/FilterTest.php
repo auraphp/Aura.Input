@@ -103,6 +103,30 @@ class FilterTest extends TestCase
         $this->assertTrue($this->filter->getFailures()->isEmpty());
     }
 
+    public function testFailureCollectionAddAndSet()
+    {
+        $failures = new \Aura\Input\Filter\FailureCollection;
+        $this->assertTrue($failures->isEmpty());
+
+        $first = $failures->add('foo', 'first message', ['arg' => 1]);
+        $this->assertInstanceOf(\Aura\Filter_Interface\FailureInterface::class, $first);
+        $this->assertSame('foo', $first->getField());
+        $this->assertSame('first message', $first->getMessage());
+        $this->assertSame(['arg' => 1], $first->getArgs());
+
+        $failures->add('foo', 'second message');
+        $this->assertSame(['first message', 'second message'], $failures->getMessagesForField('foo'));
+
+        $replaced = $failures->set('foo', 'only message');
+        $this->assertInstanceOf(\Aura\Filter_Interface\FailureInterface::class, $replaced);
+        $this->assertSame(['only message'], $failures->getMessagesForField('foo'));
+
+        $this->assertSame(
+            ['field' => 'foo', 'message' => 'only message', 'args' => []],
+            $replaced->jsonSerialize()
+        );
+    }
+
     public function testMultipleErrorMessages()
     {
         // initial data
