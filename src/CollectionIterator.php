@@ -23,6 +23,15 @@ class CollectionIterator implements Iterator
 {
     /**
      *
+     * The collection over which we are iterating.
+     *
+     * @var Collection
+     *
+     */
+    protected $collection;
+
+    /**
+     *
      * The fieldsets over which we are iterating.
      *
      * @var array
