@@ -3,13 +3,13 @@ namespace Aura\Input\Example;
 
 use Aura\Input\Builder;
 use Aura\Input\Filter;
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
 {
     protected $form;
 
-    protected function set_up()
+    protected function setUp(): void
     {
         $builder = new Builder([
             'address' => function () {

@@ -6,7 +6,7 @@ use Aura\Input\Example\ContactFilter;
 use Aura\Input\Example\ContactForm;
 use Aura\Input\Example\PhoneFieldset;
 use Aura\Input\Example\PhoneFilter;
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class FormTest extends TestCase
 {
@@ -144,8 +144,9 @@ class FormTest extends TestCase
         $this->assertFalse($form->filter());
         $failures = $form->getFailures();
         $this->assertFalse($failures->isEmpty());
-        $this->assertSame(["First name must be alphabetic only."], $failures->getMessagesForField('first_name'));
-        $this->assertSame("Not a valid phone number.", $failures->getMessagesForField('phone_numbers')[2]['number'][0]);
+        $this->assertSame(["First name must be alphabetic only."], $failures->getMessages()['first_name']);
+        // Nested collection failures use dot-notation: "phone_numbers.2.number"
+        $this->assertSame("Not a valid phone number.", $failures->getMessages()['phone_numbers.2.number'][0]);
     }
 
     public function testIsSuccess()
@@ -200,8 +201,8 @@ class FormTest extends TestCase
         $this->assertFalse($form->filter());
         $failures = $form->getFailures();
         $this->assertFalse($failures->isEmpty());
-        $this->assertSame("Not a valid phone number.", $failures->getMessagesForField('phone_numbers')[2]['number'][0]);
-
+        // Nested collection failures use dot-notation: "phone_numbers.2.number"
+        $this->assertSame("Not a valid phone number.", $failures->getMessages()['phone_numbers.2.number'][0]);
 
         $form->fill([
             'first_name' => 'Hari',

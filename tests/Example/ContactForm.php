@@ -5,7 +5,7 @@ use Aura\Input\Form;
 
 class ContactForm extends Form
 {
-    public function init()
+    public function init(): void
     {
         // basic info
         $this->setField('first_name');

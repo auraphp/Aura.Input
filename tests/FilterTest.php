@@ -1,13 +1,13 @@
 <?php
 namespace Aura\Input;
 
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class FilterTest extends TestCase
 {
-    protected $filter;
+    protected Filter $filter;
 
-    protected function set_up()
+    protected function setUp(): void
     {
         $this->filter = new Filter;
 
@@ -20,7 +20,7 @@ class FilterTest extends TestCase
             }
         );
 
-        // sanitize
+        // sanitize — closure modifies the value via by-ref first parameter
         $this->filter->addRule(
             'bar',
             'Remove non-alpha from bar',
@@ -40,7 +40,7 @@ class FilterTest extends TestCase
         );
     }
 
-    public function testAll()
+    public function testAll(): void
     {
         // initial data
         $values = (object) [
@@ -50,11 +50,11 @@ class FilterTest extends TestCase
             'baz_confirm' => 'baz_value',
         ];
 
-        // do the values pass all filters?
-        $passed = $this->filter->apply($values);
+        // apply() now returns a FilterResultInterface
+        $result = $this->filter->apply($values);
 
         // 'foo' is invalid
-        $this->assertFalse($passed);
+        $this->assertFalse($result->isSuccess());
 
         // get all messages
         $actual = $this->filter->getFailures()->getMessages();
@@ -75,7 +75,8 @@ class FilterTest extends TestCase
         // no failures on nonexistent field
         $this->assertTrue(empty($this->filter->getFailures()->getMessagesForField('no-such-failure')));
 
-        // should have changed the values on 'bar'
+        // should have changed the value on 'bar' (closure uses &$value which
+        // modifies the object property in place via the PHP reference mechanism)
         $expect = (object) [
             'foo' => 'foo_value',
             'bar' => 'bar!value',
@@ -98,12 +99,12 @@ class FilterTest extends TestCase
 
         // let's make it valid
         $values->foo = 'foovalue';
-        $passed = $this->filter->apply($values);
-        $this->assertTrue($passed);
+        $result = $this->filter->apply($values);
+        $this->assertTrue($result->isSuccess());
         $this->assertTrue($this->filter->getFailures()->isEmpty());
     }
 
-    public function testFailureCollectionAddAndSet()
+    public function testFailureCollectionAddAndSet(): void
     {
         $failures = new \Aura\Input\Filter\FailureCollection;
         $this->assertTrue($failures->isEmpty());
@@ -127,7 +128,7 @@ class FilterTest extends TestCase
         );
     }
 
-    public function testMultipleErrorMessages()
+    public function testMultipleErrorMessages(): void
     {
         // initial data
         $values = (object) [
@@ -155,8 +156,8 @@ class FilterTest extends TestCase
         );
 
         // do the values pass the filter?
-        $passed = $filter->apply($values);
-        $this->assertFalse($passed);
+        $result = $filter->apply($values);
+        $this->assertFalse($result->isSuccess());
 
         // get 'foo' messages
         $actual = $filter->getFailures()->getMessagesForField('foo');

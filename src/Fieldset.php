@@ -10,9 +10,10 @@
  */
 namespace Aura\Input;
 
-use ArrayObject;
-use Aura\Filter_Interface\FilterInterface;
 use Aura\Filter_Interface\FailureCollectionInterface;
+use Aura\Filter_Interface\FailuresInterface;
+use Aura\Filter_Interface\FilterInterface;
+use Aura\Input\Filter\FailureCollection;
 
 /**
  *
@@ -71,13 +72,9 @@ class Fieldset extends AbstractInput
     protected $success;
 
     /**
-     *
-     * Failures in the fieldset.
-     *
-     * @var FailureCollectionInterface
-     *
+     * Failures aggregated after the last filter() call.
      */
-    protected $failures;
+    protected FailuresInterface $failures;
 
     /**
      *
@@ -260,7 +257,7 @@ class Fieldset extends AbstractInput
      * @return void
      *
      */
-    public function init()
+    public function init(): void
     {
     }
 
@@ -350,42 +347,49 @@ class Fieldset extends AbstractInput
     }
 
     /**
-     *
      * Filters the inputs on this fieldset.
      *
-     * @return bool True if all the filter rules pass, false if not.
+     * Applies the injected filter, then recurses into nested Fieldsets and
+     * Collections. Nested failures are stored with dot-notation keys so that
+     * callers can retrieve them by path:
+     *   "phone_numbers.0.number" instead of "phone_numbers" → nested array.
      *
+     * @return bool True if all the filter rules pass, false if not.
      */
-    public function filter()
+    public function filter(): bool
     {
-        $this->success = $this->filter->apply($this);
-        $this->failures = $this->filter->getFailures();
+        // Apply the top-level filter rules.
+        $result        = $this->filter->apply($this);
+        $this->success = $result->isSuccess();
 
-        // Iterate on fieldset or collection and get failures
+        // Accumulate all failures (own + nested) into a mutable collector.
+        $collector = new FailureCollection();
+        foreach ($result->getFailures()->getMessages() as $field => $messages) {
+            $collector->addMessagesForField($field, $messages);
+        }
+
+        // Recurse into nested Fieldsets and Collections.
         foreach ($this->inputs as $name => $input) {
             if ($input instanceof Fieldset || $input instanceof Collection) {
                 if (! $input->filter()) {
                     $this->success = false;
-                    $failures = $input->getFailures();
-                    if ($failures instanceof FailureCollectionInterface) {
-                        $failures = $failures->getMessages();
+                    foreach ($input->getFailures()->getMessages() as $field => $messages) {
+                        $collector->addMessagesForField("{$name}.{$field}", $messages);
                     }
-                    $this->failures->addMessagesForField($name, $failures);
                 }
             }
         }
 
+        $this->failures = $collector;
         return $this->success;
     }
 
     /**
+     * Returns the failures from the last filter() call.
      *
-     * Returns the failures.
-     *
-     * @return FailureCollectionInterface
-     *
+     * @return FailuresInterface
      */
-    public function getFailures()
+    public function getFailures(): FailuresInterface
     {
         return $this->failures;
     }

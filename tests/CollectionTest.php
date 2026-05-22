@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Input;
 
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
 {
@@ -35,7 +35,7 @@ class CollectionTest extends TestCase
         }
     }
 
-    public function testFilterAndGetMessages()
+    public function testFilterAndGetMessages(): void
     {
         $collection = $this->newCollection();
 
@@ -47,33 +47,25 @@ class CollectionTest extends TestCase
         ];
 
         $collection->fill($data);
-        $actual = $collection->filter();
-        $this->assertFalse($actual);
+        $passed = $collection->filter();
+        $this->assertFalse($passed);
 
-        $actual = $collection->getFailures();
-        $expect = [
-            0 => [],
-            1 => [
-                'foo' => [
-                    'Use alpha only!',
-                ],
-            ],
-            2 => [],
-            3 => [
-                'foo' => [
-                    'Use alpha only!',
-                ],
-            ],
-        ];
+        // getFailures() now returns FailuresInterface with dot-notation keys:
+        // failing entries are "1.foo" and "3.foo"; passing entries have no key.
+        $failures = $collection->getFailures();
+        $messages = $failures->getMessages();
 
-        $this->assertEquals($expect, $actual);
+        $this->assertSame(['Use alpha only!'], $messages['1.foo']);
+        $this->assertSame(['Use alpha only!'], $messages['3.foo']);
+        $this->assertArrayNotHasKey('0.foo', $messages);
+        $this->assertArrayNotHasKey('2.foo', $messages);
 
-        $expect = [
-            'foo' => [
-                'Use alpha only!',
-            ],
-        ];
-        $this->assertEquals($expect, $actual[1]);
+        // getNestedMessages() reconstructs the tree
+        $nested = $failures->getNestedMessages();
+        $this->assertSame(['Use alpha only!'], $nested[1]['foo']);
+        $this->assertSame(['Use alpha only!'], $nested[3]['foo']);
+        $this->assertArrayNotHasKey('foo', $nested[0] ?? []);
+        $this->assertArrayNotHasKey('foo', $nested[2] ?? []);
     }
 
     public function testArrayAccessCount()

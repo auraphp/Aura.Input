@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Input;
 
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class FieldsetTest extends TestCase
 {

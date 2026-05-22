@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  *
  * This file is part of the Aura project for PHP.
@@ -10,13 +12,19 @@
  */
 namespace Aura\Input;
 
-use Aura\Filter_Interface\FilterInterface;
 use Aura\Filter_Interface\FailureCollectionInterface;
+use Aura\Filter_Interface\FilterInterface;
+use Aura\Filter_Interface\FilterResult;
+use Aura\Filter_Interface\FilterResultInterface;
 use Aura\Input\Filter\FailureCollection;
 
 /**
  *
- * A filter
+ * A closure-based filter implementation for Aura.Input.
+ *
+ * Rules are registered as closures with the signature:
+ *   function ($value, $fields): bool
+ * where $fields is the Fieldset object (passed by handle).
  *
  * @package Aura.Input
  *
@@ -24,111 +32,78 @@ use Aura\Input\Filter\FailureCollection;
 class Filter implements FilterInterface
 {
     /**
-     *
      * The array of rules to be applied to fields.
      *
-     * @var array
-     *
+     * @var array<string, array<int, array{string, \Closure}>>
      */
-    protected $rules = [];
+    protected array $rules = [];
 
     /**
-     *
-     * The array of failures to be used when rules fail.
-     *
-     * @var FailureCollection
-     *
+     * Live failures during / after the current apply() run.
+     * Kept as instance state so closures can call
+     * $filter->getFailures()->addMessagesForField() mid-run.
      */
-    protected $failures;
+    protected FailureCollection $failures;
 
     /**
-     *
-     * A prototype FailureCollection.
-     *
-     * @var FailureCollection
-     *
+     * A prototype FailureCollection (cloned on each apply() call).
      */
-    protected $proto_failures;
+    protected FailureCollection $proto_failures;
 
     /**
-     * Initialize filters
+     * Initialize filters.
      */
     public function __construct(?FailureCollectionInterface $failures = null)
     {
-        if ($failures === null) {
-            $failures = new FailureCollection();
-        }
-        $this->proto_failures = $failures;
+        $proto = ($failures instanceof FailureCollection)
+            ? $failures
+            : new FailureCollection();
+
+        $this->proto_failures = $proto;
+        $this->failures       = clone $proto;
         $this->init();
     }
 
     /**
-     *
-     * Does nothing
-     *
+     * Hook for subclasses.
      */
-    protected function init()
+    protected function init(): void
     {
-        # code...
     }
 
     /**
-     *
-     * Resets all previous filter rules for the field and add the rule.
-     *
-     * @param string $field The field name.
-     *
-     * @param string $message The message when the rule fails.
-     *
-     * @param \Closure $closure A closure that implements the rule. It must
-     * have the signature `function ($value, &$fields)`; it must return
-     * boolean true on success, or boolean false on failure.
-     *
+     * Resets all previous rules for a field and adds a single rule.
      */
-    public function setRule($field, $message, \Closure $closure)
+    public function setRule(string $field, string $message, \Closure $closure): void
     {
         unset($this->rules[$field]);
         $this->addRule($field, $message, $closure);
     }
 
     /**
-     *
-     * Add multiple rules to a field.
-     *
-     * @param string $field The field name.
-     *
-     * @param string $message The message when the rule fails.
-     *
-     * @param \Closure $closure A closure that implements the rule. It must
-     * have the signature `function ($value, &$fields)`; it must return
-     * boolean true on success, or boolean false on failure.
-     *
+     * Adds a rule to a field (multiple rules per field are supported).
      */
-    public function addRule($field, $message, \Closure $closure)
+    public function addRule(string $field, string $message, \Closure $closure): void
     {
         $this->rules[$field][] = [$message, $closure];
     }
 
     /**
+     * Applies all rules to $values (a Fieldset object).
      *
-     * Filter (sanitize and validate) the data.
+     * Never mutates the caller's variable — but for Fieldset subjects the
+     * Fieldset IS the container; closures write back via $fields->name = ...
+     * through the object handle.
      *
-     * @param mixed $values The values to be filtered.
-     *
-     * @return bool True if all rules passed; false if one or more failed.
-     *
+     * Keeps $this->failures as live state during the run so mid-run closures
+     * that call getFailures()->addMessagesForField() continue to work.
      */
-    public function apply(&$values): bool
+    public function apply(array|object $values): FilterResultInterface
     {
         $this->failures = clone $this->proto_failures;
 
-        // go through each field rules
         foreach ($this->rules as $field => $rules) {
-            foreach ($rules as $rule) {
-                // get the message and closure
-                list($message, $closure) = $rule;
-
-                // apply the closure to the data and get back the result
+            foreach ($rules as [$message, $closure]) {
                 $passed = $closure($values->$field, $values);
 
                 if (! $passed) {
@@ -137,16 +112,16 @@ class Filter implements FilterInterface
             }
         }
 
-        // Is the failures empty or not
-        return $this->failures->isEmpty() ? true : false;
+        return new FilterResult(
+            $this->failures->isEmpty(),
+            $values,
+            $this->failures
+        );
     }
 
     /**
-     *
-     * Gets the messages for all fields
-     *
-     * @return FailureCollection
-     *
+     * Returns the failures from the most recent apply() call.
+     * Not on FilterInterface — concrete helper for closures and Fieldset.
      */
     public function getFailures(): FailureCollectionInterface
     {
@@ -154,16 +129,11 @@ class Filter implements FilterInterface
     }
 
     /**
+     * Returns all messages, or messages for a single field.
      *
-     * Gets the messages for all fields, or for a single field.
-     *
-     * @param string $field If empty, return all messages for all fields;
-     * otherwise, return only messages for the named field.
-     *
-     * @return array
-     *
+     * @return array<string, string[]>|string[]
      */
-    public function getMessages($field = null)
+    public function getMessages(?string $field = null): array
     {
         if ($field === null) {
             return $this->failures->getMessages();
@@ -173,17 +143,11 @@ class Filter implements FilterInterface
     }
 
     /**
+     * Manually adds messages to a particular field.
      *
-     * Manually add messages to a particular field.
-     *
-     * @param string $field Add to this field.
-     *
-     * @param string|array $messages Add these messages to the field.
-     *
-     * @return void
-     *
+     * @param string|string[] $messages
      */
-    public function addMessages($field, $messages)
+    public function addMessages(string $field, string|array $messages): void
     {
         $this->failures->addMessagesForField($field, $messages);
     }

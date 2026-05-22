@@ -5,7 +5,7 @@ use Aura\Input\Filter;
 
 class ContactFilter extends Filter
 {
-    protected function init()
+    protected function init(): void
     {
         $this->addRule(
             'first_name',

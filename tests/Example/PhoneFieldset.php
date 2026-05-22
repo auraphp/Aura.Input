@@ -5,7 +5,7 @@ use Aura\Input\Fieldset;
 
 class PhoneFieldset extends Fieldset
 {
-    public function init()
+    public function init(): void
     {
         $this->setField('type');
         $this->setField('number');

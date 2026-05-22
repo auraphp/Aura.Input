@@ -2,7 +2,7 @@
 namespace Aura\Input;
 
 use StdClass;
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class FormFactoryTest extends TestCase
 {
