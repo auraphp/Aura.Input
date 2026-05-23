@@ -68,6 +68,30 @@ class CollectionTest extends TestCase
         $this->assertArrayNotHasKey('foo', $nested[2] ?? []);
     }
 
+    public function testFilterEmptyCollectionPasses(): void
+    {
+        $collection = $this->newCollection();
+        // no fill() — collection has zero fieldsets
+        $this->assertTrue($collection->filter());
+        $this->assertTrue($collection->getFailures()->isEmpty());
+    }
+
+    public function testFilterAllPass(): void
+    {
+        $collection = $this->newCollection();
+
+        // MockFieldset has a filter rule that requires alpha-only values
+        $data = [
+            ['foo' => 'alpha'],
+            ['foo' => 'beta'],
+            ['foo' => 'gamma'],
+        ];
+
+        $collection->fill($data);
+        $this->assertTrue($collection->filter());
+        $this->assertTrue($collection->getFailures()->isEmpty());
+    }
+
     public function testArrayAccessCount()
     {
         $collection = $this->newCollection();

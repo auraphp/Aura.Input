@@ -168,4 +168,87 @@ class FilterTest extends TestCase
         ];
         $this->assertSame($expect, $actual);
     }
+
+    public function testSetRuleReplacesExistingRules(): void
+    {
+        $filter = new Filter;
+
+        // add two rules for 'foo'
+        $filter->addRule('foo', 'First rule', fn($v) => false);
+        $filter->addRule('foo', 'Second rule', fn($v) => false);
+
+        // setRule() must discard both and install only the new one
+        $filter->setRule('foo', 'Only rule', fn($v) => false);
+
+        $values = (object) ['foo' => 'anything'];
+        $result = $filter->apply($values);
+
+        $this->assertFalse($result->isSuccess());
+        $messages = $filter->getFailures()->getMessagesForField('foo');
+        $this->assertSame(['Only rule'], $messages);
+    }
+
+    public function testApplyGetValuesReturnsSanitizedSubject(): void
+    {
+        $filter = new Filter;
+
+        // sanitize rule: strip non-alpha characters in-place via reference
+        $filter->addRule('bar', 'bar sanitized', function (&$value) {
+            $value = preg_replace('/[^a-z]/i', '', $value);
+            return true;
+        });
+
+        $values = (object) ['bar' => 'b4r!'];
+        $result = $filter->apply($values);
+
+        $this->assertTrue($result->isSuccess());
+        // getValues() must return the same object (Fieldset/stdClass handle)
+        $this->assertSame($values, $result->getValues());
+        // the sanitize rule wrote back through the reference, mutating the object
+        $this->assertSame('br', $values->bar);
+    }
+
+    public function testGetMessagesSingleField(): void
+    {
+        $filter = new Filter;
+        $filter->addRule('foo', 'Foo must be alpha', fn($v) => ctype_alpha($v));
+        $filter->addRule('bar', 'Bar must be alpha', fn($v) => ctype_alpha($v));
+
+        $values = (object) ['foo' => '123', 'bar' => '456'];
+        $filter->apply($values);
+
+        // single-field variant returns only that field's messages
+        $this->assertSame(['Foo must be alpha'], $filter->getMessages('foo'));
+        $this->assertSame(['Bar must be alpha'], $filter->getMessages('bar'));
+        // all-fields variant returns both
+        $this->assertArrayHasKey('foo', $filter->getMessages());
+        $this->assertArrayHasKey('bar', $filter->getMessages());
+    }
+
+    public function testFailureCollectionForFieldAndForPath(): void
+    {
+        $filter = new Filter;
+        $filter->addRule('email', 'Email is required', fn($v) => $v !== '');
+
+        $values = (object) ['email' => ''];
+        $filter->apply($values);
+
+        $failures = $filter->getFailures();
+
+        // forField() returns FailureInterface objects
+        $byField = $failures->forField('email');
+        $this->assertCount(1, $byField);
+        $this->assertInstanceOf(\Aura\Filter_Interface\FailureInterface::class, $byField[0]);
+        $this->assertSame('email', $byField[0]->getField());
+        $this->assertSame('Email is required', $byField[0]->getMessage());
+
+        // forPath() is an alias with the same behaviour
+        $byPath = $failures->forPath('email');
+        $this->assertCount(1, $byPath);
+        $this->assertSame('email', $byPath[0]->getField());
+
+        // non-existent field returns empty array for both
+        $this->assertSame([], $failures->forField('no_such_field'));
+        $this->assertSame([], $failures->forPath('no_such_field'));
+    }
 }

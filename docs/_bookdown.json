@@ -1,6 +1,7 @@
 {
-    "title": "Aura.Input 4.x",
+    "title": "Aura.Input 6.x",
     "content": [
-        "index.md"
+      "getting-started.md",
+      "upgrade.md"
     ]
 }
