@@ -9,7 +9,7 @@ namespace Aura\Input;
 class ConfigurableForm extends Form
 {
 
-    public function init()
+    public function init(): void
     {
         parent::init(); // for code coverage
 

@@ -5,7 +5,7 @@ use Aura\Input\Filter;
 
 class PhoneFilter extends Filter
 {
-    protected function init()
+    protected function init(): void
     {
         $this->addRule(
             'type',

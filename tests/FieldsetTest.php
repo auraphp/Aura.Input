@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Input;
 
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class FieldsetTest extends TestCase
 {
@@ -290,6 +290,55 @@ class FieldsetTest extends TestCase
         $actual = $outer->getValue();
 
         $this->assertSame($expect, $actual);
+    }
+
+    public function testFilterNestedFieldsetDotNotation(): void
+    {
+        // outer fieldset with a MockFieldset inner fieldset.
+        // MockFieldset::init() already registers: foo must be alpha-only.
+        $map['address'] = function () {
+            return new MockFieldset(new Builder, new Filter);
+        };
+
+        $outer = new Fieldset(new Builder($map), new Filter);
+        $outer->setField('name');
+        $outer->setFieldset('address');
+
+        // outer passes (no rules for name), inner fails (foo is not alpha)
+        $outer->fill(['name' => 'Alice', 'address' => ['foo' => '123', 'bar' => 'ok']]);
+        $passed = $outer->filter();
+
+        $this->assertFalse($passed);
+
+        $messages = $outer->getFailures()->getMessages();
+        // inner fieldset failure must be surfaced as "address.foo"
+        $this->assertArrayHasKey('address.foo', $messages);
+        $this->assertSame(['Use alpha only!'], $messages['address.foo']);
+        // outer has no failing rules, so 'name' must not appear
+        $this->assertArrayNotHasKey('name', $messages);
+    }
+
+    public function testFilterNestedFieldsetGetNestedMessages(): void
+    {
+        $map['address'] = function () {
+            return new MockFieldset(new Builder, new Filter);
+        };
+
+        $outer = new Fieldset(new Builder($map), new Filter);
+        $outer->setField('name');
+        $outer->setFieldset('address');
+
+        // foo='123' triggers MockFieldset's built-in alpha rule
+        $outer->fill(['name' => 'Alice', 'address' => ['foo' => '123', 'bar' => 'ok']]);
+        $outer->filter();
+
+        $nested = $outer->getFailures()->getNestedMessages();
+
+        // getNestedMessages() must reconstruct the tree from dot-notation keys
+        $this->assertArrayHasKey('address', $nested);
+        $this->assertArrayHasKey('foo', $nested['address']);
+        $this->assertSame(['Use alpha only!'], $nested['address']['foo']);
+        $this->assertArrayNotHasKey('name', $nested);
     }
 
     public function testIssetUnset()

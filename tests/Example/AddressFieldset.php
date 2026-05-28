@@ -5,7 +5,7 @@ use Aura\Input\Fieldset;
 
 class AddressFieldset extends Fieldset
 {
-    public function init()
+    public function init(): void
     {
         $this->setField('street');
         $this->setField('city');

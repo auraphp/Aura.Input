@@ -17,8 +17,8 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
-        "aura/filter-interface":"4.x-dev"
+        "php": "^8.4",
+        "aura/filter-interface": "6.x-dev"
     },
     "autoload": {
         "psr-4": {
@@ -31,6 +31,6 @@
         }
     },
     "require-dev": {
-        "yoast/phpunit-polyfills": "~1.0"
+        "phpunit/phpunit": "^11.0"
     }
 }

@@ -7,7 +7,7 @@ namespace Aura\Input;
 
 class ConfigurableFieldset extends Fieldset
 {
-    public function init()
+    public function init(): void
     {
         // call parent for coverage
         parent::init();

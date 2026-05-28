@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  *
  * This file is part of the Aura project for PHP.
@@ -22,115 +24,69 @@ use Iterator;
 class CollectionIterator implements Iterator
 {
     /**
-     *
      * The collection over which we are iterating.
-     *
-     * @var Collection
-     *
      */
-    protected $collection;
+    protected Collection $collection;
 
     /**
-     *
-     * The fieldsets over which we are iterating.
-     *
-     * @var array
-     *
-     */
-    protected $fieldsets;
-
-    /**
-     *
      * The keys to iterate over in the fieldsets.
      *
-     * @var array
-     *
+     * @var array<int|string>
      */
-    protected $keys;
+    protected array $keys;
 
     /**
-     *
      * Is the current iterator position valid?
-     *
-     * @var bool
-     *
      */
-    protected $valid;
+    protected bool $valid = false;
 
     /**
-     *
      * Constructor.
      *
      * @param Collection $collection The fieldsets over which to iterate.
-     *
      */
     public function __construct(Collection $collection)
     {
         $this->collection = $collection;
-        $this->keys = $this->collection->getKeys();
+        $this->keys       = $this->collection->getKeys();
     }
 
     /**
-     *
      * Returns the value at the current iterator position.
-     *
-     * @return mixed
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): Fieldset
     {
         return $this->collection->offsetGet($this->key());
     }
 
     /**
-     *
-     * Returns the current iterator position.
-     *
-     * @return mixed
-     *
+     * Returns the current iterator position key.
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int|string
     {
         return current($this->keys);
     }
 
     /**
-     *
      * Moves the iterator to the next position.
-     *
-     * @return void
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->valid = (next($this->keys) !== false);
     }
 
     /**
-     *
      * Moves the iterator to the first position.
-     *
-     * @return void
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->valid = (reset($this->keys) !== false);
     }
 
     /**
-     *
      * Is the current iterator position valid?
-     *
-     * @return boolean
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->valid;
     }

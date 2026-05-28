@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  *
  * This file is part of the Aura project for PHP.
@@ -13,6 +15,8 @@ namespace Aura\Input;
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
+use Aura\Filter_Interface\FailuresInterface;
+use Aura\Input\Filter\FailureCollection;
 
 /**
  *
@@ -24,30 +28,24 @@ use IteratorAggregate;
 class Collection extends AbstractInput implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
-     *
      * Factory to create a particular fieldset type.
      *
      * @var callable
-     *
      */
     protected $factory;
 
     /**
-     *
      * Fieldsets in the collection.
      *
-     * @var array
-     *
+     * @var Fieldset[]
      */
-    protected $fieldsets = [];
+    protected array $fieldsets = [];
 
     /**
-     *
      * Constructor.
      *
      * @param callable $factory A factory to create the fieldset objects for
      * this collection.
-     *
      */
     public function __construct(callable $factory)
     {
@@ -55,13 +53,11 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
     }
 
     /**
-     *
      * Support for this input when addressed via Fieldset::__set().
      *
      * @param array $data The data for each fieldset in the collection.
-     *
      */
-    public function fill(array $data)
+    public function fill(array $data): void
     {
         $this->fieldsets = [];
         foreach ($data as $key => $inputs) {
@@ -74,16 +70,14 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
     }
 
     /**
-     *
      * Applies each fieldset filter.
      *
      * @return bool True if all filters passed, false if one or more failed.
-     *
      */
-    public function filter()
+    public function filter(): bool
     {
         $passed = true;
-        foreach ($this->fieldsets as $key => $fieldset) {
+        foreach ($this->fieldsets as $fieldset) {
             if (! $fieldset->filter()) {
                 $passed = false;
             }
@@ -92,74 +86,55 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
     }
 
     /**
-     *
-     * Returns the failures for the fieldset filters.
-     *
-     * @return array
-     *
+     * Returns the failures for all fieldset filters as a flat FailuresInterface,
+     * using dot-notation keys: "{index}.{field}" (e.g. "0.number").
      */
-    public function getFailures()
+    public function getFailures(): FailuresInterface
     {
-        $failures = [];
+        $collector = new FailureCollection();
         foreach ($this->fieldsets as $key => $fieldset) {
-            $failures[$key] = $fieldset->getFailures()->getMessages();
+            foreach ($fieldset->getFailures()->getMessages() as $field => $messages) {
+                $collector->addMessagesForField("{$key}.{$field}", $messages);
+            }
         }
-        return $failures;
+        return $collector;
     }
 
     /**
-     *
      * IteratorAggregate: returns an external iterator for this collection.
-     *
-     * @return CollectionIterator
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator(): CollectionIterator
     {
         return new CollectionIterator($this);
     }
 
     /**
-     *
      * Gets all the keys for all Fieldsets in this collection.
      *
-     * @return array
-     *
+     * @return array<int|string>
      */
-    public function getKeys()
+    public function getKeys(): array
     {
         return array_keys($this->fieldsets);
     }
 
     /**
-     *
      * Creates and returns a new fieldset.
      *
-     * @param string $key The key for the new fieldset.
-     *
-     * @return Fieldset
-     *
+     * @param int|string $key The key for the new fieldset.
      */
-    protected function newFieldset($key)
+    protected function newFieldset(int|string $key): Fieldset
     {
-        $factory = $this->factory;
+        $factory  = $this->factory;
         $fieldset = $factory();
-        $fieldset->setName($key);
+        $fieldset->setName((string) $key);
         return $fieldset;
     }
 
     /**
-     *
      * ArrayAccess: returns the fieldset at a particular offset.
-     *
-     * @param mixed $offset The fieldset key.
-     *
-     * @return Fieldset
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): Fieldset
     {
         $fieldset = $this->fieldsets[$offset];
         $fieldset->setNamePrefix($this->getFullName());
@@ -167,73 +142,43 @@ class Collection extends AbstractInput implements ArrayAccess, Countable, Iterat
     }
 
     /**
-     *
      * ArrayAccess: sets an offset as a Fieldset.
-     *
-     * @param mixed $offset The Fieldset key.
-     *
-     * @param Fieldset $fieldset The Fieldset for that key.
-     *
-     * @return void
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $fieldset)
+    public function offsetSet(mixed $offset, mixed $fieldset): void
     {
         $this->fieldsets[$offset] = $fieldset;
     }
 
     /**
-     *
      * ArrayAccess: is a particular Fieldset key set?
-     *
-     * @param mixed $offset The Fieldset key.
-     *
-     * @return bool True if the Fielset key is set, false if not.
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->fieldsets[$offset]);
     }
 
     /**
-     *
      * ArrayAccess: unsets a particular Fieldset key.
-     *
-     * @param mixed $offset The Fieldset key.
-     *
-     * @return void
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->fieldsets[$offset]);
     }
 
     /**
-     *
      * Countable: returns the number of Fieldsets in this collection.
-     *
-     * @return int
-     *
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return count($this->fieldsets);
     }
 
     /**
-     *
      * Returns the value of this input for use in arrays.
      *
-     * @return array
-     *
+     * @return array<int|string, mixed>
      */
-    public function getValue()
+    public function getValue(): array
     {
         $data = [];
         foreach ($this->fieldsets as $key => $fieldset) {
