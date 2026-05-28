@@ -14,7 +14,7 @@ Ensure your runtime and CI pipeline are running PHP 8.4 or later before upgradin
 
 ## New Dependency: `aura/filter-interface`
 
-6.0.0 requires `aura/filter-interface: dev-sub-filter`. This package provides the contracts used throughout Aura.Input:
+6.0.0 requires `aura/filter-interface: 6.x`. This package provides the contracts used throughout Aura.Input:
 
 | Interface / Class | Description |
 |---|---|
