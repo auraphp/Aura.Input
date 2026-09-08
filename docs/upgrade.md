@@ -1,12 +1,12 @@
-# Upgrade Guide: 1.x → 6.0.0
+# Upgrade Guide: 1.x → 7.0.0
 
-This guide covers every breaking change introduced in 6.0.0 and how to update your code. The last publicly released version of this package was the **2.x / 1.x** line; 6.0.0 is the next release after the unreleased `3.0.0-alpha`.
+This guide covers every breaking change introduced in 7.0.0 and how to update your code. The last publicly released version of this package was the **2.x / 1.x** line; 7.0.0 is the next release after the unreleased `3.0.0-alpha`.
 
 ---
 
 ## PHP Version Requirement
 
-**2.x required PHP >= 5.6. 6.0.0 requires PHP >= 8.4.**
+**2.x required PHP >= 5.6. 7.0.0 requires PHP >= 8.4.**
 
 Ensure your runtime and CI pipeline are running PHP 8.4 or later before upgrading.
 
@@ -14,7 +14,7 @@ Ensure your runtime and CI pipeline are running PHP 8.4 or later before upgradin
 
 ## New Dependency: `aura/filter-interface`
 
-6.0.0 requires `aura/filter-interface: 6.x`. This package provides the contracts used throughout Aura.Input:
+7.0.0 requires `aura/filter-interface: 7.x`. This package provides the contracts used throughout Aura.Input:
 
 | Interface / Class | Description |
 |---|---|
@@ -57,7 +57,7 @@ if ($this->filter->apply($this)) {
 }
 ```
 
-**After (6.0.0):**
+**After (7.0.0):**
 `apply()` accepts `array|object` by value and returns a `FilterResultInterface`. For `Fieldset` subjects the object handle still allows closures to write field values back — but the caller's variable is never replaced by reference.
 
 ```php
@@ -97,7 +97,7 @@ public function filter()
     return $this->success;
 }
 
-// After (6.0.0 override)
+// After (7.0.0 override)
 public function filter(): bool
 {
     $result        = $this->filter->apply($this);
@@ -152,7 +152,7 @@ $failures->getMessages();
 // ['phone_numbers' => ['0' => ['number' => ['Phone number is required.']]]]
 ```
 
-**After (6.0.0):**
+**After (7.0.0):**
 Failures are stored flat with dot-notation keys:
 
 ```php
@@ -180,7 +180,7 @@ All classes now declare `strict_types=1` and carry typed properties and method r
 public function fill(array $data) { ... }
 public function filter() { ... }
 
-// After (6.0.0 compatible)
+// After (7.0.0 compatible)
 public function fill(array $data): void { ... }
 public function filter(): bool { ... }
 ```
