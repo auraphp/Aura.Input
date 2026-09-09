@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Aura.Input is a PHP library for **describing and filtering HTML form inputs**. It deliberately does NOT render forms — it produces "hints" (type/attribs/options/value arrays) that a view layer (e.g. Aura.Html) consumes. Supports nested fieldsets, fieldset collections, a pluggable filter system via `aura/filter-interface`, and a CSRF protection interface.
 
-Development happens on the `4.x` branch (the `main` branch in this repo's terminology).
+Development happens on the `7.x` branch (the `main` branch in this repo's terminology).
 
 ## Commands
 
@@ -60,7 +60,7 @@ AbstractInput  (name, name_prefix, getFullName, getValue)
 
 ### External contract
 
-The package depends on `aura/filter-interface` (`4.x-dev`) for `FilterInterface` and `FailureCollectionInterface`. Filter swap-outs from other libraries must conform to that interface.
+The package depends on `aura/filter-interface` (`7.x-dev`) for `FilterInterface` and `FailureCollectionInterface`. Filter swap-outs from other libraries must conform to that interface.
 
 ## Layout
 
