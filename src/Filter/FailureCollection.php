@@ -17,10 +17,15 @@ use Aura\Filter_Interface\FailureInterface;
  *
  * A failure collection for the closure-based Input filter.
  *
- * Stores plain string messages internally (no args tracking, matching the
- * closure-based filter's simpler contract). Implements the full
- * FailureCollectionInterface so it satisfies both the write (add/set) and
- * read (forField/forPath/getMessages/getNestedMessages) sides.
+ * Stores Failure objects keyed by field name or dot-notation path, so the
+ * arguments passed to add()/set() are retained and returned by forField()
+ * and forPath(). Implements the full FailureCollectionInterface, satisfying
+ * both the write (add/set) and read
+ * (forField/forPath/getMessages/getNestedMessages) sides.
+ *
+ * The bundled closure-based Filter records failures without arguments, so in
+ * ordinary use every Failure carries an empty argument list; the storage keeps
+ * whatever a caller supplies rather than discarding it.
  *
  * @package Aura.Input
  *
@@ -28,11 +33,11 @@ use Aura\Filter_Interface\FailureInterface;
 class FailureCollection implements FailureCollectionInterface
 {
     /**
-     * Messages keyed by field name → string[].
+     * Failures keyed by field name or dot-notation path → Failure[].
      *
-     * @var array<string, string[]>
+     * @var array<string, FailureInterface[]>
      */
-    private array $messages = [];
+    private array $items = [];
 
     // -------------------------------------------------------------------------
     // FailuresInterface — read side
@@ -40,20 +45,19 @@ class FailureCollection implements FailureCollectionInterface
 
     public function isEmpty(): bool
     {
-        return $this->messages === [];
+        return $this->items === [];
     }
 
     /**
-     * Returns Failure value objects for one field, wrapping the stored strings.
+     * Returns all Failure objects recorded for a field.
+     *
+     * Returns an empty array when no failures exist for the given key.
      *
      * @return FailureInterface[]
      */
     public function forField(string $field): array
     {
-        return array_map(
-            static fn(string $msg) => new Failure($field, $msg),
-            $this->messages[$field] ?? []
-        );
+        return $this->items[$field] ?? [];
     }
 
     /**
@@ -74,7 +78,14 @@ class FailureCollection implements FailureCollectionInterface
      */
     public function getMessages(): array
     {
-        return $this->messages;
+        $messages = [];
+        foreach ($this->items as $field => $failures) {
+            $messages[$field] = array_map(
+                static fn(FailureInterface $failure) => $failure->getMessage(),
+                $failures
+            );
+        }
+        return $messages;
     }
 
     /**
@@ -86,7 +97,7 @@ class FailureCollection implements FailureCollectionInterface
     public function getNestedMessages(): array
     {
         $result = [];
-        foreach ($this->messages as $field => $messages) {
+        foreach ($this->getMessages() as $field => $messages) {
             $parts = explode('.', $field);
             $node  = &$result;
             foreach ($parts as $i => $part) {
@@ -109,30 +120,31 @@ class FailureCollection implements FailureCollectionInterface
     // -------------------------------------------------------------------------
 
     /**
-     * Appends a failure message for a field.
+     * Appends a failure for a field.
      *
      * @param string  $field   The field that failed.
      * @param string  $message The failure message.
-     * @param mixed[] $args    Arguments passed to the rule (unused for storage but
-     *                         forwarded to the returned Failure value object).
+     * @param mixed[] $args    Arguments passed to the rule; stored on the Failure.
      */
     public function add(string $field, string $message, array $args = []): FailureInterface
     {
-        $this->messages[$field][] = $message;
-        return new Failure($field, $message, $args);
+        $failure               = new Failure($field, $message, $args);
+        $this->items[$field][] = $failure;
+        return $failure;
     }
 
     /**
-     * Sets a single failure message for a field, replacing all previous messages.
+     * Sets a single failure for a field, replacing all previous failures.
      *
      * @param string  $field   The field that failed.
      * @param string  $message The failure message.
-     * @param mixed[] $args    Arguments passed to the rule (forwarded to the returned Failure).
+     * @param mixed[] $args    Arguments passed to the rule; stored on the Failure.
      */
     public function set(string $field, string $message, array $args = []): FailureInterface
     {
-        $this->messages[$field] = [$message];
-        return new Failure($field, $message, $args);
+        $failure             = new Failure($field, $message, $args);
+        $this->items[$field] = [$failure];
+        return $failure;
     }
 
     // -------------------------------------------------------------------------
@@ -147,13 +159,9 @@ class FailureCollection implements FailureCollectionInterface
      */
     public function addMessagesForField(string $field, string|array $messages): void
     {
-        if (! isset($this->messages[$field])) {
-            $this->messages[$field] = [];
+        foreach ((array) $messages as $message) {
+            $this->add($field, $message);
         }
-        $this->messages[$field] = array_merge(
-            $this->messages[$field],
-            (array) $messages
-        );
     }
 
     /**
@@ -163,6 +171,9 @@ class FailureCollection implements FailureCollectionInterface
      */
     public function getMessagesForField(string $field): array
     {
-        return $this->messages[$field] ?? [];
+        return array_map(
+            static fn(FailureInterface $failure) => $failure->getMessage(),
+            $this->forField($field)
+        );
     }
 }
