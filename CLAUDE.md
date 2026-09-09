@@ -36,7 +36,7 @@ Run without coverage (faster during iteration):
 ./vendor/bin/phpunit --no-coverage
 ```
 
-There are no Composer scripts (`composer test`, `composer cs-fix`, etc.) defined in [composer.json](composer.json) — invoke PHPUnit directly. CI exercises PHP 7.2–8.5 per [.github/workflows/continuous-integration.yml](.github/workflows/continuous-integration.yml).
+There are no Composer scripts (`composer test`, `composer cs-fix`, etc.) defined in [composer.json](composer.json) — invoke PHPUnit directly. CI exercises PHP 8.4 and 8.5 per [.github/workflows/continuous-integration.yml](.github/workflows/continuous-integration.yml).
 
 ## Architecture
 

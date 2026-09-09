@@ -14,7 +14,7 @@ This package is installable and PSR-4 autoloadable via Composer as
 
 ## Dependencies
 
-This package requires PHP 7.2 or later; it has been tested on PHP 7.2 - 8.5. We recommend using the latest available version of PHP as a matter of
+This package requires PHP 8.4 or later; it has been tested on PHP 8.4 - 8.5. We recommend using the latest available version of PHP as a matter of
 principle.
 
 Aura library packages may sometimes depend on external interfaces, but never on
