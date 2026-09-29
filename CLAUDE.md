@@ -60,7 +60,7 @@ AbstractInput  (name, name_prefix, getFullName, getValue)
 
 ### External contract
 
-The package depends on `aura/filter-interface` (`7.x-dev`) for `FilterInterface` and `FailureCollectionInterface`. Filter swap-outs from other libraries must conform to that interface.
+The package depends on `aura/filter-interface` (`^7.0`) for `FilterInterface` and `FailureCollectionInterface`. Filter swap-outs from other libraries must conform to that interface.
 
 ## Layout
 

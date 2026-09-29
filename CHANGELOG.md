@@ -14,7 +14,7 @@
 - `CollectionIterator` methods (`current()`, `key()`, `next()`, `rewind()`, `valid()`) now carry explicit return-type declarations; properties are typed.
 - All classes now declare `strict_types=1` and use full PHP 8.x type declarations throughout.
 - Removed Aura.Di integration — no `config/` directory or container configuration is shipped.
-- `aura/filter-interface` dependency updated to `dev-sub-filter` (introduces `FilterInterface`, `FilterResultInterface`, `FailureCollectionInterface`, `FailuresInterface`, `FailureInterface`, and `FilterResult`).
+- `aura/filter-interface` now required at `^7.0` (introduces `FilterInterface`, `FilterResultInterface`, `FailureCollectionInterface`, `FailuresInterface`, `FailureInterface`, and `FilterResult`).
 - CI moved from Travis CI to GitHub Actions; PHPUnit dependency changed from `yoast/phpunit-polyfills` to `phpunit/phpunit: ^11.0`.
 
 ### New Features
